@@ -9,21 +9,43 @@ class RouteService{
     }
 
     test(){
-        this.app.get('/canDoGetRequests', function (req, res) {
+        this.app.get('/isUp', function (req, res) {
             try{
                 res.status(200)
                 res.send('Server is Up')
             } catch(err) {
                 console.log(err)
+                res.send(`Server has error \n\n err`)
             }
         })
 
-        this.app.post('/canDoPostRequests', function (req, res) {
+        this.app.post('/isUp', function (req, res) {
             try{
                 res.status(200)
                 res.send(`Server is Up and you sent ${JSON.stringify(req.body)}`)
             } catch(err) {
                 console.log(err)
+                res.send(`Server has error \n\n err`)
+            }
+        })
+
+        this.app.put('/isUp', function (req, res) {
+            try{
+                res.status(200)
+                res.send(`Server is Up and you sent ${JSON.stringify(req.body)}`)
+            } catch(err) {
+                console.log(err)
+                res.send(`Server has error \n\n err`)
+            }
+        })
+
+        this.app.delete('/isUp', function (req, res) {
+            try{
+                res.status(200)
+                res.send(`Server is Up and you sent ${JSON.stringify(req.body)}`)
+            } catch(err) {
+                console.log(err)
+                res.send(`Server has error \n\n err`)
             }
         })
     }
