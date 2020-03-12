@@ -43,7 +43,28 @@ class SchedulingCtrl {
     }
 
     async create(scheduling) {
-        return await this.scheduling.create(scheduling.userId, scheduling.typeScheduling, scheduling.dateTime, scheduling.observation)
+        const response = {
+            insertId: null,
+            message: null,
+            statusCode: 500
+        }
+
+        try {
+            const hasSameScheduling = await this.scheduling.hasSameScheduling(scheduling.userId, scheduling.typeScheduling, scheduling.dateTime)
+            if (hasSameScheduling) {
+                response.message = "Já existe um agendamento do mesmo tipo para esse mesmo horário"
+                response.statusCode = 406
+            } else {
+                const createdSchedule = await this.scheduling.create(scheduling.userId, scheduling.typeScheduling, scheduling.dateTime, scheduling.observation)
+                response.insertId = createdSchedule.insertId
+                response.message = createdSchedule.message
+            }
+        }
+        catch (err) {
+            response.message = `Erro desconhecido ao criar agendamento  -> ${err.toString()}`
+        } finally {
+            return response
+        }
     }
 }
 

@@ -6,10 +6,11 @@ class Scheduling {
     }
 
     async create(userId, typeScheduling, dateTime, observation) {
-        const query =
-            `INSERT INTO logali.scheduling ` +
-            `(userId, typeSchedulingId, statusSchedulingId, dateTime, observation, createdAt) VALUES ` +
-            `(
+        try {
+            const query =
+                `INSERT INTO logali.scheduling ` +
+                `(userId, typeSchedulingId, statusSchedulingId, dateTime, observation, createdAt) VALUES ` +
+                `(
                 '${userId}', 
                 '${typeScheduling}', 
                 '1', 
@@ -18,9 +19,28 @@ class Scheduling {
                 '${Moment().format("YYYY-MM-DD HH:mm:ss")}'
             )`
 
-        const resp = await this.dbPool.query(query)
+            const resp = await this.dbPool.query(query)
+            return resp
+        } catch (err) {
+            throw new Error(`Erro ao inserir agendamento -> ${err}`)
+        }
+    }
 
-        return resp
+    async hasSameScheduling(userId, typeScheduling, dateTime) {
+        try {
+            const query =
+                `SELECT 1 ` +
+                `FROM logali.scheduling ` +
+                `WHERE 1=1 ` +
+                `AND userId = '${userId}' ` +
+                `AND typeSchedulingId = '${typeScheduling}' ` +
+                `AND dateTime = '${dateTime.format("YYYY-MM-DD HH:mm:ss")}'`
+
+            const resp = await this.dbPool.query(query)
+            return resp.pop()
+        } catch (err) {
+            throw new Error(`Erro na validação de agendamento -> ${err}`)
+        }
     }
 }
 

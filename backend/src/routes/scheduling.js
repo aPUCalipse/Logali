@@ -18,7 +18,6 @@ class SchedulingRouter {
         this.app.post(`${this.baseRoute}/create`, this.create.bind(this))
     }
 
-
     /**
      * @params
      *  userId, typeScheduling, dateTime, observation
@@ -47,7 +46,7 @@ class SchedulingRouter {
                     } else {
                         response.message = `Erro ao cadastrar agendamento -> ${resp.message}`
                         response.data = validatedParams.data
-                        res.status(500)
+                        res.status(resp.statusCode)
                     }
                 } else {
                     response.message = validatedParams.message
