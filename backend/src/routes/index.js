@@ -1,51 +1,55 @@
+const SchedulingRouter = require('./scheduling')
+const appBaseRoute = "/logali/app"
 
-class RouteService{
-    constructor(expressInstance){
+class RouteService {
+    constructor(expressInstance, dbPool) {
         this.app = expressInstance
+        this.schedulingRouter = new SchedulingRouter(this.app, appBaseRoute, dbPool)
     }
 
-    init(){
+    init() {
         this.test()
+        this.schedulingRouter.init()
     }
 
-    test(){
-        this.app.get('/isUp', function (req, res) {
-            try{
+    test() {
+        this.app.get(`${appBaseRoute}/isUp`, function (req, res) {
+            try {
                 res.status(200)
                 res.send('Server is Up')
-            } catch(err) {
+            } catch (err) {
                 console.log(err)
-                res.send(`Server has error \n\n err`)
+                res.send(`Server has error \n\n ${err}`)
             }
         })
 
-        this.app.post('/isUp', function (req, res) {
-            try{
+        this.app.post(`${appBaseRoute}/isUp`, function (req, res) {
+            try {
                 res.status(200)
                 res.send(`Server is Up and you sent ${JSON.stringify(req.body)}`)
-            } catch(err) {
+            } catch (err) {
                 console.log(err)
-                res.send(`Server has error \n\n err`)
+                res.send(`Server has error \n\n ${err}`)
             }
         })
 
-        this.app.put('/isUp', function (req, res) {
-            try{
+        this.app.put(`${appBaseRoute}/isUp`, function (req, res) {
+            try {
                 res.status(200)
                 res.send(`Server is Up and you sent ${JSON.stringify(req.body)}`)
-            } catch(err) {
+            } catch (err) {
                 console.log(err)
-                res.send(`Server has error \n\n err`)
+                res.send(`Server has error \n\n ${err}`)
             }
         })
 
-        this.app.delete('/isUp', function (req, res) {
-            try{
+        this.app.delete(`${appBaseRoute}/isUp`, function (req, res) {
+            try {
                 res.status(200)
                 res.send(`Server is Up and you sent ${JSON.stringify(req.body)}`)
-            } catch(err) {
+            } catch (err) {
                 console.log(err)
-                res.send(`Server has error \n\n err`)
+                res.send(`Server has error \n\n ${err}`)
             }
         })
     }

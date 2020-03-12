@@ -1,13 +1,13 @@
 const MYSQL = require('mysql')
 const util = require('util')
 
-async function getConnection(){
+function getPool() {
     const connection = MYSQL.createPool({
-        connectionLimit : 10,
-        host            : 'localhost',
-        user            : 'root',
-        password        : '',
-        database        : 'logali'
+        connectionLimit: 10,
+        host: 'localhost',
+        user: 'root',
+        password: '',
+        database: 'logali'
     });
 
     connection.query = util.promisify(connection.query).bind(connection)
@@ -16,5 +16,5 @@ async function getConnection(){
 }
 
 module.exports = {
-    getConnection: getConnection
+    getPool: getPool
 }
