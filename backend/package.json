@@ -1,12 +1,12 @@
 {
   "name": "backend_logali",
   "version": "1.0.0",
-  "description": "",
+  "description": "\"projeto de tis V\"",
   "main": "index.js",
   "scripts": {
     "tests": "mocha src/test/index.js"
   },
-  "author": "",
+  "author": "ariel barcelos, karolina vaz, kelton melo, marcos felipe, luiz jesus",
   "license": "ISC",
   "dependencies": {
     "bluebird": "^3.7.2",
@@ -15,6 +15,11 @@
     "lodash": "^4.17.15",
     "mocha": "^7.1.0",
     "moment": "^2.24.0",
-    "mysql": "^2.18.1"
-  }
+    "mysql": "^2.18.1",
+    "package.json": "^2.0.1",
+    "proxy": "http://localhost:5000/"
+  },
+  "keywords": [
+    "logali"
+  ]
 }
