@@ -2,11 +2,13 @@
   "ExpandedNodes": [
     "",
     "\\backend",
+    "\\backend\\src",
     "\\frontend",
-    "\\frontend\\src\\Components",
-    "\\frontend\\src\\Components\\Assets",
-    "\\frontend\\src\\Components\\Routes"
+    "\\frontend\\external",
+    "\\frontend\\public",
+    "\\frontend\\src",
+    "\\frontend\\src\\Views"
   ],
-  "SelectedNode": "\\frontend\\public",
+  "SelectedNode": "\\frontend\\src\\index.js",
   "PreviewInSolutionExplorer": false
 }

@@ -2,15 +2,18 @@ import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 //import Modal from '@material-ui/core/Modal';
 import create from './Components/Routes/scheduling.js';
+import EnhancedTable from './ViewSchedulings'
 import Modal from "react-bootstrap/Modal";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
+import EditIcon from '@material-ui/icons/Edit';
 import TextField from '@material-ui/core/TextField';
 import SaveRoundedIcon from '@material-ui/icons/SaveRounded';
 import { Formik, Form, Field } from "formik";
 import CloseIcon from '@material-ui/icons/Close';
 import Grid from '@material-ui/core/Grid';
+import TextareaAutosize from '@material-ui/core/TextareaAutosize';
 import * as Yup from 'yup';
 import Divider from '@material-ui/core/Divider';
 
@@ -41,6 +44,7 @@ const useStyles = makeStyles(theme => ({
     },
     title: {
         color: '#45B39D',
+        size: '14px',
         margin: theme.spacing(2)
     },
     save: {
@@ -48,37 +52,39 @@ const useStyles = makeStyles(theme => ({
         margin: theme.spacing(1)
     },
     icon: {
-        margin: theme.spacing(1)
+        margin: theme.spacing(1),
+        float: 'right',
+        right: '0px'
     }
 }));
 
 function MyVerticallyCenteredModal(props) {
     const classes = useStyles();
-    const [service, setService] = useState('');
+    const [typeScheduling, setTypeScheduling] = useState('');
     const [date, setDate] = useState('');
     const [time, setTime] = useState('');
 
-    const [cep, setCep] = useState('');
-    const [street, setStreet] = useState('');
-    const [number, setNumber] = useState('');
-    const [neighborhood, setNeighborhood] = useState('');
-    const [city, setCity] = useState('');
-    const [state, setState] = useState('');
+    const [dateTime] = (date + time);
+    const [userId] = useState('0');
+    const [observation, setObservation] = useState('');
     // useEffect(() => {
     async function handleAddScheduling(e) {
         e.preventDefault();
         const response = await create.post('/create', {
-            service,
-            date,
-            time,
-            cep,
-            street,
-            number,
-            neighborhood,
-            city,
-            state
+            userId,
+            typeScheduling,
+            dateTime,
+            observation
 
         })
+          .then(function (response) {
+            console.log(response);
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+
+          console.log(response);
     };
     let yup = require('yup');
     let validationSchema = yup.object().shape({
@@ -129,7 +135,7 @@ function MyVerticallyCenteredModal(props) {
                             justify="center"
                             alignItems="center">
                             <Grid item xs={12} >
-                                <TextField id="standard-basic" name="service" required className={classes.body} onChange={e => handleChange(e.target.value)} label="Servi&ccedil;o" color="#45B39D" />
+                                <TextField id="standard-basic" name="typeScheduling" required className={classes.body} onChange={e => setTypeScheduling(e.target.value)} label="Servi&ccedil;o" color="#45B39D" />
                             </Grid>
                             <Grid item xs={12} sm={6}>
                                 <TextField
@@ -165,25 +171,10 @@ function MyVerticallyCenteredModal(props) {
                             </Grid>
                             <Divider variant="middle" />
                             <Grid item xs={12} sm={12}>
-                                <h3 className={classes.title}>Endere&ccedil;o</h3>
+                                <h3 className={classes.title}>Observa&ccedil;o</h3>
                             </Grid>
-                            <Grid item xs={6} sm={3}>
-                                <TextField id="standard-basic" name="CEP" onChange={e => setCep(e.target.value)} required className={classes.body} label="CEP" />
-                            </Grid>
-                            <Grid item xs={9} sm={6}>
-                                <TextField id="standard-basic" name="street" onChange={e => setStreet(e.target.value)} className={classes.body} label="Rua" color="#45B39D" />
-                            </Grid>
-                            <Grid item xs={6} sm={3}>
-                                <TextField id="standard-basic" name="number" onChange={e => setNumber(e.target.value)} className={classes.body} label="N�" color="#45B39D" />
-                            </Grid>
-                            <Grid item xs={9} sm={6}>
-                                <TextField id="standard-basic" name="neighborhood" onChange={e => setNeighborhood(e.target.value)} className={classes.body} label="Bairro" color="#45B39D" />
-                            </Grid>
-                            <Grid item xs={6} sm={3}>
-                                <TextField id="standard-basic" name="city" onChange={e => setCity(e.target.value)} className={classes.body} label="Cidade" color="#45B39D" />
-                            </Grid>
-                            <Grid item xs={6} sm={3}>
-                                <TextField id="standard-basic" name="state" onChange={e => setState(e.target.value)} className={classes.body} label="Estado" color="#45B39D" />
+                            <Grid item xs={12} sm={12}>
+                                <TextareaAutosize id="standard-basic" name="observation" onChange={e => setObservation(e.target.value)} className={classes.body} label="Observação" color="#45B39D" />
                             </Grid>
                         </Grid>
                     </Form>
@@ -203,7 +194,7 @@ function MyVerticallyCenteredModal(props) {
     );
 }
 
-export default function SimpleModal() {
+function App() {
     const classes = useStyles();
     // getModalStyle is not a pure function, we roll the style only on the first render
     const [open, setOpen] = React.useState(false);
@@ -225,15 +216,22 @@ export default function SimpleModal() {
     };
 
     return (
-        <div>
-            <Fab color="primary" onClick={() => setModalShow(true)} aria-label="add">
-                <AddIcon />
+        <>
+            <EnhancedTable/>
+            <Fab color="primary" className={classes.icon} onClick={() => setModalShow(true)} aria-label="edit">
+                <EditIcon />
             </Fab>
 
+            <Fab color="primary"  className={classes.icon} onClick={() => setModalShow(true)} aria-label="add">
+                <AddIcon />
+            </Fab>
+         
             <MyVerticallyCenteredModal
                 show={modalShow}
                 onHide={() => setModalShow(false)}
             />
-        </div>
+        </>
     );
 }
+
+export default App;

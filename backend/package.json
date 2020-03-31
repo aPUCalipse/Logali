@@ -1,7 +1,6 @@
 {
   "name": "backend_logali",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "scripts": {
     "tests": "mocha src/test/index.js"
@@ -13,8 +12,10 @@
     "chai": "^4.2.0",
     "express": "^4.17.1",
     "lodash": "^4.17.15",
-    "mocha": "^7.1.0",
+    "mocha": "^7.1.1",
     "moment": "^2.24.0",
     "mysql": "^2.18.1"
-  }
+  },
+  "devDependencies": {},
+  "description": ""
 }
