@@ -79,6 +79,23 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
+-- Table `logali`.`user`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `logali`.`address` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `Estado` VARCHAR(2) NOT NULL,
+  `Cidade` VARCHAR(45) NOT NULL,
+  `Rua` VARCHAR(45) NOT NULL,
+  `CEP` VARCHAR(9) NOT NULL,
+  `Numero` INT NOT NULL,
+  `Complemento` VARCHAR(5) NULL,
+  `createdAt` VARCHAR(20) NOT NULL,
+  `updatedAt` VARCHAR(20) NULL,
+  PRIMARY KEY (`id`))
+  ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
 -- Table `logali`.`scheduling`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `logali`.`scheduling` (
