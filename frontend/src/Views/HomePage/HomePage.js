@@ -8,7 +8,7 @@ import Footer from '../../Components/Footer/Footer'
 import Background from '../../Components/Background/Background'
 
 //Imagens
-import mountain1 from '../../Images/mountain1.jpg'
+import mountain from '../../Images/mountain.jpg'
 
 //stylesheet
 import style from './HomePage.module.css'
@@ -22,7 +22,7 @@ function HomePage(){
                         <Header />
                         <Background 
                             className={style.Background_Image}
-                            image={mountain1} 
+                            image={mountain} 
                             description="Man carrying boxes"
                             height="100%"
                             width="100%"
