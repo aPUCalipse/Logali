@@ -26,6 +26,17 @@ class Scheduling {
         }
     }
 
+    async delete(userId){
+        try{
+            const query =  `DELETE FROM logali.scheduling WHERE userId = ${userId}`
+            
+            const resp = await this.dbPool.query(query)
+            return resp
+        } catch(err) {
+            throw new Error(`Erro excluir agendamento -> ${err}`)
+        }
+    }
+
     async hasSameScheduling(userId, typeScheduling, dateTime) {
         try {
             const query =
