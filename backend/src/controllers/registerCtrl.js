@@ -6,7 +6,7 @@ class RegisterCtrl {
         this.register = new Register(dbPool)
     }
 
-    valitadeParamsCreate(nome,login, senha, tipoUsuario, estado, cidade ,bairro, rua, cep, numero, complemento) {
+    valitadeParamsCreate(nome,login, senha, tipoUsuario, estado, cidade ,bairro, rua, cep, numero) {
         const validatedParams = {
             isValid: null,
             message: null,
@@ -16,30 +16,30 @@ class RegisterCtrl {
                 login: login,
                 password: senha,
                 tipoUsuario: tipoUsuario,
-                estado = null,
-                cidade = null,
-                bairro = null,
-                rua = null,
-                CEP = null,
-                numero = null,
-                complemento = null
+                state: estado,
+                city : cidade,
+                neighborhood : bairro,
+                street : rua,
+                zipCode : cep,
+                number : numero,
+                CreatedAt :null
             }
         }
 
-        const momentDateTime = Moment(dateTime, "DD/MM/YYYY HH:mm:ss")
-        validatedParams.data.dateTime = momentDateTime
+        const momentDateTime = Moment().format("YYYY-MM-DD HH:mm:ss")
+        validatedParams.data.CreatedAt = momentDateTime
 
-        if (!userId) {
+        if (!login) {
             validatedParams.isValid = false
             validatedParams.message = "O parametro usuario está incorreto"
             validatedParams.statusCode = 400
-        } else if (!typeRegister) {
+        } else if (!nome) {
             validatedParams.isValid = false
-            validatedParams.message = "O parametro tipo de usuário"
+            validatedParams.message = "O parametro nome está incorreto"
             validatedParams.statusCode = 400
-        } else if (!momentDateTime.isValid()) {
+        } else if (!senha) {
             validatedParams.isValid = false
-            validatedParams.message = "O parametro data está incorreto"
+            validatedParams.message = "O parametro senha está incorreto"
             validatedParams.statusCode = 400
         } else {
             validatedParams.isValid = true
@@ -62,7 +62,7 @@ class RegisterCtrl {
                 response.message = "Já existe um usuário com esse login"
                 response.statusCode = 406
             } else {
-                const createdRegister = await this.register.create(register.nome, register.login, register.senha, register.tipoUsuario, register.estado, register.cidade ,register.bairro, register.rua, register.cep, register.numero, register.complemento)
+                const createdRegister = await this.register.create(register.name, register.login, register.password, register.tipoUsuario, register.state, register.city ,register.neighborhood, register.street, register.zipCode, register.number, register.CreatedAt)
                 response.insertId = createdRegister.insertId
                 response.message = createdRegister.message
             }

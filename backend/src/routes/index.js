@@ -12,6 +12,7 @@ class RouteService {
     init() {
         this.test()
         this.schedulingRouter.init()
+        this.registerRouter.init()
     }
 
     test() {

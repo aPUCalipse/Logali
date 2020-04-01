@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './Components/css/App.css';
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 
@@ -19,21 +18,21 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <form form id="loginUser" name="LoginUser" enctype="multipart/form-data" class="col-md-8 form-control-feedback">
+        <form id="loginUser" name="LoginUser" encType="multipart/form-data" className="col-md-8 form-control-feedback">
 
-          <h1 class="heading-cadastro">Login</h1>
+          <h1 className="heading-cadastro">Login</h1>
 
-          <div class="form-row">
-            <div class="form-group col-md-6">
-              <label for="email">Usuário: </label>
-              <input type="text" name="user" class="form-control" id="userInput" placeholder="Digite seu Usuário" required="required" />
+          <div className="form-row">
+            <div className="form-group col-md-6">
+              <label htmlFor="email">Usuário: </label>
+              <input type="text" name="user" className="form-control" id="userInput" placeholder="Digite seu Usuário" required="required" />
             </div>
           </div>
 
-          <div class="form-row">
-            <div class="form-group col-md-6">
-              <label for="senha">Senha: </label>
-              <input type="password" name="senha" class="form-control" id="senhaInput" placeholder="Digite sua senha" required="required" />
+          <div className="form-row">
+            <div className="form-group col-md-6">
+              <label htmlFor="senha">Senha: </label>
+              <input type="password" name="senha" className="form-control" id="senhaInput" placeholder="Digite sua senha" required="required" />
             </div>
           </div>
         </form>

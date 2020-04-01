@@ -5,31 +5,26 @@ class Register {
         this.dbPool = dbPool
     }
 
-    async create(nome,login, senha, tipoUsuario, estado, cidade ,bairro, rua, cep, numero, complemento) {
+    async create(nome,login, senha, tipoUsuario, estado, cidade ,bairro, rua, cep, numero, InseridoEm) {
         try {
-            var address_id = null
-            if(tipoUsuario == 'cliente'){
+            var address_id = 1
+            if(tipoUsuario === 'cliente'){
                 const qryAddress =
                 `INSERT INTO logali.address ` +
-                `(Estado, Cidade, Bairro, Rua, CEP, Numero, Complemento, CreatedAt) VALUES ` +
+                `(state, city, neighborhood, street, zipCode, number, CreatedAt) VALUES ` +
                 `(
                 '${estado}', 
                 '${cidade}', 
                 '${bairro}', 
                 '${rua}', 
-                '${cep}',
+                ${cep},
                 ${numero},
-                '${complemento}',
-                '${dateTime.format("YYYY-MM-DD HH:mm:ss")}'
+                '${InseridoEm}'
             )`
             const addressResp = await this.dbPool.query(qryAddress)
             
-            const qrySelAddress = 
-            `SELECT MAX(id) `+
-            `FROM logali.address`
+            address_id = addressResp.insertId;
 
-            const idresp = await this.dbPool.query(qrySelAddress)
-            address_id = idresp.pop()
         }
             
             const query =
@@ -39,7 +34,7 @@ class Register {
                 '${nome}', 
                 '${login}', 
                 '${senha}', 
-                '${dateTime.format("YYYY-MM-DD HH:mm:ss")}', 
+                '${InseridoEm}', 
                 ${address_id}
             )`
 
@@ -65,4 +60,4 @@ class Register {
     }
 }
 
-module.exports = Scheduling
+module.exports = Register

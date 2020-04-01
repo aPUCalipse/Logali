@@ -1,5 +1,5 @@
 const _ = require('lodash')
-const RegisterCtrl = require("../controllers/registerCrtl")
+const RegisterCtrl = require("../controllers/registerCtrl")
 const baseModuleRoute = "/register"
 
 class RegisterRouter {
@@ -15,12 +15,12 @@ class RegisterRouter {
     }
 
     init() {
-        this.app.post(`${this.baseRoute}/create`, this.create.bind(this))
+        this.app.post(`${this.baseRoute}`, this.create.bind(this))
     }
 
     /**
      * @params
-     *  nome,login, senha, tipoUsuario, estado, cidade ,bairro, rua, cep, numero, complemento
+     *  nome,login, senha, tipoUsuario, estado, cidade ,bairro, rua, cep, numero
      */
     async create(req, res) {
         const response = _.clone(this.response)
@@ -38,8 +38,7 @@ class RegisterRouter {
                     req.body.bairro,
                     req.body.rua,
                     req.body.cep,
-                    req.body.numero,
-                    req.body.complemento
+                    req.body.numero
                 )
 
                 if (validatedParams && validatedParams.isValid) {
@@ -67,7 +66,7 @@ class RegisterRouter {
             }
         } catch (err) {
             console.log(err)
-            response.message = "Erro ao realizar cadastro"
+            response.message = "Erro ao realizar cadastro " + err
             res.status(500)
         } finally {
             res.send(response)
