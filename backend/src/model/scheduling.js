@@ -42,6 +42,50 @@ class Scheduling {
             throw new Error(`Erro na validação de agendamento -> ${err}`)
         }
     }
+
+    async update(id, typeSchedulingId, date, time, observation) {
+        try {
+            const query =
+                `UPDATE logali.scheduling ` +
+                `SET typeSchedulingId= '${typeSchedulingId}',` + 
+                `date = '${date}', ` +
+                `time = '${time}', ` +
+                `obeservation = '${observation}' ` +
+                `WHERE id = '${id}' `
+
+            const resp = await this.dbPool.query(query)
+            return resp
+        } catch (err) {
+            throw new Error(`Erro ao editar agendamento -> ${err}`)
+        }
+    }
+
+    async searchEnd(userId){
+        try {
+            const address_id =
+                `SELECT address_id FROM logali.user WHERE id = '${userId}' ` 
+
+            const query = `SELECT * FROM logali.address WHERE id = '${address_id}' `
+
+            const resp = await this.dbPool.query(query)
+            return resp
+        } catch (err) {
+            throw new Error(`Erro ao pesquisar endereço -> ${err}`)
+        }
+    }
+
+    async getId(id){
+        id=1
+        try {
+            const query = `SELECT * FROM logali.scheduling WHERE id = '${id}' `
+
+            const resp = await this.dbPool.query(query)
+            console.log(resp);
+            return resp
+        } catch (err) {
+            throw new Error(`Erro ao pesquisar agendamento -> ${err}`)
+        }
+    }
 }
 
 module.exports = Scheduling

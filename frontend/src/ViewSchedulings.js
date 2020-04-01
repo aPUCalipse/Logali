@@ -21,12 +21,12 @@ import Switch from '@material-ui/core/Switch';
 import DeleteIcon from '@material-ui/icons/Delete';
 import FilterListIcon from '@material-ui/icons/FilterList';
 
-function createData(Date,Service,  Time, Observation) {
-  return { Date, Service , Time, Observation};
+function createData(Date,Service,  Time, Status) {
+  return { Date, Service , Time, Status};
 }
 
 const rows = [
-  createData('31/03/2020', 'Teste', '12:20', '--'),
+  createData('31/03/2020', 'Teste', '12:20', 'Finalizado'),
 //   createData('Donut', 452, 25.0, 51, 4.9),
 //   createData('Eclair', 262, 16.0, 24, 6.0),
 //   createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
@@ -71,7 +71,7 @@ const headCells = [
   { id: 'Date', numeric: false, disablePadding: true, label: 'Data' },
   { id: 'Service', numeric: false, disablePadding: false, label: 'Serviço' },
   { id: 'Time', numeric: false, disablePadding: false, label: 'Hora' },
-  { id: 'Observation', numeric: false, disablePadding: false, label: 'Observação' }
+  { id: 'Status', numeric: false, disablePadding: false, label: 'Status' }
 ];
 
 function EnhancedTableHead(props) {
@@ -165,7 +165,7 @@ const EnhancedTableToolbar = (props) => {
     >
       {numSelected > 0 ? (
         <Typography className={classes.title} color="inherit" variant="subtitle1" component="div">
-          {numSelected} selected
+          {numSelected} Selecionado
         </Typography>
       ) : (
         <Typography className={classes.title} variant="h6" id="tableTitle" component="div">
@@ -331,7 +331,7 @@ export default function EnhancedTable() {
                       </TableCell>
                       <TableCell align="left">{row.Service}</TableCell>
                       <TableCell align="left">{row.Time}</TableCell>
-                      <TableCell align="left">{row.Observation}</TableCell>
+                      <TableCell align="left">{row.Status}</TableCell>
                     </TableRow>
                   );
                 })}

@@ -30,7 +30,7 @@ class SchedulingCtrl {
             validatedParams.isValid = false
             validatedParams.message = "O parametro tipo de agendamento está incorreto"
             validatedParams.statusCode = 400
-        } else if (!momentDateTime.isValid()) {
+         } else if (!momentDateTime.isValid()) {
             validatedParams.isValid = false
             validatedParams.message = "O parametro data está incorreto"
             validatedParams.statusCode = 400
@@ -66,6 +66,45 @@ class SchedulingCtrl {
             return response
         }
     }
+
+    async getId(scheduling) {
+        const response = {
+            insertId: null,
+            message: null,
+            statusCode: 500
+        }
+
+        try {
+                const createdSchedule = await this.scheduling.getId(scheduling.Id)
+                response.message = createdSchedule
+            }
+        catch (err) {
+            response.message = `Erro desconhecido ao pesquisar agendamento  -> ${err.toString()}`
+        } finally {
+            return response
+        }
+    }
+
+    async update(scheduling) {
+        const response = {
+            insertId: null,
+            message: null,
+            statusCode: 500
+        }
+
+        try {
+                const createdSchedule = await this.scheduling.create(scheduling.Id, scheduling.typeScheduling, scheduling.date,  scheduling.time, scheduling.observation)
+                response.insertId = createdSchedule.insertId
+                response.message = createdSchedule.message
+        }
+        catch (err) {
+            response.message = `Erro desconhecido ao criar agendamento  -> ${err.toString()}`
+        } finally {
+            return response
+        }
+    }
+
+    
 }
 
 module.exports = SchedulingCtrl
