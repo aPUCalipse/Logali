@@ -90,10 +90,10 @@ class Register extends Component {
                     <div className="form-row">
                         <div className="form-group col-md-6">
                             <label>
-                                <input type="radio" name="tipoCliente" id="clienteRadio" className="form-check-input" onClick={this.showAddres} /> Cliente
+                                <input type="radio" name="tipoCliente" id="clienteRadio" className="form-check-input" onClick={() => this.showAddres()} /> Cliente
                     </label>
                             <label>
-                                <input type="radio" name="tipoCliente" id="prestadorRadio" className="form-check-input" onClick={this.hideAddress} /> Prestador de serviços
+                                <input type="radio" name="tipoCliente" id="prestadorRadio" className="form-check-input" onClick={() => this.hideAddress()} /> Prestador de serviços
                     </label>
                         </div>
                     </div>
@@ -102,7 +102,7 @@ class Register extends Component {
                         <div className="form-row">
                             <div className="form-group col-md-6">
                                 <label htmlFor="state">Estado: </label>
-                                <select name="estado" placeholder="Estado" id="inputEstado" value={this.state.estadoOption} onChange={this.handleEstadoChange}>
+                                <select name="estado" placeholder="Estado" id="inputEstado" value={this.state.estadoOption} onChange={this.setState({estadoOption: Sele.value})}>
                                     <option value="" disabled defaultValue hidden>Estado</option>
                                     <option value="AC" >Acre</option>
                                     <option value="AL">Alagoas</option>
