@@ -7,9 +7,10 @@ class Register extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            selectedOption: "cliente",
+            selectedOption: "prestador",
             estadoOption: 'Estado'
         };
+        
     }
 
     hideAddress() {
@@ -26,29 +27,30 @@ class Register extends Component {
           });
     }
 
-    handleEstadoChange(event){
-        this.setState({
+    handleEstadoChange = (event) => {
+        let self = this;
+        self.setState({
             estadoOption: event.target.value
         });
     }
 
     handleRegister = async () => {
         if ((document.getElementById('senhaRInput').value === document.getElementById('confirmaInput').value)) {
-            if (document.getElementById('prestadorRadio').checked || document.getElementById('prestadorRadio'.checked)) {
+ //           if (document.getElementById('prestadorRadio').checked || document.getElementById('prestadorRadio'.checked)) {
                 const response = await api.post('/logali/app/register', {
                     nome: document.getElementById('nameInput').value, senha: document.getElementById('senhaRInput').value, login: document.getElementById('userRInput').value,
                     tipoUsuario: this.state.selectedOption, rua: document.getElementById('ruaInput').value, numero: document.getElementById('numberInput').value,
                     bairro: document.getElementById('bairroInput').value, cidade: document.getElementById('cidadeInput').value, estado: this.state.estadoOption,
                     cep: document.getElementById('cepInput').value
                 });
-                const body = await response.json();
+               console.log(await response.json());
                 if (response.status !== 200) throw Error(body.message);
                 alert("Usuário Cadastrado com sucesso");
                 //           return body;
-            }
-            else {
-                alert("Favor definir o tipo de usuário");
-            }
+ //           }
+ //           else {
+ //               alert("Favor definir o tipo de usuário");
+ //           }
         }
         else {
             alert("As Senhas não coincidem");
@@ -102,7 +104,7 @@ class Register extends Component {
                         <div className="form-row">
                             <div className="form-group col-md-6">
                                 <label htmlFor="state">Estado: </label>
-                                <select name="estado" placeholder="Estado" id="inputEstado" value={this.state.estadoOption} onChange={this.setState({estadoOption: Sele.value})}>
+                                <select name="estado" placeholder="Estado" id="inputEstado" value={this.state.estadoOption} onChange={this.handleEstadoChange}>
                                     <option value="" disabled defaultValue hidden>Estado</option>
                                     <option value="AC" >Acre</option>
                                     <option value="AL">Alagoas</option>
