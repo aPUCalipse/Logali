@@ -84,7 +84,23 @@ class SchedulingCtrl {
             return response
         }
     }
+    async searchEnd(scheduling) {
+        const response = {
+            insertId: null,
+            message: null,
+            statusCode: 500
+        }
 
+        try {
+                const createdSchedule = await this.scheduling.searchEnd(scheduling.userId)
+                response.message = createdSchedule
+            }
+        catch (err) {
+            response.message = `Erro desconhecido ao pesquisar endereço  -> ${err.toString()}`
+        } finally {
+            return response
+        }
+    }
     async update(scheduling) {
         const response = {
             insertId: null,
@@ -93,7 +109,9 @@ class SchedulingCtrl {
         }
 
         try {
-                const createdSchedule = await this.scheduling.create(scheduling.Id, scheduling.typeScheduling, scheduling.date,  scheduling.time, scheduling.observation)
+            console.log("ola")    
+            const createdSchedule = await this.scheduling.update(scheduling.Id, scheduling.typeScheduling, scheduling.date,  scheduling.time, scheduling.observation)
+                console.log("passei aqui");
                 response.insertId = createdSchedule.insertId
                 response.message = createdSchedule.message
         }
