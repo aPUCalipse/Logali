@@ -1,6 +1,6 @@
 //react e bootstrap
 import React from 'react'
-import {Container, Row, Col, Button} from 'react-bootstrap'
+import {Container, Row, Col} from 'react-bootstrap'
 
 //componentes 
 import Header from '../../Components/Header/Header'
@@ -12,6 +12,12 @@ import mountain from '../../Images/mountain.jpg'
 
 //stylesheet
 import style from './HomePage.module.css'
+
+//testando módulo de cep
+import cep from 'cep-promise'
+
+cep('05010000')
+  .then(console.log)
 
 function HomePage(){
     return(

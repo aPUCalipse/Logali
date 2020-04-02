@@ -42,6 +42,21 @@ class Scheduling {
             throw new Error(`Erro na validação de agendamento -> ${err}`)
         }
     }
+
+    async selectSchedulesFromUser(userId){
+        try {
+            const query =
+                `SELECT * ` +
+                `FROM logali.scheduling ` +
+                `WHERE 1=1 ` +
+                `AND userId = '${userId}'`
+
+            const resp = await this.dbPool.query(query)
+            resp
+        } catch (err) {
+            throw new Error(`Erro ao selecionar agendamentos -> ${err}`)
+        }
+    }
 }
 
 module.exports = Scheduling
