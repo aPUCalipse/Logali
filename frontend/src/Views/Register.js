@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import '../Components/css/App.css';
+//import '../Components/css/App.css';
 import api from '../Components/Assets/api';
 
 class Register extends Component {
