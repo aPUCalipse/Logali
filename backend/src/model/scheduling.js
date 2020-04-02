@@ -42,6 +42,63 @@ class Scheduling {
             throw new Error(`Erro na validação de agendamento -> ${err}`)
         }
     }
+
+    async update(id, typeSchedulingId, date, time, observation) {
+        id='1'
+        try {
+            const query =
+                `UPDATE logali.scheduling ` +
+                `SET typeSchedulingId= '${typeSchedulingId}',` + 
+                `date = '${date}', ` +
+                `time = '${time}', ` +
+                `observation = '${observation}' ` +
+                `WHERE id = '${id}' `
+            console.log(query);
+            const resp = await this.dbPool.query(query)
+            console.log(resp)
+            return resp
+        } catch (err) {
+            throw new Error(`Erro ao editar agendamento -> ${err}`)
+        }
+    }
+
+    async searchEnd(userId){
+        try {
+            userId = '1';
+            const address_idQuery =
+                `SELECT * FROM logali.user WHERE id = '${userId}' ` 
+            const resposte = await this.dbPool.query(address_idQuery)
+            const teste = resposte.address_id
+            console.log(resposte)
+            const query = `SELECT * FROM logali.address WHERE id = '${teste}' `
+            console.log(query);
+            const resp = await this.dbPool.query(query)
+            console.log(resp);
+            return resp
+        } catch (err) {
+            throw new Error(`Erro ao pesquisar endereço -> ${err}`)
+        }
+    }
+
+    async getId(id){
+        id=0
+        try {
+            const query = `SELECT * FROM logali.scheduling WHERE id = '${id}' `
+            const typeSchedulingId = query.typeSchedulingId
+           
+          
+            const resp = await this.dbPool.query(query);
+            
+            const typeSchedulingQuery = `SELECT name FROM logali.typescheduling WHERE id = '${resp.typeSchedulingId}' `
+            const typeScheduling = await this.dbPool.query(typeSchedulingQuery);
+            resp.typeSchedulingId = typeScheduling;
+            console.log(resp.RowDataPacket);
+           
+            return resp
+        } catch (err) {
+            throw new Error(`Erro ao pesquisar agendamento -> ${err}`)
+        }
+    }
 }
 
 module.exports = Scheduling
