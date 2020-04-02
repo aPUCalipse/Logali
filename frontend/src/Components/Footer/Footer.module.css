@@ -1,0 +1,17 @@
+.Footer_Container{
+    margin-top: auto;
+    background-color: #20837e;
+    width: 100%;
+    opacity: 0.7;
+    height: 64px;
+    position: absolute;
+    bottom: 0;
+}
+
+.Footer_Copyright{
+    color: white;
+    font-size: 12px;
+    text-align: right;
+    font-family: Arial, Helvetica, sans-serif;
+    
+}

@@ -19,6 +19,7 @@ class SchedulingRouter {
         this.app.put(`${this.baseRoute}/update`, this.update.bind(this));
         this.app.get(`${this.baseRoute}/getId`, this.getId.bind(this));
         this.app.get(`${this.baseRoute}/searchEnd`, this.searchEnd.bind(this));
+        this.app.post(`${this.baseRoute}/selectSchedulesFromUser`, this.create.bind(this))
     }
 
     /**
@@ -128,6 +129,32 @@ class SchedulingRouter {
             res.status(500)
         } finally {
             console.log(response);
+            res.send(response)
+        }
+    }
+
+    async selectSchedulesFromUser(req, res) {
+        const response = _.clone(this.response)
+        try {
+            const schedulingCtrl = new SchedulingCtrl(this.dbPool)
+
+            if (!_.isEmpty(req.body)) {
+              
+                const resp = await schedulingCtrl.select(req.body)
+                response.message = "Seleção realizada com sucesso"
+                response.data = req.body
+                res.status(200)
+                  
+            } else {
+                response.message = "Os parametros não foram enviados"
+                response.data = req.body
+                res.status(200)
+            }
+        } catch (err) {
+            console.log(err)
+            response.message = "Erro ao realizar seleção"
+            res.status(500)
+        } finally {
             res.send(response)
         }
     }

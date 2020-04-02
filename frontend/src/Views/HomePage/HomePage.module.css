@@ -1,0 +1,22 @@
+body{
+    height: 100%;
+    width: 100%;
+}
+
+.HomePage_Container{
+    margin-top: 0px;
+    max-height: 100%;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.HomePage_Background_Image{
+    height: 100%;
+    width: 100%;
+}
+
+@media(max-width: 500px){
+    .Background_Image{
+        display: none;
+    }
+}
