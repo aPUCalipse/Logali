@@ -1,19 +1,24 @@
 import React, { Component } from 'react';
 //import '../Components/css/App.css';
-import {Link} from "react-router-dom";
 import api from '../Components/Assets/api';
 
 class Login extends Component {
 
-  // const api
-  // function handleLogin(){
-  //   if (document.getElementById('userInput').Value != '' && document.getElementById('senhaInput').Value != '') {
-  //     const response = api.post('/Login', {user: document.getElementById('userInput').Value, senha: document.getElementById('senhaInput').Value});
-  //      if (response.data == "1") {
-  //          alert('', 'Logado com sucesso!');
-  //      }
-  //    }
-  //  }
+  handleLogin = async () => {
+    const response = await api.post('/logali/app/login', {
+      usuario: document.getElementById('userInput').value , senha : document.getElementById('senhaInput').value
+    });
+    if (response.status !== 200) {
+      throw Error(body.message)
+      // Adicionar rota pra pagina de perfil;
+
+    }
+    else {
+      alert('Erro no login' + response.Error);
+    }
+  
+  }
+
   render() {
     return (
       <div className="App">
@@ -35,9 +40,9 @@ class Login extends Component {
             </div>
           </div>
         </form>
-        <button > Entrar</button>
+        <button onClick={this.handleLogin}> Entrar</button>
         <br/>
-        <Link to="/register" className="btn">Não tem uma conta? Cadastre-se!</Link>
+     { /*  <Link to="/register" className="btn">Não tem uma conta? Cadastre-se!</Link> */  }
       </div>
     );
   }

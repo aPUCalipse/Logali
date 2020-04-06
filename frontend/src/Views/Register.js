@@ -43,9 +43,11 @@ class Register extends Component {
                     bairro: document.getElementById('bairroInput').value, cidade: document.getElementById('cidadeInput').value, estado: this.state.estadoOption,
                     cep: document.getElementById('cepInput').value
                 });
-               console.log(await response.json());
-                if (response.status !== 200) throw Error(body.message);
-                alert("Usuário Cadastrado com sucesso");
+     //          console.log(await response.json());
+                if (response.status !== 200) {
+                    throw Error(body.message);
+                    alert("Usuário Cadastrado com sucesso");
+                }
                 //           return body;
  //           }
  //           else {
