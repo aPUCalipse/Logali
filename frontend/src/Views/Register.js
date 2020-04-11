@@ -45,7 +45,7 @@ class Register extends Component {
                 });
      //          console.log(await response.json());
                 if (response.status !== 200) {
-                    throw Error(body.message);
+                    throw Error(response.body.message);
                     alert("Usuário Cadastrado com sucesso");
                 }
                 //           return body;

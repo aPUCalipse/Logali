@@ -9,7 +9,7 @@ class Login extends Component {
       usuario: document.getElementById('userInput').value , senha : document.getElementById('senhaInput').value
     });
     if (response.status !== 200) {
-      throw Error(body.message)
+      throw Error(response.body.message)
       // Adicionar rota pra pagina de perfil;
 
     }
