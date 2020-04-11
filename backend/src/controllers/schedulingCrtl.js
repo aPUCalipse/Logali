@@ -30,7 +30,7 @@ class SchedulingCtrl {
             validatedParams.isValid = false
             validatedParams.message = "O parametro tipo de agendamento está incorreto"
             validatedParams.statusCode = 400
-        } else if (!momentDateTime.isValid()) {
+         } else if (!momentDateTime.isValid()) {
             validatedParams.isValid = false
             validatedParams.message = "O parametro data está incorreto"
             validatedParams.statusCode = 400
@@ -67,23 +67,62 @@ class SchedulingCtrl {
         }
     }
 
-    async selectSchedulesFromUser(userId) {
+    async getId(scheduling) {
         const response = {
             insertId: null,
             message: null,
             statusCode: 500
         }
+
         try {
-                const createdSchedule = await this.scheduling.selectSchedulesFromUser(userId)
+                const createdSchedule = await this.scheduling.getId(scheduling.Id)
                 response.message = createdSchedule
-                response.statusCode = 200
             }
         catch (err) {
-            response.message = `Erro desconhecido ao pesquisar agendamentos  -> ${err.toString()}`
+            response.message = `Erro desconhecido ao pesquisar agendamento  -> ${err.toString()}`
         } finally {
             return response
         }
     }
+    async searchEnd(scheduling) {
+        const response = {
+            insertId: null,
+            message: null,
+            statusCode: 500
+        }
+
+        try {
+                const createdSchedule = await this.scheduling.searchEnd(scheduling.userId)
+                response.message = createdSchedule
+            }
+        catch (err) {
+            response.message = `Erro desconhecido ao pesquisar endereço  -> ${err.toString()}`
+        } finally {
+            return response
+        }
+    }
+    async update(scheduling) {
+        const response = {
+            insertId: null,
+            message: null,
+            statusCode: 500
+        }
+
+        try {
+            console.log("ola")    
+            const createdSchedule = await this.scheduling.update(scheduling.Id, scheduling.typeScheduling, scheduling.date,  scheduling.time, scheduling.observation)
+                console.log("passei aqui");
+                response.insertId = createdSchedule.insertId
+                response.message = createdSchedule.message
+        }
+        catch (err) {
+            response.message = `Erro desconhecido ao criar agendamento  -> ${err.toString()}`
+        } finally {
+            return response
+        }
+    }
+
+    
 }
 
 module.exports = SchedulingCtrl

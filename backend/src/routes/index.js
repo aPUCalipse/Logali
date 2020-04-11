@@ -1,15 +1,18 @@
 const SchedulingRouter = require('./scheduling')
+const RegisterRouter = require('./register')
 const appBaseRoute = "/logali/app"
 
 class RouteService {
     constructor(expressInstance, dbPool) {
         this.app = expressInstance
         this.schedulingRouter = new SchedulingRouter(this.app, appBaseRoute, dbPool)
+        this.registerRouter = new RegisterRouter(this.app,appBaseRoute,dbPool)
     }
 
     init() {
         this.test()
         this.schedulingRouter.init()
+        this.registerRouter.init()
     }
 
     test() {

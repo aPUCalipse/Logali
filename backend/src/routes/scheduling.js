@@ -15,8 +15,12 @@ class SchedulingRouter {
     }
 
     init() {
-        this.app.post(`${this.baseRoute}/create`, this.create.bind(this))
+        this.app.post(`${this.baseRoute}/create`, this.create.bind(this));
+        this.app.put(`${this.baseRoute}/update`, this.update.bind(this));
+        this.app.get(`${this.baseRoute}/getId`, this.getId.bind(this));
+        this.app.get(`${this.baseRoute}/searchEnd`, this.searchEnd.bind(this));
         this.app.post(`${this.baseRoute}/selectSchedulesFromUser`, this.create.bind(this))
+        this.app.post(`${this.baseRoute}/delete`, this.delete.bind(this))
     }
 
     /**
@@ -57,13 +61,75 @@ class SchedulingRouter {
             } else {
                 response.message = "Os parametros não foram enviados"
                 response.data = req.body
-                res.status(200)
+                res.status(400)
             }
         } catch (err) {
             console.log(err)
             response.message = "Erro ao realizar cadastro"
             res.status(500)
         } finally {
+            res.send(response)
+        }
+    }
+
+    async update(req, res) {
+        const response = _.clone(this.response)
+        try {
+            const schedulingCtrl = new SchedulingCtrl(this.dbPool)
+
+            if (!_.isEmpty(req.body)) {
+              
+                const resp = await schedulingCtrl.update(req.body)
+                response.message = resp.message
+                response.data = resp
+                res.status(200)
+                  
+            } else {
+                response.message = "Os parametros não foram enviados"
+                response.data = req.body
+                res.status(200)
+            }
+        } catch (err) {
+            console.log(err)
+            response.message = "Erro ao realizar edição"
+            res.status(500)
+        } finally {
+            res.send(response)
+        }
+    }
+
+    async getId(req, res) {
+        const response = _.clone(this.response)
+        try {
+            const schedulingCtrl = new SchedulingCtrl(this.dbPool)
+                const resp = await schedulingCtrl.getId(req.body)
+                response.data = resp.message
+                res.status(200)
+                  
+        } catch (err) {
+            console.log(err)
+            response.message = "Erro ao realizar pesquisa"
+            res.status(500)
+        } finally {
+            console.log(response);
+            res.send(response)
+        }
+    }
+
+    async searchEnd(req, res) {
+        const response = _.clone(this.response)
+        try {
+            const schedulingCtrl = new SchedulingCtrl(this.dbPool)
+                const resp = await schedulingCtrl.searchEnd(req.body)
+                response.data = resp.message
+                res.status(200)
+                  
+        } catch (err) {
+            console.log(err)
+            response.message = "Erro ao realizar pesquisa"
+            res.status(500)
+        } finally {
+            console.log(response);
             res.send(response)
         }
     }
@@ -91,6 +157,37 @@ class SchedulingRouter {
             res.status(500)
         } finally {
             res.send(response)
+        }
+    }
+
+    async delete(req, res) {
+        const response = _.clone(this.response)
+        try {
+            const cancelScheduling = new cancelScheduling(this.dbPool)
+
+            if (!_.isEmpty(req.body)) {
+                const validatedParams = schedulingCtrl.valitadeParamsCreate(
+                    req.body.userId
+                )
+
+                if (resp && resp.deleteId) {
+                    response.message = "Agendamento cancelado com sucesso"
+                    response.data = validatedParams.data
+                    response.data.idScheduling = resp.deleteId
+                    res.status(200)
+                }
+                else {
+                    response.message = "Os parametros não foram enviados"
+                    response.data = req.body
+                    res.status(200)
+                }
+            }
+        } catch (err) {
+            console.log(err)
+            response.message = "Erro ao realizar o cancelamento"
+            res.status(500)
+        } finally {
+
         }
     }
 }
