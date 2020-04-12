@@ -101,6 +101,25 @@ class SchedulingCtrl {
             return response
         }
     }
+
+    async selectSchedulesFromUser(userId) {
+        const response = {
+            insertId: null,
+            message: null,
+            statusCode: 500
+        }
+        try {
+                const createdSchedule = await this.scheduling.selectSchedulesFromUser(userId)
+                response.message = createdSchedule
+                response.statusCode = 200
+            }
+        catch (err) {
+            response.message = `Erro desconhecido ao pesquisar agendamentos  -> ${err.toString()}`
+        } finally {
+            return response
+        }
+    }
+
     async update(scheduling) {
         const response = {
             insertId: null,
