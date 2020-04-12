@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import create from '../Components/Routes/scheduling.js';
+import create from '../../Components/Routes/scheduling';
 import EnhancedTable from './ViewSchedulings';
 import EditScheduling from './EditSchedulings';
 import Modal from "react-bootstrap/Modal";

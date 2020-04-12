@@ -1,4 +1,4 @@
-import React from "react";
+  import React from "react";
 import HomePage from '../Views/HomePage/HomePage'
 import SchedulePage from '../Views/SchedulePage/SchedulePage'
 import Cadastro from '../Views/Register'
