@@ -67,23 +67,31 @@ class SchedulingCtrl {
         }
     }
 
-    async getId(scheduling) {
+    async getId(id) {
         const response = {
-            insertId: null,
             message: null,
+            scheduling: {},
             statusCode: 500
         }
 
         try {
-                const createdSchedule = await this.scheduling.getId(scheduling.Id)
-                response.message = createdSchedule
+            const scheduling = await this.scheduling.getId(id)
+            if(scheduling && typeof scheduling !== undefined){
+                response.scheduling = scheduling
+                response.statusCode = 200
+            } else {
+                response.statusCode = 404
+                response.message = `Erro desconhecido ao pesquisar agendamento  -> Agendamento de id ${id} não encontrado em nossa base`
             }
+        }
         catch (err) {
             response.message = `Erro desconhecido ao pesquisar agendamento  -> ${err.toString()}`
         } finally {
             return response
         }
     }
+
+    
     async searchEnd(scheduling) {
         const response = {
             insertId: null,
