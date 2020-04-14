@@ -5,34 +5,36 @@ class Register {
         this.dbPool = dbPool
     }
 
-    async create(nome,login, senha, tipoUsuario, estado, cidade ,bairro, rua, cep, numero, InseridoEm) {
+    async create(nome,login, senha, tipoUsuario, estado, cidade ,bairro, rua, cep, numero, complemento , geolocX, geolocY ,InseridoEm) {
         try {
-            var address_id = 1
-            if(tipoUsuario === 'cliente'){
+            var address_id = 1;
+            if(tipoUsuario === 1){
                 const qryAddress =
                 `INSERT INTO logali.address ` +
-                `(state, city, neighborhood, street, zipCode, number, CreatedAt) VALUES ` +
+                `(geoLocX, geoLocY, state, city, neighborhood, street, zipCode, number, complement ,createdAt) VALUES ` +
                 `(
+                ${geolocX},
+                ${geolocY},
                 '${estado}', 
                 '${cidade}', 
                 '${bairro}', 
                 '${rua}', 
                 ${cep},
                 ${numero},
+                '${complemento}',
                 '${InseridoEm}'
             )`
-            const addressResp = await this.dbPool.query(qryAddress)
+                const addressResp = await this.dbPool.query(qryAddress)
             
-            address_id = addressResp.insertId;
-
-        }
-            
+                address_id = addressResp.insertId;
+            }
             const query =
                 `INSERT INTO logali.user ` +
-                `(name,login, password, createdAt, address_id) VALUES ` +
+                `(name, login, typeUserId,password, createdAt, addressId) VALUES ` +
                 `(
                 '${nome}', 
-                '${login}', 
+                '${login}',
+                ${tipoUsuario},
                 '${senha}', 
                 '${InseridoEm}', 
                 ${address_id}
@@ -45,12 +47,13 @@ class Register {
         }
     }
 
-    async hasSameLogin(login) {
+    async hasSameLogin(login, tipoUsuario) {
         try {
             const query =
                 `SELECT login ` +
                 `FROM logali.user ` +
-                `WHERE login = '${login}' `
+                `WHERE login = '${login}' ` +
+                `AND typeUserId = ${tipoUsuario}`
             
                 const resp = await this.dbPool.query(query)
             return resp.pop()

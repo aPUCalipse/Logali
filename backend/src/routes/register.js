@@ -15,12 +15,12 @@ class RegisterRouter {
     }
 
     init() {
-        this.app.post(`${this.baseRoute}`, this.create.bind(this))
+        this.app.post(`${this.baseRoute}/create`, this.create.bind(this))
     }
 
     /**
      * @params
-     *  nome,login, senha, tipoUsuario, estado, cidade ,bairro, rua, cep, numero
+     *  nome,login, senha, tipoUsuario, estado, cidade ,bairro, rua, cep, numero, complemento ,geolocX, geolocY
      */
     async create(req, res) {
         const response = _.clone(this.response)
@@ -38,7 +38,10 @@ class RegisterRouter {
                     req.body.bairro,
                     req.body.rua,
                     req.body.cep,
-                    req.body.numero
+                    req.body.numero,
+                    req.body.complemento,
+                    req.body.geolocX,
+                    req.body.geolocY
                 )
 
                 if (validatedParams && validatedParams.isValid) {

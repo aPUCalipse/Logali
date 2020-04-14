@@ -1,7 +1,7 @@
   import React from "react";
 import HomePage from '../Views/HomePage/HomePage'
 import SchedulePage from '../Views/SchedulePage/SchedulePage'
-import Cadastro from '../Views/Register'
+import Cadastro from '../Views/RegisterPage/Register'
 import Login from '../Views/Login'
 
 const router = {
