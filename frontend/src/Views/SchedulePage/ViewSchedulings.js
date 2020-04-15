@@ -20,6 +20,8 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 import DeleteIcon from '@material-ui/icons/Delete';
 import FilterListIcon from '@material-ui/icons/FilterList';
+import axios from 'axios';
+import React, { useState, useEffect } from 'react';
 
 function createData(Date,Service,  Time, Status) {
   return { Date, Service , Time, Status};
@@ -156,6 +158,60 @@ const useToolbarStyles = makeStyles((theme) => ({
 const EnhancedTableToolbar = (props) => {
   const classes = useToolbarStyles();
   const { numSelected } = props;
+  const [count, setCount] = useState('0');
+  const [setValidateType] = React.useState(false);
+  const [userId] = useState('1');
+
+
+  let axiosConfigDelete = {
+    headers: {
+      'Content-Type': 'application/json;charset=UTF-8',
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods" : "DELETE"
+    }
+  };
+
+  useEffect(() => {
+    if(count == 0){
+      handleDeleteScheduling();
+      setCount(count+1);
+      console.log(count);
+    }
+    console.log(count);
+  })
+
+  function handleClickValidate(event) {
+    if(userId == 0){
+      if(userId == 0)
+        setValidateType(true)
+      else
+        setValidateType(false)
+    }else{
+      handleDeleteScheduling();
+      setValidateType(false);
+    }
+  };
+
+  async function handleDeleteScheduling() {
+
+    const response = await axios.delete('http://localhost:8000/logali/app/scheduling/delete', "1",
+    axiosConfigDelete)
+      .then(function (response) {
+        console.log(response);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+
+      console.log(response);
+      alert(response);
+      alert("Agendamento Deletado com Sucesso");
+    };
+
+
+
+
+
 
   return (
     <Toolbar
@@ -175,7 +231,7 @@ const EnhancedTableToolbar = (props) => {
 
       {numSelected > 0 ? (
         <Tooltip title="Delete">
-          <IconButton aria-label="delete">
+          <IconButton aria-label="delete" onClick={(event) => handleClickValidate(this)}>>
             <DeleteIcon />
           </IconButton>
         </Tooltip>

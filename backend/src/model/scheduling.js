@@ -26,9 +26,12 @@ class Scheduling {
         }
     }
 
-    async delete(userId){
+    async delete(iD){
         try{
-            const query =  `DELETE FROM logali.scheduling WHERE userId = ${userId}`
+            const query =  `DELETE scheduling ` +
+            `FROM logali.scheduling ` +
+            `WHERE user.iD = userID` +
+            `AND sheduling.iD = ${iD}`
             
             const resp = await this.dbPool.query(query)
             return resp

@@ -20,7 +20,7 @@ class SchedulingRouter {
         this.app.get(`${this.baseRoute}/getId`, this.getId.bind(this));
         this.app.get(`${this.baseRoute}/searchEnd`, this.searchEnd.bind(this));
         this.app.post(`${this.baseRoute}/selectSchedulesFromUser`, this.create.bind(this))
-        this.app.post(`${this.baseRoute}/delete`, this.delete.bind(this))
+        this.app.delete(`${this.baseRoute}/delete`, this.delete.bind(this))
     }
 
     /**
@@ -163,15 +163,16 @@ class SchedulingRouter {
     async delete(req, res) {
         const response = _.clone(this.response)
         try {
-            const cancelScheduling = new cancelScheduling(this.dbPool)
+            const SchedulingCtrl = new SchedulingCtrl(this.dbPool)
 
             if (!_.isEmpty(req.body)) {
+                const resp = await schedulingCtrl.delete(req.body)
                 const validatedParams = schedulingCtrl.valitadeParamsCreate(
                     req.body.userId
                 )
 
                 if (resp && resp.deleteId) {
-                    response.message = "Agendamento cancelado com sucesso"
+                    response.message = "Agendamento deletado com sucesso"
                     response.data = validatedParams.data
                     response.data.idScheduling = resp.deleteId
                     res.status(200)
@@ -179,15 +180,21 @@ class SchedulingRouter {
                 else {
                     response.message = "Os parametros não foram enviados"
                     response.data = req.body
-                    res.status(200)
+                    res.status(500)
                 }
+            }else{
+                response.message = "Usuário não encontrado"
+                    response.data = req.body
+                    res.status(400)
             }
         } catch (err) {
             console.log(err)
             response.message = "Erro ao realizar o cancelamento"
             res.status(500)
-        } finally {
-
+        }
+         finally {
+            console.log(response);
+            res.send(response)
         }
     }
 }
