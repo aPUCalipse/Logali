@@ -146,14 +146,12 @@ class SchedulingCtrl {
         }
 
         try {
-            console.log("ola")
-            const createdSchedule = await this.scheduling.update(scheduling.Id, scheduling.typeScheduling, scheduling.date, scheduling.time, scheduling.observation)
-            console.log("passei aqui");
-            response.insertId = createdSchedule.insertId
-            response.message = createdSchedule.message
+            const updatedSchedule = await this.scheduling.update(scheduling.Id, scheduling.typeScheduling, scheduling.date, scheduling.time, scheduling.observation)
+            response.insertId = updatedSchedule.insertId
+            response.message = updatedchedule.message
         }
         catch (err) {
-            response.message = `Erro desconhecido ao criar agendamento  -> ${err.toString()}`
+            response.message = `Erro desconhecido ao atualizar agendamento  -> ${err.toString()}`
         } finally {
             return response
         }

@@ -31,7 +31,7 @@ class Scheduling {
             const query =  `DELETE scheduling ` +
             `FROM logali.scheduling ` +
             `WHERE user.iD = userID` +
-            `AND sheduling.iD = ${iD}`
+            `AND sheduling.iD = '${iD}' `
             
             const resp = await this.dbPool.query(query)
             return resp
@@ -58,7 +58,7 @@ class Scheduling {
     }
 
     async update(id, typeSchedulingId, date, time, observation) {
-        id='1'
+        
         try {
             const query =
                 `UPDATE logali.scheduling ` +
@@ -68,11 +68,23 @@ class Scheduling {
                 `observation = '${observation}' ` +
                 `WHERE id = '${id}' `
             console.log(query);
-            const resp = await this.dbPool.query(query)
-            console.log(resp)
-            return resp
+
+            const queryVerification =
+                `SELECT workerId ` +
+                `FROM logali.scheduling` +
+                `WHERE id = '${id}' `
+            console.log(queryVerification);
+
+            if(workerId != null || id != 0){
+                
+                const resp = await this.dbPool.query(query)
+                console.log(resp)
+                return resp
+            }else{
+                return new Error(`Agendamento já aceito -> ${err}`)
+            }
         } catch (err) {
-            throw new Error(`Erro ao editar agendamento -> ${err}`)
+            throw new Error(`Erro ao atualizar agendamento -> ${err}`)
         }
     }
 

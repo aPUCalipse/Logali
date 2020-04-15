@@ -87,7 +87,7 @@ class SchedulingRouter {
             } else {
                 response.message = "Os parametros não foram enviados"
                 response.data = req.body
-                res.status(200)
+                res.status(400)
             }
         } catch (err) {
             console.log(err)
