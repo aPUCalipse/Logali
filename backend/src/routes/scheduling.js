@@ -19,8 +19,8 @@ class SchedulingRouter {
         this.app.put(`${this.baseRoute}/update`, this.update.bind(this));
         this.app.get(`${this.baseRoute}/getId`, this.getId.bind(this));
         this.app.get(`${this.baseRoute}/searchEnd`, this.searchEnd.bind(this));
-        this.app.post(`${this.baseRoute}/selectSchedulesFromUser`, this.create.bind(this))
-        this.app.delete(`${this.baseRoute}/delete`, this.delete.bind(this))
+        this.app.post(`${this.baseRoute}/selectSchedulesFromUser`, this.create.bind(this));
+        this.app.delete(`${this.baseRoute}/delete`, this.delete.bind(this));
     }
 
     /**

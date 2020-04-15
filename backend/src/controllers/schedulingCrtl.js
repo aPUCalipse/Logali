@@ -69,7 +69,7 @@ class SchedulingCtrl {
 
     async delete(scheduling) {
         const response = {
-            insertId = null,
+            insertId: null,
             message: null,
             statusCode: 500
         }

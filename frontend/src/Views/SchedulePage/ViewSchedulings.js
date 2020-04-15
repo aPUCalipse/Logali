@@ -1,4 +1,3 @@
-import React from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { lighten, makeStyles } from '@material-ui/core/styles';
@@ -22,6 +21,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
+import Delete from '../../Components/Routes/scheduling';
 
 function createData(Date,Service,  Time, Status) {
   return { Date, Service , Time, Status};
@@ -159,7 +159,9 @@ const EnhancedTableToolbar = (props) => {
   const classes = useToolbarStyles();
   const { numSelected } = props;
   const [count, setCount] = useState('0');
-  const [setValidateType] = React.useState(false);
+  const [validateType, setValidateType] = React.useState(false);
+  const [typeScheduling, setTypeScheduling] = useState('');
+  const [end, setEnd] = useState('');
   const [userId] = useState('1');
 
 
@@ -171,14 +173,7 @@ const EnhancedTableToolbar = (props) => {
     }
   };
 
-  useEffect(() => {
-    if(count == 0){
-      handleDeleteScheduling();
-      setCount(count+1);
-      console.log(count);
-    }
-    console.log(count);
-  })
+  
 
   function handleClickValidate(event) {
     if(userId == 0){
@@ -204,7 +199,6 @@ const EnhancedTableToolbar = (props) => {
       });
 
       console.log(response);
-      alert(response);
       alert("Agendamento Deletado com Sucesso");
     };
 
@@ -231,7 +225,7 @@ const EnhancedTableToolbar = (props) => {
 
       {numSelected > 0 ? (
         <Tooltip title="Delete">
-          <IconButton aria-label="delete" onClick={(event) => handleClickValidate(this)}>>
+          <IconButton aria-label="delete" onClick={(event) => handleClickValidate(this)}>
             <DeleteIcon />
           </IconButton>
         </Tooltip>
