@@ -95,9 +95,7 @@ class SchedulingCtrl {
                 const responseIsValid = await this.scheduling.validateUserId(scheduling.userId) 
 
                 if(responseIsValid.isValid){  
-                    console.log(responseIsValid.user[0].addressId) 
                     const address = await this.scheduling.searchEnd(responseIsValid.user[0].addressId)
-                    console.log(address.lenght)
                     if(address != ''){
                         response.message = 'Endereço encontrado com sucesso'
                         response.data=address
@@ -138,17 +136,15 @@ class SchedulingCtrl {
 
     async update(scheduling) {
         const response = {
-            insertId: null,
             message: null,
             statusCode: 500
         }
 
-        try {
-            console.log("ola")    
+        try { 
             const createdSchedule = await this.scheduling.update(scheduling.id, scheduling.typeScheduling, scheduling.date,  scheduling.time, scheduling.observation)
-                console.log("passei aqui");
-                response.insertId = createdSchedule.insertId
-                response.message = createdSchedule.message
+               
+            response.statusCode = 200
+            response.message = 'Agenda editada com sucesso'
         }
         catch (err) {
             response.message = `Erro desconhecido ao criar agendamento  -> ${err.toString()}`
