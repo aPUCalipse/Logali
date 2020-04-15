@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300&display=swap');
+
 body{
     height: 100%;
     width: 100%;
@@ -8,11 +10,28 @@ body{
     max-height: 100%;
     flex-direction: column;
     min-height: 100vh;
+    background-image: url('../../Images/barbant.jpg');
+    background-size: 100%;
+    background-repeat: no-repeat;
 }
 
 .HomePage_Background_Image{
     height: 100%;
     width: 100%;
+}
+
+.Image_location_svg{
+    height: 90%;
+    width: 90%;
+    margin-left: 5%;
+}
+
+.Main_text_spotlight{
+    text-align: center;
+    margin-top: 30%;
+    margin-right: 5%;
+    color: rgb(237, 241, 241);
+    font-family: 'Open Sans Condensed', sans-serif;
 }
 
 @media(max-width: 500px){
