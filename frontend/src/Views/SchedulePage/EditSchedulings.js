@@ -12,6 +12,7 @@ import SaveRoundedIcon from '@material-ui/icons/SaveRounded';
 import { Formik, Form, Field } from "formik";
 import CloseIcon from '@material-ui/icons/Close';
 import Grid from '@material-ui/core/Grid';
+import IconButton from '@material-ui/core/IconButton';
 import TextareaAutosize from '@material-ui/core/TextareaAutosize';
 import * as Yup from 'yup';
 import Divider from '@material-ui/core/Divider';
@@ -60,75 +61,20 @@ const useStyles = makeStyles(theme => ({
 
 function MyVerticallyCenteredModal(props,mode) {
     const classes = useStyles();
-    const [typeScheduling, setTypeScheduling] = useState('');
-    const [date, setDate] = useState('');
-    const [time, setTime] = useState('');
+    const [typeScheduling, setTypeScheduling] = useState(props.data==null?'':props.data.typeSchedulingId);
+    const [date, setDate] = useState(props.data == null ?'':props.data.dateTime.split(' ')[0]);
+    const [time, setTime] = useState(props.data == null ?'':props.data.dateTime.split(' ')[1]);
 
     const [dateTime] = date + " " + time; 
     const [userId] = useState('1');
-    const [id] = useState('0');
-    const [observation, setObservation] = useState('');
+    const [id] = useState(props.data == null ?'':props.data.id);
+    const [observation, setObservation] = useState(props.data==null?'':props.data.observation);
     const [count, setCount] = useState('0');
     const [responseGet, setResponseGet] = useState("");
     
+    const data = props
 
-    function onChange(e){
-        console.log(e.target);
-        if(e.target.value==""){
-            console.log("ola");
-            e.target.helperText="Incorrect entry.";
-            return  <TextField error id="standard-error" label="Campo obrigatório" defaultValue="Hello World" />;
-        }
-        else
-            setTypeScheduling(e);
-    }
-
-    async function handleGetScheduling() {
-       
-        const response = await axios.get('http://localhost:8000/logali/app/scheduling/getId', {id:"1"},
-        )
-          .then(function (response) {
-            setTypeScheduling(response.data.data[0].id);
-            setDate( response.data.data[0].date.split("T"));
-            setTime(response.data.data[0].time)
-            setObservation(response.data.data[0].observation)
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
-
-          console.log(response);
-    };
-    useEffect(() => {
-        if(count == 0){
-            handleGetScheduling();
-            setCount(count+1);
-            console.log(count);
-        }
-        
-        console.log(count);
-    })
-    // async function handleGetScheduling() {
-    //     const response = await axios.get('http://localhost:8000/logali/app/scheduling/getId', {id:"1"},
-    //     )
-    //       .then(function (response) {
-    //         setResponse(response);
-    //         console.log(response);
-    //       })
-    //       .catch(function (error) {
-    //         console.log(error);
-    //       });
-    //       setResponse(response);
-    //       console.log(response);
-    // };
-
-    var postData = {
-        id,
-            typeScheduling,
-            date,
-            time,
-            observation
-      };
+   
       
       let axiosConfig = {
         headers: {
@@ -137,9 +83,17 @@ function MyVerticallyCenteredModal(props,mode) {
             "Access-Control-Allow-Methods" : "PUT"
         }
       };
-      
+    
     
     async function handleEditScheduling(e) {
+        var id = props.data.id
+        var postData = {
+                id,
+                typeScheduling,
+                date,
+                time,
+                observation
+          };
         e.preventDefault();
         const response = await axios.put('http://localhost:8000/logali/app/scheduling/update', postData,
         axiosConfig)
@@ -154,6 +108,7 @@ function MyVerticallyCenteredModal(props,mode) {
     };
 
     return (
+       
         <Modal
             {...props}
             size="lg"
@@ -173,7 +128,16 @@ function MyVerticallyCenteredModal(props,mode) {
                             justify="center"
                             alignItems="center">
                             <Grid item xs={12} >
-                                <TextField id="standard-basic" name="typeScheduling" helperText="" required className={classes.body} onChange={e => setTypeScheduling(e)} label="Servi&ccedil;o" color="#45B39D" value={typeScheduling}/>
+                                <TextField 
+                                    id="standard-basic" 
+                                    name="typeScheduling" 
+                                    helperText="" 
+                                    required 
+                                    className={classes.body} 
+                                    onChange={e => setTypeScheduling(e.target.value)} 
+                                    label="Servi&ccedil;o" 
+                                    color="#45B39D" 
+                                    value={typeScheduling}/>
                             </Grid>
                             <Grid item xs={12} sm={6}>
                                 <TextField
@@ -184,7 +148,7 @@ function MyVerticallyCenteredModal(props,mode) {
                                     onChange={e => setDate(e.target.value)}
                                     required
                                     defaultValue = {date[0]}
-                                    value={responseGet.dateTime}
+                                    value={date}
                                     className={classes.body}
                                     InputLabelProps={{
                                         shrink: true,
@@ -207,6 +171,7 @@ function MyVerticallyCenteredModal(props,mode) {
                                     inputProps={{
                                         step: 300, // 5 min
                                     }}
+                                    value={time}
                                 />
                             </Grid>
                             <Divider variant="middle" />
@@ -214,7 +179,15 @@ function MyVerticallyCenteredModal(props,mode) {
                                 <p className={classes.title}>Observa&ccedil;&atilde;o</p>
                             </Grid>
                             <Grid item xs={12} sm={12}>
-                                <TextareaAutosize id="standard-basic" name="observation" onChange={e => setObservation(e.target.value)} className={classes.body} label="Observação" color="#45B39D"  defaultValue={observation} value={observation}>{observation}</TextareaAutosize>
+                                <TextareaAutosize 
+                                    id="standard-basic" 
+                                    name="observation" 
+                                    onChange={e => setObservation(e.target.value)} 
+                                    className={classes.body} 
+                                    label="Observação" 
+                                    color="#45B39D"  
+                                    defaultValue={observation} 
+                                    value={observation}/>
                             </Grid>
                            
                         </Grid>
@@ -235,7 +208,7 @@ function MyVerticallyCenteredModal(props,mode) {
     );
 }
 
-function EditScheduling() {
+export default props => {
     const classes = useStyles();
     // getModalStyle is not a pure function, we roll the style only on the first render
     const [open, setOpen] = React.useState(false);
@@ -256,17 +229,25 @@ function EditScheduling() {
     };
     function eventEdit(){
        // handleGetScheduling();
+   
         setModalShow(true);
        
     }
-  
     
+
+
     return (
         <>
-            <Fab color="primary" className={classes.icon} onClick={() => eventEdit()} aria-label="edit">
+            {/* <Fab color="primary" className={classes.icon} onClick={() => eventEdit()} aria-label="edit">
                 <EditIcon />
-            </Fab>
+                
+            </Fab> */}
+            {console.log(props.disabled)}
+            <IconButton onClick={() => eventEdit()} aria-label="edit" disabled={props.disabled}>
+            <EditIcon />
+            </IconButton>
             <MyVerticallyCenteredModal
+                data = {props.data}
                 show={modalShow}
                 onHide={() => setModalShow(false)}
             />
@@ -274,4 +255,4 @@ function EditScheduling() {
     );
 }
 
-export default EditScheduling;
+// export default EditScheduling;

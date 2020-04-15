@@ -55,37 +55,42 @@ class Scheduling {
     }
 
     async update(id, typeSchedulingId, date, time, observation) {
-        id='1'
         try {
             const query =
                 `UPDATE logali.scheduling ` +
                 `SET typeSchedulingId= '${typeSchedulingId}',` + 
-                `date = '${date}', ` +
-                `time = '${time}', ` +
+                `dateTime = '${date} ${time}', ` +
                 `observation = '${observation}' ` +
                 `WHERE id = '${id}' `
-            console.log(query);
+
             const resp = await this.dbPool.query(query)
-            console.log(resp)
             return resp
         } catch (err) {
+         
             throw new Error(`Erro ao editar agendamento -> ${err}`)
         }
     }
 
-    async searchEnd(userId){
+    async validateUserId(userId){
+        const response = [{isValid:false, user:''} ]
         try {
-            userId = '1';
-            const address_idQuery =
-                `SELECT * FROM logali.user WHERE id = '${userId}' ` 
-            const resposte = await this.dbPool.query(address_idQuery)
-            const teste = resposte.address_id
-            console.log(resposte)
-            const query = `SELECT * FROM logali.address WHERE id = '${teste}' `
-            console.log(query);
-            const resp = await this.dbPool.query(query)
-            console.log(resp);
-            return resp
+            const searchUserQuery = `SELECT * FROM logali.user WHERE id = '${userId}' ` 
+            const searchUser = await this.dbPool.query(searchUserQuery)
+            if(searchUser != '' && searchUser!= 'undefined'){
+                response.isValid = true
+                response.user = searchUser
+            }
+            console.log(response)
+            return response
+        } catch (err) {
+            throw new Error(`Erro ao pesquisar endereço -> ${err}`)
+        }
+    }
+    async searchEnd(addressId){
+        try {
+            const queryAddress = `SELECT * FROM logali.address WHERE id = '${addressId}' `
+            const address = await this.dbPool.query(queryAddress)
+            return address
         } catch (err) {
             throw new Error(`Erro ao pesquisar endereço -> ${err}`)
         }
@@ -112,15 +117,27 @@ class Scheduling {
     }
 
     async selectSchedulesFromUser(userId){
+        const id = userId.userId
         try {
             const query =
                 `SELECT * ` +
                 `FROM logali.scheduling ` +
-                `WHERE 1=1 ` +
-                `AND userId = '${userId}'`
+                 `WHERE ` +
+                ` userId = '${id}'`
 
             const resp = await this.dbPool.query(query)
-            resp
+            console.log(userId.userId)
+            return resp
+
+            // try {
+            //     const query =
+            //         `SELECT * ` +
+            //         `FROM logali.scheduling ` +
+            //         `WHERE 1=1 ` +
+            //         `AND userId = '${userId}'`
+    
+            //     const resp = await this.dbPool.query(query)
+            //     resp
         } catch (err) {
             throw new Error(`Erro ao selecionar agendamentos -> ${err}`)
         }

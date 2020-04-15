@@ -86,14 +86,30 @@ class SchedulingCtrl {
     }
     async searchEnd(scheduling) {
         const response = {
-            insertId: null,
+            data:[],
             message: null,
             statusCode: 500
         }
 
         try {
-                const createdSchedule = await this.scheduling.searchEnd(scheduling.userId)
-                response.message = createdSchedule
+                const responseIsValid = await this.scheduling.validateUserId(scheduling.userId) 
+
+                if(responseIsValid.isValid){  
+                    console.log(responseIsValid.user[0].addressId) 
+                    const address = await this.scheduling.searchEnd(responseIsValid.user[0].addressId)
+                    console.log(address.lenght)
+                    if(address != ''){
+                        response.message = 'Endereço encontrado com sucesso'
+                        response.data=address
+                        response.statusCode=200}
+                    else{
+                        response.message = 'Endereço não encontrado.'
+                        response.data=address
+                        response.statusCode=404
+                    }
+                }
+                else
+                    response.message="O id do usuário não foi encontrado"
             }
         catch (err) {
             response.message = `Erro desconhecido ao pesquisar endereço  -> ${err.toString()}`
@@ -129,7 +145,7 @@ class SchedulingCtrl {
 
         try {
             console.log("ola")    
-            const createdSchedule = await this.scheduling.update(scheduling.Id, scheduling.typeScheduling, scheduling.date,  scheduling.time, scheduling.observation)
+            const createdSchedule = await this.scheduling.update(scheduling.id, scheduling.typeScheduling, scheduling.date,  scheduling.time, scheduling.observation)
                 console.log("passei aqui");
                 response.insertId = createdSchedule.insertId
                 response.message = createdSchedule.message

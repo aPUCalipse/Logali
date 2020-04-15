@@ -18,7 +18,7 @@ class SchedulingRouter {
         this.app.post(`${this.baseRoute}/create`, this.create.bind(this));
         this.app.put(`${this.baseRoute}/update`, this.update.bind(this));
         this.app.get(`${this.baseRoute}/getId`, this.getId.bind(this));
-        this.app.get(`${this.baseRoute}/searchEnd`, this.searchEnd.bind(this));
+        this.app.post(`${this.baseRoute}/searchEnd`, this.searchEnd.bind(this));
         this.app.post(`${this.baseRoute}/selectSchedulesFromUser`, this.create.bind(this))
         this.app.post(`${this.baseRoute}/delete`, this.delete.bind(this))
     }
@@ -121,8 +121,9 @@ class SchedulingRouter {
         try {
             const schedulingCtrl = new SchedulingCtrl(this.dbPool)
                 const resp = await schedulingCtrl.searchEnd(req.body)
-                response.data = resp.message
-                res.status(200)
+                response.data = resp.data
+                response.message = resp.message
+                res.status(resp.statusCode)
                   
         } catch (err) {
             console.log(err)

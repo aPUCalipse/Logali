@@ -18,7 +18,7 @@ import {InputLabel, MenuItem} from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import Grid from '@material-ui/core/Grid';
 import TextareaAutosize from '@material-ui/core/TextareaAutosize';
-import Alert from '@material-ui/lab/Alert';
+// import Alert from '@material-ui/lab/Alert';
 import * as Yup from 'yup';
 import Divider from '@material-ui/core/Divider';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
@@ -82,15 +82,18 @@ function MyVerticallyCenteredModal(props,mode) {
     const [validateType, setValidateType] = React.useState(false);
     const [validateDateTime, setValidateDateTime] = React.useState(false);
  
+
+
+
     async function handleAddScheduling(e) {
         e.preventDefault();
         const convertDate = dateTime.split(" ");
         const dateArray = convertDate[0].split("-");
-        const concat = dateArray[0] + "/" + dateArray[1] + "/" +  dateArray[2] + " " + convertDate[1] + ":00";
+        setDateTime(dateArray[2] + "-" + dateArray[1] + "-" +  dateArray[0] + " " + convertDate[1] + ":00" + '');
         const response = await create.post('/create', {
             userId,
             typeScheduling,
-            concat,
+            dateTime,
             observation
 
         })
@@ -129,11 +132,15 @@ function MyVerticallyCenteredModal(props,mode) {
             "Access-Control-Allow-Methods" : "GET"
         }
       };
-
+ 
+      const objectData = {
+          userId:'1'
+      }
+      
       async function handleEndScheduling() {
         //e.preventDefault();
-        const response = await axios.get('http://localhost:8000/logali/app/scheduling/searchEnd', "1",
-        axiosConfigGet)
+        console.log(userId)
+        const response = await axios.post('http://localhost:8000/logali/app/scheduling/searchEnd', objectData)
           .then(function (response) {
               setEnd(response.data.data[0])
             console.log(response.data);
@@ -147,13 +154,9 @@ function MyVerticallyCenteredModal(props,mode) {
         };
   
     useEffect(() => {
-        if(count == 0){
+        if(end == null || end==''){
             handleEndScheduling();
-            setCount(count+1);
-            console.log(count);
         }
-        
-        console.log(count);
     })
  
 
@@ -285,7 +288,6 @@ function App() {
     const [open, setOpen] = React.useState(false);
     const [modalShow, setModalShow] = React.useState(false);
 
-
     const handleOpen = () => {
         setOpen(true);
     };
@@ -303,8 +305,6 @@ function App() {
     return (
         <>
             <EnhancedTable/>
-            <EditScheduling/>
-
             <Fab color="primary"  className={classes.icon} onClick={() => setModalShow(true)} aria-label="add">
                 <AddIcon />
             </Fab>
