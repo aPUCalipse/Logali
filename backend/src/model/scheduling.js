@@ -111,7 +111,7 @@ class Scheduling {
         }
     }
 
-    async selectSchedulesFromUser(userId){
+    async select(userId){
         try {
             const query =
                 `SELECT * ` +

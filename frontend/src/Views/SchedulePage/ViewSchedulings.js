@@ -16,14 +16,44 @@ import Paper from '@material-ui/core/Paper';
 import Checkbox from '@material-ui/core/Checkbox';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Switch from '@material-ui/core/Switch';
+//import FormControlLabel from '@material-ui/core/FormControlLabel';
+//import Switch from '@material-ui/core/Switch';
 import DeleteIcon from '@material-ui/icons/Delete';
 import FilterListIcon from '@material-ui/icons/FilterList';
+import axios from 'axios';
+import {useState, useEffect} from 'react'
 
 function createData(Date,Service,  Time, Status) {
-  return { Date, Service , Time, Status};
+  return {Date, Service , Time, Status};
 }
+
+function Testando(){
+const [count, setCount] = useState('0');
+async function handleGetScheduling(userId) {
+       
+  const response = await axios.get('http://localhost:8000/logali/app/scheduling/select', userId,
+  )
+    .then(function (response) {
+        console.log("resposta1" + response)
+    })
+    .catch(function (error) {
+      console.log(error.response);
+    });
+
+    console.log("resposta2" + response);
+};
+
+useEffect(() => {
+  if(count == 0){
+      handleGetScheduling();
+      setCount(count+1);
+      console.log(count);
+  }
+  
+  console.log(count);
+})
+
+return null}
 
 const rows = [
   createData('31/03/2020', 'Teste', '12:20', 'Finalizado'),
@@ -284,6 +314,7 @@ export default function EnhancedTable() {
 
   return (
     <div className={classes.root}>
+      <Testando />
       <Paper className={classes.paper}>
         <EnhancedTableToolbar numSelected={selected.length} />
         <TableContainer>

@@ -6,12 +6,14 @@ function getPool() {
         connectionLimit: 10,
         host: 'localhost',
         user: 'root',
-        password: 'admin',
+        password: 'toor',
         database: 'logali'
     });
 
     connection.query = util.promisify(connection.query).bind(connection)
-
+    if(connection){
+        console.log('Opa');
+    }
     return connection
 }
 

@@ -19,8 +19,9 @@ class SchedulingRouter {
         this.app.put(`${this.baseRoute}/update`, this.update.bind(this));
         this.app.get(`${this.baseRoute}/getId`, this.getId.bind(this));
         this.app.get(`${this.baseRoute}/searchEnd`, this.searchEnd.bind(this));
-        this.app.post(`${this.baseRoute}/selectSchedulesFromUser`, this.create.bind(this))
+        this.app.get(`${this.baseRoute}/select`, this.select.bind(this))
         this.app.post(`${this.baseRoute}/delete`, this.delete.bind(this))
+        console.log("BASE ROUTE" + this.baseRoute)
     }
 
     /**
@@ -134,7 +135,7 @@ class SchedulingRouter {
         }
     }
 
-    async selectSchedulesFromUser(req, res) {
+    async select(req, res) {
         const response = _.clone(this.response)
         try {
             const schedulingCtrl = new SchedulingCtrl(this.dbPool)
@@ -143,19 +144,20 @@ class SchedulingRouter {
               
                 const resp = await schedulingCtrl.select(req.body)
                 response.message = "Seleção realizada com sucesso"
-                response.data = req.body
+                response.data = resp.body
                 res.status(200)
                   
             } else {
                 response.message = "Os parametros não foram enviados"
                 response.data = req.body
-                res.status(200)
+                res.status(400)
             }
         } catch (err) {
             console.log(err)
             response.message = "Erro ao realizar seleção"
             res.status(500)
         } finally {
+            console.log("resposta: " + response)
             res.send(response)
         }
     }
