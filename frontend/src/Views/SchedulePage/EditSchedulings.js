@@ -103,7 +103,6 @@ function MyVerticallyCenteredModal(props,mode) {
           .catch(function (error) {
             console.log(error);
           });
-
           console.log(response);
     };
 
@@ -228,23 +227,12 @@ export default props => {
         setSelectedDate(date);
     };
     function eventEdit(){
-       // handleGetScheduling();
-   
         setModalShow(true);
-       
     }
-    
-
-
     return (
         <>
-            {/* <Fab color="primary" className={classes.icon} onClick={() => eventEdit()} aria-label="edit">
-                <EditIcon />
-                
-            </Fab> */}
-            {console.log(props.disabled)}
             <IconButton onClick={() => eventEdit()} aria-label="edit" disabled={props.disabled}>
-            <EditIcon />
+                <EditIcon />
             </IconButton>
             <MyVerticallyCenteredModal
                 data = {props.data}
@@ -255,4 +243,3 @@ export default props => {
     );
 }
 
-// export default EditScheduling;

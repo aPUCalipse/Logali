@@ -2,6 +2,11 @@ import Edit from '@material-ui/icons/Edit';
 import Remove from '@material-ui/icons/Remove';
 import axios from 'axios';
 import React, {useEffect} from 'react';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import {
+  Grid
+} from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import Card from '@material-ui/core/Card';
@@ -24,6 +29,7 @@ import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import EventBusyIcon from '@material-ui/icons/EventBusy';
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
+import listEmpty from  '../../Images/listEmpty.svg'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -42,6 +48,10 @@ const useStyles = makeStyles((theme) => ({
   },
   expandOpen: {
     transform: 'rotate(180deg)',
+  },
+  listEmptyStyle:{
+    width: theme.spacing(40),
+    height: theme.spacing(40),
   },
   avatar: {
     backgroundColor: "#4caf50",
@@ -62,6 +72,17 @@ const useStyles = makeStyles((theme) => ({
     width: 500,
      height: 500,
   },
+  tabTitle:{
+    backgroundColor: '#009999'
+  },
+  text:{
+    fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+    //color: '#F9A826',
+    color:'#62a298',
+    fontSize: theme.spacing(0.8),
+    width: theme.spacing(30),
+    textAlign: 'center'
+  }
 }));
 
 export default function RecipeReviewCard() {
@@ -112,9 +133,44 @@ export default function RecipeReviewCard() {
     });
 
   return (
+   
     <div className={classes.root4}>
+       <AppBar position="static" className={classes.tabTitle}>
+        <Toolbar variant="dense">
+          <Typography variant="h6" >
+            Agendamentos
+          </Typography>
+        </Toolbar>
+      </AppBar>
+      {console.log(data)}
+      {data.length == 0?
+      <>
+      <Grid
+                container
+                spacing={2}
+                alignItems="center"
+                justify="center"
+                >
+                    <Grid
+                        item
+                        alignItems="center"
+                        justify="center"
+                       className={classes.text}
+                    >
+      <h6>Não se encontra agendamentos cadastrados até o momento.</h6>
+      </Grid>
+      <Grid
+                      item
+                      alignItems="center"
+                      justify="center"
+                    >
+          <img
+          alt="List Empty"
+          src={listEmpty}
+          className={classes.listEmptyStyle} /> </Grid></Grid></>:
+     data.map((item) => (
     <GridList cellHeight={250} className={classes.gridList} cols={8}>
-    {data.map((item) => (
+      
     <GridListTile key={item.id} cols={4}>
     
      
@@ -160,9 +216,9 @@ export default function RecipeReviewCard() {
       </CardActions>
     </Card>
     </GridListTile>
-     ))}
+   
 </GridList>
-
+  ))}
 </div>
   );
 }
