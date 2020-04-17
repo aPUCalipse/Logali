@@ -1,6 +1,6 @@
 //react e bootstrap
 import React from 'react'
-import {Row, Col} from 'react-bootstrap'
+import {Row, Col, Jumbotron} from 'react-bootstrap'
 
 //componentes 
 import Header from '../../Components/Header/Header'
@@ -22,15 +22,20 @@ function HomePage(){
     return(
         <div className={style.HomePage_Container}>
             <Header />
+
+            <Jumbotron className={style.jumbotron}>
                 <Row>
                     <Col md={6}>
                         <img className={style.Image_location_svg} src={location}></img>
                     </Col>
+
                     <Col md={6}>
                         <h2 className={style.Main_text_spotlight}>Faça seus agendamentos de serviços de forma fácil e rápida! É só clicar Logo Ali!</h2>
-                    </Col>
-                </Row>
-            <Footer /> 
+                    </Col>      
+                </Row>    
+            </Jumbotron>
+
+            <Footer />
         </div>
     )
 }

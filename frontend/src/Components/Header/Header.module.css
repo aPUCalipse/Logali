@@ -1,9 +1,18 @@
 @import url('https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap');
 
-.Navbar_background_color{
+.Navbar_defaults{
     background-color: #5bd1cb;
     color: white;
+    position: fixed !important;
+    width: 100%;
+    z-index: 999;
 }
+
+/* .Navbar_position{
+    position: fixed;
+    width: 100%;
+    z-index: 999;
+} */
 
 .Navbar_title{
     font-family: 'Luckiest Guy', cursive;

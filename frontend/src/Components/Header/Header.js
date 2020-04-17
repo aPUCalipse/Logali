@@ -5,7 +5,7 @@ import {Container, Row, Col, Navbar, Nav, NavDropdown, Form, FormControl, Button
 
 function Header(){
     return(
-        <Navbar expand="lg" className={style.Navbar_background_color}>
+        <Navbar expand="lg" className={style.Navbar_defaults}>
             <div className={style.Navbar_offset}></div>
             <Navbar.Brand className={style.Navbar_title} href="#home">Logali</Navbar.Brand>
             <Navbar.Toggle aria-controls="basic-navbar-nav" />

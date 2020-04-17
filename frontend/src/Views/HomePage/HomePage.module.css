@@ -5,13 +5,24 @@ body{
     width: 100%;
 }
 
+.position_body{
+    margin-left: 0px !important;
+    margin-right: 0px !important;
+}
+
+.jumbotron{
+    background-color: unset !important;
+}
+
 .HomePage_Container{
     margin-top: 0px;
     max-height: 100%;
     flex-direction: column;
     min-height: 100vh;
+    position: relative;
     background-image: url('../../Images/barbant.jpg');
-    background-size: 100%;
+    background-size: cover;
+    background-attachment: fixed;
     background-repeat: no-repeat;
 }
 
@@ -33,7 +44,6 @@ body{
     color: rgb(237, 241, 241);
     font-family: 'Open Sans Condensed', sans-serif;
 }
-
 @media(max-width: 500px){
     .Background_Image{
         display: none;
