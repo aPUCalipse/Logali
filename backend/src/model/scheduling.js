@@ -30,9 +30,9 @@ class Scheduling {
         try{
             const query =  `DELETE scheduling ` +
             `FROM logali.scheduling ` +
-            `WHERE user.iD = userID` +
+            `WHERE user.iD = userID ` +
             `AND sheduling.iD = '${iD}' `
-            
+
             const resp = await this.dbPool.query(query)
             return resp
         } catch(err) {
@@ -67,13 +67,13 @@ class Scheduling {
                 `time = '${time}', ` +
                 `observation = '${observation}' ` +
                 `WHERE id = '${id}' `
-            console.log(query);
+           
 
             const queryVerification =
                 `SELECT workerId ` +
                 `FROM logali.scheduling` +
                 `WHERE id = '${id}' `
-            console.log(queryVerification);
+          
 
             if(workerId != null || id != 0){
                 
@@ -88,19 +88,26 @@ class Scheduling {
         }
     }
 
-    async searchEnd(userId){
+    async validateUserId(userId){
+        const response = [{isValid:false, user:''} ]
         try {
-            userId = '1';
-            const address_idQuery =
-                `SELECT * FROM logali.user WHERE id = '${userId}' ` 
-            const resposte = await this.dbPool.query(address_idQuery)
-            const teste = resposte.address_id
-            console.log(resposte)
-            const query = `SELECT * FROM logali.address WHERE id = '${teste}' `
-            console.log(query);
-            const resp = await this.dbPool.query(query)
-            console.log(resp);
-            return resp
+            const searchUserQuery = `SELECT * FROM logali.user WHERE id = '${userId}' ` 
+            const searchUser = await this.dbPool.query(searchUserQuery)
+            if(searchUser != '' && searchUser!= 'undefined'){
+                response.isValid = true
+                response.user = searchUser
+            }
+            console.log(response)
+            return response
+        } catch (err) {
+            throw new Error(`Erro ao pesquisar endereço -> ${err}`)
+        }
+    }
+    async searchEnd(addressId){
+        try {
+            const queryAddress = `SELECT * FROM logali.address WHERE id = '${addressId}' `
+            const address = await this.dbPool.query(queryAddress)
+            return address
         } catch (err) {
             throw new Error(`Erro ao pesquisar endereço -> ${err}`)
         }

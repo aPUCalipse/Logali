@@ -30,7 +30,7 @@ class SchedulingCtrl {
             validatedParams.isValid = false
             validatedParams.message = "O parametro tipo de agendamento está incorreto"
             validatedParams.statusCode = 400
-        } else if (!momentDateTime.isValid()) {
+         } else if (!momentDateTime.isValid()) {
             validatedParams.isValid = false
             validatedParams.message = "O parametro data está incorreto"
             validatedParams.statusCode = 400
@@ -67,24 +67,6 @@ class SchedulingCtrl {
         }
     }
 
-    async delete(scheduling) {
-        const response = {
-            insertId: null,
-            message: null,
-            statusCode: 500
-        }
-        try {
-            const deleteSchedule = await this.scheduling.delete(scheduling.Id)
-            response.deleteId = deleteSchedule.deleteId
-            response.message = deleteSchedule.message
-        }
-        catch (err) {
-            response.message = `Erro desconhecido ao cancelar agendamento --> ${err.toString()}`
-        } finally {
-            return response
-        }
-    }
-
     async getId(scheduling) {
         const response = {
             insertId: null,
@@ -93,9 +75,9 @@ class SchedulingCtrl {
         }
 
         try {
-            const createdSchedule = await this.scheduling.getId(scheduling.Id)
-            response.message = createdSchedule
-        }
+                const createdSchedule = await this.scheduling.getId(scheduling.Id)
+                response.message = createdSchedule
+            }
         catch (err) {
             response.message = `Erro desconhecido ao pesquisar agendamento  -> ${err.toString()}`
         } finally {
@@ -104,15 +86,29 @@ class SchedulingCtrl {
     }
     async searchEnd(scheduling) {
         const response = {
-            insertId: null,
+            data:[],
             message: null,
             statusCode: 500
         }
 
         try {
-            const createdSchedule = await this.scheduling.searchEnd(scheduling.userId)
-            response.message = createdSchedule
-        }
+                const responseIsValid = await this.scheduling.validateUserId(scheduling.userId) 
+
+                if(responseIsValid.isValid){  
+                    const address = await this.scheduling.searchEnd(responseIsValid.user[0].addressId)
+                    if(address != ''){
+                        response.message = 'Endereço encontrado com sucesso'
+                        response.data=address
+                        response.statusCode=200}
+                    else{
+                        response.message = 'Endereço não encontrado.'
+                        response.data=address
+                        response.statusCode=404
+                    }
+                }
+                else
+                    response.message="O id do usuário não foi encontrado"
+            }
         catch (err) {
             response.message = `Erro desconhecido ao pesquisar endereço  -> ${err.toString()}`
         } finally {
@@ -127,10 +123,10 @@ class SchedulingCtrl {
             statusCode: 500
         }
         try {
-            const createdSchedule = await this.scheduling.selectSchedulesFromUser(userId)
-            response.message = createdSchedule
-            response.statusCode = 200
-        }
+                const createdSchedule = await this.scheduling.selectSchedulesFromUser(userId)
+                response.message = createdSchedule
+                response.statusCode = 200
+            }
         catch (err) {
             response.message = `Erro desconhecido ao pesquisar agendamentos  -> ${err.toString()}`
         } finally {
@@ -138,26 +134,46 @@ class SchedulingCtrl {
         }
     }
 
+    
     async update(scheduling) {
         const response = {
-            insertId: null,
             message: null,
             statusCode: 500
         }
 
-        try {
-            const updatedSchedule = await this.scheduling.update(scheduling.Id, scheduling.typeScheduling, scheduling.date, scheduling.time, scheduling.observation)
-            response.insertId = updatedSchedule.insertId
-            response.message = updatedchedule.message
+        try { 
+            const createdSchedule = await this.scheduling.update(scheduling.id, scheduling.typeScheduling, scheduling.date,  scheduling.time, scheduling.observation)
+               
+            response.statusCode = 200
+            response.message = 'Agenda editada com sucesso'
         }
         catch (err) {
-            response.message = `Erro desconhecido ao atualizar agendamento  -> ${err.toString()}`
+            response.message = `Erro desconhecido ao criar agendamento  -> ${err.toString()}`
         } finally {
             return response
         }
     }
 
+    async delete(scheduling) {
+        const response = {
+            insertId: null,
+            message: null,
+            statusCode: 500
+        }
+        try {
+            console.log(scheduling)
+            const deleteSchedule = await this.scheduling.delete(scheduling)
+            response.deleteId = deleteSchedule.deleteId
+            response.message = deleteSchedule.message
+        }
+        catch (err) {
+            response.message = `Erro desconhecido ao cancelar agendamento --> ${err.toString()}`
+        } finally {
+            return response
+        }
+    }
 
+    
 }
 
 module.exports = SchedulingCtrl

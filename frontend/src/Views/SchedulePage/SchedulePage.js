@@ -18,7 +18,7 @@ import {InputLabel, MenuItem} from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import Grid from '@material-ui/core/Grid';
 import TextareaAutosize from '@material-ui/core/TextareaAutosize';
-import Alert from '@material-ui/lab/Alert';
+// import Alert from '@material-ui/lab/Alert';
 import * as Yup from 'yup';
 import Divider from '@material-ui/core/Divider';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
@@ -73,24 +73,30 @@ function MyVerticallyCenteredModal(props,mode) {
     const [date, setDate] = useState('');
     const [time, setTime] = useState('');
     const [modalShow, setModalShow] = React.useState(false);
-    const [dateTime, setDateTime] = useState(''); 
     const [userId] = useState('1');
     const [id] = useState('0');
     const [observation, setObservation] = useState('');
     const [count, setCount] = useState('0');
     const [end, setEnd] = useState('');
     const [validateType, setValidateType] = React.useState(false);
-    const [validateDateTime, setValidateDateTime] = React.useState(false);
+    const [validateDate, setValidateDate] = React.useState(false);
+    const [validateTime, setValidateTime] = React.useState(false);
  
+
+
+
     async function handleAddScheduling(e) {
         e.preventDefault();
-        const convertDate = dateTime.split(" ");
-        const dateArray = convertDate[0].split("-");
-        const concat = dateArray[0] + "/" + dateArray[1] + "/" +  dateArray[2] + " " + convertDate[1] + ":00";
+        
+        const dateArray = date.split("-");
+        console.log(dateArray)
+        const dateTime=(dateArray[2] + "-" + dateArray[1] + "-" +  dateArray[0] + " " + time + ":00" );
+       
+        console.log(dateTime)
         const response = await create.post('/create', {
             userId,
             typeScheduling,
-            concat,
+            dateTime,
             observation
 
         })
@@ -106,34 +112,34 @@ function MyVerticallyCenteredModal(props,mode) {
     
 
     function validate(e){
-        if(typeScheduling == "" || dateTime ==""){
+        if(typeScheduling == "" || date =="" || time == ""){
             if(typeScheduling == "")
                 setValidateType(true)
             else
                 setValidateType(false)
-            if(dateTime =="" )
-                setValidateDateTime(true)
+            if(date =="" )
+                setValidateDate(true)
             else
-                setValidateDateTime(false)
+                setValidateDate(false)
+            if(time =="" )
+                setValidateTime(true)
+            else
+                setValidateTime(false)    
         }else{
             handleAddScheduling(e);
             setValidateType(false);
-            setValidateDateTime(false)
+            setValidateDate(false)
+            setValidateTime(false)
         }
     }
    
-    let axiosConfigGet = {
-        headers: {
-            'Content-Type': 'application/json;charset=UTF-8',
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Methods" : "GET"
-        }
-      };
-
+      const objectData = {
+          userId:'1'
+      }
+      
       async function handleEndScheduling() {
-        //e.preventDefault();
-        const response = await axios.get('http://localhost:8000/logali/app/scheduling/searchEnd', "1",
-        axiosConfigGet)
+        console.log(userId)
+        const response = await axios.post('http://localhost:8000/logali/app/scheduling/searchEnd', objectData)
           .then(function (response) {
               setEnd(response.data.data[0])
             console.log(response.data);
@@ -147,13 +153,9 @@ function MyVerticallyCenteredModal(props,mode) {
         };
   
     useEffect(() => {
-        if(count == 0){
+        if(end == null || end==''){
             handleEndScheduling();
-            setCount(count+1);
-            console.log(count);
         }
-        
-        console.log(count);
     })
  
 
@@ -184,7 +186,7 @@ function MyVerticallyCenteredModal(props,mode) {
                             alignItems="center">
                             <Grid item xs={12} >
                                 <FormControl style={!validateType ? {display:'block'} : { display: 'none' }}>
-                            <InputLabel id="demo-simple-select-label">Servi&ccedil;o</InputLabel>
+                            <InputLabel id="demo-simple-select-label" required>Servi&ccedil;o</InputLabel>
                                 <Select
                                 labelId="demo-simple-select-label"
                                 id="demo-simple-select"
@@ -199,7 +201,7 @@ function MyVerticallyCenteredModal(props,mode) {
                                 </Select>
                                 </FormControl>
                                 <FormControl  style={validateType ? {display:'block'} : { display: 'none' }}error>
-                                    <InputLabel id="demo-simple-select-error-label">Servi&ccedil;o</InputLabel>
+                                    <InputLabel required id="demo-simple-select-error-label">Servi&ccedil;o</InputLabel>
                                     <Select
                                     labelId="demo-simple-select-error-label"
                                     id="demo-simple-select-error"
@@ -217,7 +219,70 @@ function MyVerticallyCenteredModal(props,mode) {
                                     <FormHelperText>Campo obrigatório</FormHelperText>
                                 </FormControl>
                             </Grid>
-                            <Grid item xs={12} sm={12}>
+                            <Grid item xs={12} sm={6}>
+                                <div style={!validateDate ? {display:'block'} : { display: 'none' }}>
+                                <InputLabel id="demo-simple-select-error-label" required color="red" className={classes.body}>Data</InputLabel>
+                                    <TextField
+                                        id="standard-basic"
+                                        name="data"
+                                        type="date"
+                                        onChange={e => setDate(e.target.value)}
+                                        required
+                                        className={classes.body}
+                                        InputLabelProps={{
+                                            shrink: true,
+                                        }}
+                                    />
+                                </div>
+                                <div style={validateDate ? {display:'block'} : { display: 'none' }} className={classes.body} error>
+                                    <InputLabel id="demo-simple-select-error-label" color="red" required className={classes.bodyError}>Data</InputLabel>
+                                    <TextField
+                                         id="standard-basic"
+                                        type="Data"
+                                        name="Data"
+                                        onChange={e => setDate(e.target.value)}
+                                        className={classes.bodyError}
+                                        InputLabelProps={{
+                                        shrink: true,
+                                        }}
+                                    />
+                                    <FormHelperText className={classes.bodyError}>Campo obrigatório</FormHelperText>
+                                </div>
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
+                                <div style={!validateTime ? {display:'block'} : { display: 'none' }}>
+                                <InputLabel id="demo-simple-select-error-label" color="red" required className={classes.body}>Hora</InputLabel>
+                                    <TextField
+                                        id="time"
+                                        name="time"
+                                        type="time"
+                                        onChange={e => setTime(e.target.value)}
+                                        required
+                                        className={classes.body}
+                                        InputLabelProps={{
+                                            shrink: true,
+                                        }}
+                                        inputProps={{
+                                            step: 300, // 5 min
+                                        }}
+                                    />
+                                </div>
+                                <div style={validateType ? {display:'block'} : { display: 'none' }} className={classes.body} error>
+                                    <InputLabel id="demo-simple-select-error-label" color="red" required className={classes.bodyError}>Hora</InputLabel>
+                                    <TextField
+                                        id="time"
+                                        type="time"
+                                        name="time"
+                                        onChange={e => setTime(e.target.value)}
+                                        className={classes.bodyError}
+                                        InputLabelProps={{
+                                        shrink: true,
+                                        }}
+                                    />
+                                    <FormHelperText className={classes.bodyError}>Campo obrigatório</FormHelperText>
+                                </div>
+                            </Grid>
+                            {/* <Grid item xs={12} sm={12}>
                             <div style={!validateDateTime ? {display:'block'} : { display: 'none' }}>
                                 <InputLabel id="demo-simple-select-label" className={classes.body}>Data e Hora</InputLabel>
                                 <TextField
@@ -243,7 +308,7 @@ function MyVerticallyCenteredModal(props,mode) {
                                     />
                                     <FormHelperText className={classes.bodyError}>Campo obrigatório</FormHelperText>
                                 </div>
-                            </Grid>
+                            </Grid> */}
                            
                            
                             <Grid item xs={12} sm={12}>
@@ -257,10 +322,17 @@ function MyVerticallyCenteredModal(props,mode) {
                                     label="Continuar com este endereço"
                                 />
                                    
-                                   <TextareaAutosize id="standard-basic" name="observation" disabled  defaultValue={end} value={end} className={classes.body} color="#45B39D"/>
-                                   
-                
-                            </Grid>
+                                   <TextareaAutosize 
+                                    id="standard-basic" 
+                                    name="observation" 
+                                    disabled  
+                                    defaultValue={end} 
+                                    value={
+                                        'Rua '+ end.street + ', ' + end.number + ', bairro ' + end.neighborhood + '. ' + end.city + ' - ' + end.state
+                                    } 
+                                    className={classes.body} 
+                                    color="#45B39D"/>
+                            </Grid> 
                         </Grid>
                     </Form>
                 </Formik>
@@ -285,7 +357,6 @@ function App() {
     const [open, setOpen] = React.useState(false);
     const [modalShow, setModalShow] = React.useState(false);
 
-
     const handleOpen = () => {
         setOpen(true);
     };
@@ -303,8 +374,6 @@ function App() {
     return (
         <>
             <EnhancedTable/>
-            <EditScheduling/>
-
             <Fab color="primary"  className={classes.icon} onClick={() => setModalShow(true)} aria-label="add">
                 <AddIcon />
             </Fab>
