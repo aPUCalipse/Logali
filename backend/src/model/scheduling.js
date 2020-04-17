@@ -92,21 +92,71 @@ class Scheduling {
     }
 
     async getId(id){
-        id=0
         try {
-            const query = `SELECT * FROM logali.scheduling WHERE id = '${id}' `
-            const typeSchedulingId = query.typeSchedulingId
-           
+            const query = `` +
+                    `SELECT ` +
+
+                    //dados do cliente
+                    `s.userId 'idClient', ` +
+                    `uc.name 'clientName', ` +
+
+                    //dados do endereço do cliente
+                    `ad.geoLocX,  ` +
+                    `ad.geoLocY,  ` +
+                    `ad.zipCode,  ` +
+                    `ad.number,  ` +
+                    `ad.street,  ` +
+                    `ad.complement,  ` +
+                    `ad.neighborhood,  ` +
+                    `ad.city,  ` +
+                    `ad.state, ` +
+
+                    //dados do tipo de agendamento
+                    `s.typeSchedulingId, ` +
+                    `ts.name 'nametypeSchedulig', ` +
+
+                    //dados do status do agedamento
+                    `s.statusSchedulingId, ` +
+                    `ss.name 'nameStatusScheduling', ` +
+
+                    //dados do técnico
+                    `s.workerId 'idWorker', ` +
+                    `uw.name 'workerName', ` +
+
+                    //dados do agendamento
+                    `s.id 'schedulingId', ` +
+                    `s.\`dateTime\`, ` +
+                    `s.observation, ` +
+                    `s.createdAt ` +
+                `FROM logali.scheduling s ` +
+                
+                //join para coletar dados do cliente
+                `join logali.user uc ` +
+                `on uc.id = s.userId ` +
+                
+                //join para coletar dados do técnico se existir
+                `left join logali.user uw ` +
+                `on uw.id = s.workerId ` +
+                
+                //join para coletar dados do status do agendamento
+                `join logali.statusscheduling ss ` +
+                `on ss.id = s.statusSchedulingId ` +
+                
+                //join para coletar dados do tipo do agendamento
+                `join logali.typescheduling ts ` +
+                `on ts.id = s.typeSchedulingId ` +
+                
+                //join para coletar dados do endereço do cliente
+                `join logali.address ad ` +
+                `on ad.id = uc.addressId ` +
+                
+                `where s.id = ${id}`
           
             const resp = await this.dbPool.query(query);
-            
-            const typeSchedulingQuery = `SELECT name FROM logali.typescheduling WHERE id = '${resp.typeSchedulingId}' `
-            const typeScheduling = await this.dbPool.query(typeSchedulingQuery);
-            resp.typeSchedulingId = typeScheduling;
-            console.log(resp.RowDataPacket);
            
-            return resp
+            return resp.pop()
         } catch (err) {
+            console.log(err)
             throw new Error(`Erro ao pesquisar agendamento -> ${err}`)
         }
     }

@@ -17,7 +17,7 @@ class SchedulingRouter {
     init() {
         this.app.post(`${this.baseRoute}/create`, this.create.bind(this));
         this.app.put(`${this.baseRoute}/update`, this.update.bind(this));
-        this.app.get(`${this.baseRoute}/getId`, this.getId.bind(this));
+        this.app.get(`${this.baseRoute}/getId/:id`, this.getId.bind(this));
         this.app.get(`${this.baseRoute}/searchEnd`, this.searchEnd.bind(this));
         this.app.post(`${this.baseRoute}/selectSchedulesFromUser`, this.create.bind(this))
         this.app.post(`${this.baseRoute}/delete`, this.delete.bind(this))
@@ -101,11 +101,19 @@ class SchedulingRouter {
     async getId(req, res) {
         const response = _.clone(this.response)
         try {
-            const schedulingCtrl = new SchedulingCtrl(this.dbPool)
-                const resp = await schedulingCtrl.getId(req.body)
-                response.data = resp.message
-                res.status(200)
-                  
+            const idScheduling = parseInt(req.params.id)
+            if(!_.isNaN(idScheduling) && idScheduling > 0){
+                const schedulingCtrl = new SchedulingCtrl(this.dbPool)
+                const resp = await schedulingCtrl.getId(idScheduling)
+                
+                response.data = resp.scheduling
+                response.message = resp.message
+
+                res.status(resp.statusCode)
+            } else {
+                response.message = "Parametro id deve ser um numero e maior que zero"
+                res.status(400)
+            }
         } catch (err) {
             console.log(err)
             response.message = "Erro ao realizar pesquisa"
