@@ -21,7 +21,6 @@ class SchedulingRouter {
         this.app.get(`${this.baseRoute}/searchEnd`, this.searchEnd.bind(this));
         this.app.get(`${this.baseRoute}/select`, this.select.bind(this))
         this.app.post(`${this.baseRoute}/delete`, this.delete.bind(this))
-        console.log("BASE ROUTE" + this.baseRoute)
     }
 
     /**

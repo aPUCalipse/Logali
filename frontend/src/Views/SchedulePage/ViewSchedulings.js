@@ -27,21 +27,32 @@ function createData(Date,Service,  Time, Status) {
   return {Date, Service , Time, Status};
 }
 
+let axiosConfig = {
+  headers: {
+      'Content-Type': 'application/json;charset=UTF-8',
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods" : "GET"
+  }
+};
+
 function Testando(){
 const [count, setCount] = useState('0');
-async function handleGetScheduling(userId) {
-       
-  const response = await axios.get('http://localhost:8000/logali/app/scheduling/select', userId,
+async function handleGetScheduling() {
+       let data = 1
+  const response = await axios.get('http://localhost:8000/logali/app/scheduling/select', {id:"1"}, axiosConfig
   )
     .then(function (response) {
         console.log("resposta1" + response)
     })
-    .catch(function (error) {
+    .catch(error => {
       console.log(error.response);
     });
 
     console.log("resposta2" + response);
+    
 };
+
+
 
 useEffect(() => {
   if(count == 0){
