@@ -11,7 +11,9 @@ function getPool() {
     });
 
     connection.query = util.promisify(connection.query).bind(connection)
-
+    if(connection){
+        console.log('Opa');
+    }
     return connection
 }
 

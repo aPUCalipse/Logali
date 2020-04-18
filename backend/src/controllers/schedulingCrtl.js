@@ -110,15 +110,16 @@ class SchedulingCtrl {
         }
     }
 
-    async selectSchedulesFromUser(userId) {
+    async select(userId) {
+
         const response = {
             insertId: null,
             message: null,
-            statusCode: 500
+            statusCode: userId === null ? 400 : 500,
         }
         try {
-                const createdSchedule = await this.scheduling.selectSchedulesFromUser(userId)
-                response.message = createdSchedule
+                const selectedSchedule = await this.scheduling.select(userId)
+                response.message = selectedSchedule
                 response.statusCode = 200
             }
         catch (err) {

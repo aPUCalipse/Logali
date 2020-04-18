@@ -161,16 +161,12 @@ class Scheduling {
         }
     }
 
-    async selectSchedulesFromUser(userId){
+    async select(userId){
+        userId=1
         try {
-            const query =
-                `SELECT * ` +
-                `FROM logali.scheduling ` +
-                `WHERE 1=1 ` +
-                `AND userId = '${userId}'`
-
+            const query = `SELECT * FROM logali.scheduling WHERE 1=1 AND userId = '${userId}'`
             const resp = await this.dbPool.query(query)
-            resp
+            return resp;
         } catch (err) {
             throw new Error(`Erro ao selecionar agendamentos -> ${err}`)
         }
