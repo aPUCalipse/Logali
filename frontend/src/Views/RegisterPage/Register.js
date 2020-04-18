@@ -105,38 +105,38 @@ class Register extends Component {
                             <Form as={Row}>
                                 <Form.Group as={Col} md={4}>
                                     <Form.Label>Nome:</Form.Label>
-                                    <Form.Control type="text" placeholder="Digite seu nome" controlId="nameInput" required="required" autoComplete="off"/>
+                                    <Form.Control type="text" placeholder="Digite seu nome" id="nameInput" required="required" autoComplete="off"/>
                                 </Form.Group>
 
                                 <Form.Group as={Col} md={4}>
                                     <Form.Label>Usuaio:</Form.Label>
-                                    <Form.Control type="text" placeholder="Digite seu usuario" controlId="userInput" required="required" autoComplete="off"/>
+                                    <Form.Control type="text" placeholder="Digite seu usuario" id="userInput" required="required" autoComplete="off"/>
                                 </Form.Group>
 
                                 <Col md={4}></Col>
 
                                 <Form.Group as={Col} md={6}>
                                     <Form.Label>Senha:</Form.Label>
-                                    <Form.Control type="password" placeholder="Digite sua senha" controlId="senhaInput" required="required" autoComplete="off"/>
+                                    <Form.Control type="password" placeholder="Digite sua senha" id="senhaInput" required="required" autoComplete="off"/>
                                 </Form.Group>
 
                                 <Form.Group as={Col} md={6}>
                                     <Form.Label>Confirmação de senha:</Form.Label>
-                                    <Form.Control type="password" placeholder="Digite a seha novamente" controlId="confirmaInput" required="required" autoComplete="off"/>
+                                    <Form.Control type="password" placeholder="Digite a seha novamente" id="confirmaInput" required="required" autoComplete="off"/>
                                 </Form.Group>
 
-                                <Col md={1} key={`custom-radio`} className="mb-3">
+                                <Col md={1} className="mb-3">
                                     <Form.Check 
                                         custom
                                         type={'radio'}
-                                        id={`client`}
+                                        id={`clienteRadio`}
                                         label={`Cliente`}
                                         name="tipoCliente"
                                         onClick={() => this.showAddres()}
                                     />
                                 </Col>
 
-                                <Col md={11} key={`custom-radio`} className="mb-3">
+                                <Col md={11} className="mb-3">
                                     <Form.Check 
                                         custom
                                         type={'radio'}

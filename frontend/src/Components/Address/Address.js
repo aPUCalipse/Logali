@@ -7,7 +7,7 @@ function Address() {
             <>
                 <Form.Group as={Col} md={4} name="enderecoCliente" style={{ display: "none" }}>
                     <Form.Label>CEP</Form.Label>
-                    <Form.Control type="text" placeholder="Digite o CEP" controlId="cepInput" required="required" autoComplete="off"/>
+                    <Form.Control type="text" placeholder="Digite o CEP" id="cepInput" required="required" autoComplete="off"/>
                 </Form.Group>
 
 
@@ -15,27 +15,27 @@ function Address() {
 
                 <Form.Group as={Col} md={6} name="enderecoCliente" style={{ display: "none" }}>
                     <Form.Label>Rua</Form.Label>
-                    <Form.Control type="text" placeholder="Digite a rua" controlId="ruaInput" required="required" autoComplete="off"/>
+                    <Form.Control type="text" placeholder="Digite a rua" id="ruaInput" required="required" autoComplete="off"/>
                 </Form.Group>
                 
                 <Form.Group as={Col} md={2} name="enderecoCliente" style={{ display: "none" }}>
                     <Form.Label>Número</Form.Label>
-                    <Form.Control type="text" placeholder="Digite o numero da sua residencia" controlId="numberInput" required="required" autoComplete="off"/>
+                    <Form.Control type="text" placeholder="Digite o numero da sua residencia" id="numberInput" required="required" autoComplete="off"/>
                 </Form.Group>
 
                 <Form.Group as={Col} md={4} name="enderecoCliente" style={{ display: "none" }}>
                     <Form.Label>Complemento</Form.Label>
-                    <Form.Control type="text" placeholder="Digite o complemento" controlId="complementoInput" required="required" autoComplete="off"/>
+                    <Form.Control type="text" placeholder="Digite o complemento" id="complementoInput" required="required" autoComplete="off"/>
                 </Form.Group>
 
                 <Form.Group as={Col} md={4} name="enderecoCliente" style={{ display: "none" }}>
                     <Form.Label>Cidade</Form.Label>
-                    <Form.Control type="text" placeholder="Digite sua cidade" controlId="cepIncidadeInputput" required="required" autoComplete="off"/>
+                    <Form.Control type="text" placeholder="Digite sua cidade" id="cidadeInput" required="required" autoComplete="off"/>
                 </Form.Group>
 
                 <Form.Group as={Col} md={4} name="enderecoCliente" style={{ display: "none" }}>
                     <Form.Label>Bairro</Form.Label>
-                    <Form.Control type="text" placeholder="Digite o bairro" controlId="bairroInput" required="required" autoComplete="off"/>
+                    <Form.Control type="text" placeholder="Digite o bairro" id="bairroInput" required="required" autoComplete="off"/>
                 </Form.Group>
 
                 <Form.Group as={Col} md={4} name="enderecoCliente" style={{ display: "none" }}>
