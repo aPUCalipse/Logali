@@ -1,28 +1,8 @@
-div.Margin {
-    margin-top: 0px;
-    max-height: 100%;
-    flex-direction: column;
-    min-height: 100vh;
-    background-image: url('../../Images/barbant.jpg');
-    background-size: 100%;
-    background-repeat: no-repeat;
-}
 
-.Register {
-    margin-left: 16%;
-    margin-right: 20%;
-    padding-left: 10%;
-    background: #ffffff;
-}
 
-h1 {
-    margin-left : 24%;
-}
-
-button {
-    margin-left : 30%;
-}
-
-.Radio{
-    margin-left: 4%
+.title{
+    color: rgba(91, 209, 203, 0.5);
+    font-family: 'Luckiest Guy', cursive;
+    font-size: 27px;
+    font-weight: 100;
 }

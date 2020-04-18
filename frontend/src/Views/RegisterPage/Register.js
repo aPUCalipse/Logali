@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Row, Col, Jumbotron} from 'react-bootstrap'
+import {Row, Col, Form, Button, Card} from 'react-bootstrap'
 import style from './RegisterPage.module.css';
 import api from '../../Components/Assets/api';
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -15,14 +15,24 @@ class Register extends Component {
     }
 
     hideAddress() {
-        document.getElementById('enderecoCliente').setAttribute('style', 'display: none');
+        const fiedsAddress = document.getElementsByName('enderecoCliente')
+
+        for (let i = 0; i < fiedsAddress.length; i++) {
+            fiedsAddress[i].setAttribute('style', 'display: none');
+        }
+
         this.setState({
             selectedOption: 2
         });
     }
 
     showAddres() {
-        document.getElementById('enderecoCliente').removeAttribute('style');
+        const fiedsAddress = document.getElementsByName('enderecoCliente')
+
+        for (let i = 0; i < fiedsAddress.length; i++) {
+            fiedsAddress[i].removeAttribute('style');   
+        }
+        
         this.setState({
             selectedOption: 1
         });
@@ -74,7 +84,6 @@ class Register extends Component {
                 else {
                     alert("Usuário Cadastrado com sucesso");
                 }
-                //           return body;
             }
             else {
                 alert("Favor definir o tipo de usuário");
@@ -90,52 +99,62 @@ class Register extends Component {
         return (
             <div>
                 <MainLayout>
-                    <div className={style.Margin}>
-                        <div className={style.Register}>
-                            <h1 className="heading - Cadastro">Cadastrar-se </h1>
-                            <form id="cadastrarUser" name="LoginUser" encType="multipart/form-data" className="col-md-8 form-control-feedback">
+                    <Card body>
+                            <h1 className={style.title}>Cadastrar-se</h1>
 
-                                <div className="form-row">
-                                    <div className="form-group col-md-6">
-                                        <label htmlFor="name">Nome: </label>
-                                        <input type="text" name="name" className="form-control" id="nameInput" placeholder="Digite seu nome" required="required" autoComplete="off" />
-                                    </div>
+                            <Form as={Row}>
+                                <Form.Group as={Col} md={4}>
+                                    <Form.Label>Nome:</Form.Label>
+                                    <Form.Control type="text" placeholder="Digite seu nome" controlId="nameInput" required="required" autoComplete="off"/>
+                                </Form.Group>
 
-                                    <div className="form-group col-md-6">
-                                        <label htmlFor="user">Usuário: </label>
-                                        <input type="text" name="user" className="form-control" id="userInput" placeholder="Digite seu usuário" required="required" autoComplete="off" />
-                                    </div>
-                                </div>
+                                <Form.Group as={Col} md={4}>
+                                    <Form.Label>Usuaio:</Form.Label>
+                                    <Form.Control type="text" placeholder="Digite seu usuario" controlId="userInput" required="required" autoComplete="off"/>
+                                </Form.Group>
 
-                                <div className="form-row">
-                                    <div className="form-group col-md-6">
-                                        <label htmlFor="senha">Senha: </label>
-                                        <input type="password" name="senha" className="form-control" id="senhaInput" placeholder="Digite sua senha" required="required" />
-                                    </div>
-                                    <div className="form-group col-md-6">
-                                        <label htmlFor="senha">Confirme sua senha: </label>
-                                        <input type="password" name="confirmaSenha" className="form-control" id="confirmaInput" placeholder="Confirme sua senha" required="required" />
-                                    </div>
-                                </div>
-                                <div className={style.Radio}>
-                                    <div className="form-row">
-                                        <div className="form-group col-md-3">
-                                            <label>
-                                                <input type="radio" name="tipoCliente" id="clienteRadio" className="form-check-input" onClick={() => this.showAddres()} /> Cliente
-                                </label>
-                                        </div>
-                                        <div className="form-group col-md-6">
-                                            <label>
-                                                <input type="radio" name="tipoCliente" id="prestadorRadio" className="form-check-input" onClick={() => this.hideAddress()} /> Prestador de serviços
-                                </label>
-                                        </div>
-                                    </div>
-                                </div>
+                                <Col md={4}></Col>
+
+                                <Form.Group as={Col} md={6}>
+                                    <Form.Label>Senha:</Form.Label>
+                                    <Form.Control type="password" placeholder="Digite sua senha" controlId="senhaInput" required="required" autoComplete="off"/>
+                                </Form.Group>
+
+                                <Form.Group as={Col} md={6}>
+                                    <Form.Label>Confirmação de senha:</Form.Label>
+                                    <Form.Control type="password" placeholder="Digite a seha novamente" controlId="confirmaInput" required="required" autoComplete="off"/>
+                                </Form.Group>
+
+                                <Col md={1} key={`custom-radio`} className="mb-3">
+                                    <Form.Check 
+                                        custom
+                                        type={'radio'}
+                                        id={`client`}
+                                        label={`Cliente`}
+                                        name="tipoCliente"
+                                        onClick={() => this.showAddres()}
+                                    />
+                                </Col>
+
+                                <Col md={11} key={`custom-radio`} className="mb-3">
+                                    <Form.Check 
+                                        custom
+                                        type={'radio'}
+                                        id={`prestadorRadio`}
+                                        label={`Prestador de serviços`}
+                                        name="tipoCliente"
+                                        onClick={() => this.hideAddress()}
+                                    />
+                                </Col>
+
                                 <Address />
-                            </form>
-                            <button className="btn btn-success" onClick={this.handleRegister}>Registre-se</button>
-                        </div>
-                    </div>
+
+                                <Col md={11}></Col>
+                                <Col md={1}>
+                                    <Button variant="success" onClick={this.handleRegister}>Registrar</Button>
+                                </Col>
+                            </Form>
+                        </Card>
                 </MainLayout>   
             </div>
         );
