@@ -1,10 +1,7 @@
 //react e bootstrap
 import React from 'react'
-import {Row, Col, Jumbotron} from 'react-bootstrap'
 
-//componentes 
-import Header from '../../Components/Header/Header'
-import Footer from '../../Components/Footer/Footer'
+import {Row, Col} from 'react-bootstrap'
 
 //Imagens
 import location from '../../Images/location.svg'
@@ -12,18 +9,18 @@ import location from '../../Images/location.svg'
 //stylesheet
 import style from './HomePage.module.css'
 
+import MainLayout from '../MainLayout/MainLayout'
+
 //testando módulo de cep
 import cep from 'cep-promise'
 
 cep('05010000')
   .then(console.log)
 
-function HomePage(){
+function    HomePage(){
     return(
-        <div className={style.HomePage_Container}>
-            <Header />
-
-            <Jumbotron className={style.jumbotron}>
+        <div>
+            <MainLayout>
                 <Row>
                     <Col md={6}>
                         <img className={style.Image_location_svg} src={location}></img>
@@ -32,10 +29,8 @@ function HomePage(){
                     <Col md={6}>
                         <h2 className={style.Main_text_spotlight}>Faça seus agendamentos de serviços de forma fácil e rápida! É só clicar Logo Ali!</h2>
                     </Col>      
-                </Row>    
-            </Jumbotron>
-
-            <Footer />
+                </Row>
+            </MainLayout>
         </div>
     )
 }
