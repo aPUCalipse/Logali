@@ -26,16 +26,21 @@ class Scheduling {
         }
     }
 
-    async delete(iD){
+    async delete(idScheduling){
         try{
-            const query =  `DELETE scheduling ` +
+            const query =  `DELETE ` +
             `FROM logali.scheduling ` +
-            `WHERE user.iD = userID ` +
-            `AND sheduling.iD = '${iD}' `
+            `where id = '${idScheduling}' `
+
 
             const resp = await this.dbPool.query(query)
-            return resp
+            if(resp && resp.affectedRows >= 1){
+                return resp
+            } else {
+                throw new Error(`O id Enviado não existe no banco`)
+            }
         } catch(err) {
+            console.log(err)
             throw new Error(`Erro excluir agendamento -> ${err}`)
         }
     }
@@ -57,31 +62,41 @@ class Scheduling {
         }
     }
 
-    async update(id, typeSchedulingId, date, time, observation) {
-        
+    async getSchedulingByIdAndIdUser(id, idUser) {
+        try {
+            const query =
+                `SELECT `+
+                    `workerId ` +
+                `FROM logali.scheduling ` +
+                `WHERE 1=1 ` +
+                `AND id = '${id}' ` +
+                `AND userId = '${idUser}'`
+          
+            const resp = await this.dbPool.query(query)
+
+            return resp.pop()
+        } catch (err) {
+            throw new Error(`Erro ao atualizar agendamento -> ${err}`)
+        }
+    }
+    
+    async update(id, dateTime, observation) {
         try {
             const query =
                 `UPDATE logali.scheduling ` +
-                `SET typeSchedulingId= '${typeSchedulingId}',` + 
-                `date = '${date}', ` +
-                `time = '${time}', ` +
-                `observation = '${observation}' ` +
-                `WHERE id = '${id}' `
-           
+                `SET ` +
+                    `dateTime = '${dateTime.format("YYYY-MM-DD HH:mm:ss")}' ` +
+                    ((observation) ? `, observation = '${observation}' ` : ` `)+
+                `WHERE id = '${id}' `          
 
-            const queryVerification =
-                `SELECT workerId ` +
-                `FROM logali.scheduling` +
-                `WHERE id = '${id}' `
-          
+                console.log(query)
 
-            if(workerId != null || id != 0){
-                
-                const resp = await this.dbPool.query(query)
-                console.log(resp)
+            const resp = await this.dbPool.query(query)
+            
+            if(resp && resp.affectedRows >= 1){
                 return resp
-            }else{
-                return new Error(`Agendamento já aceito -> ${err}`)
+            } else {
+                throw new Error(`O id Enviado não existe no banco`)
             }
         } catch (err) {
             throw new Error(`Erro ao atualizar agendamento -> ${err}`)
@@ -89,25 +104,33 @@ class Scheduling {
     }
 
     async validateUserId(userId){
-        const response = [{isValid:false, user:''} ]
-        try {
+        const response = {
+            isValid: false, 
+            user:''
+        }
+
+        try {   
             const searchUserQuery = `SELECT * FROM logali.user WHERE id = '${userId}' ` 
+
             const searchUser = await this.dbPool.query(searchUserQuery)
-            if(searchUser != '' && searchUser!= 'undefined'){
+            
+            if(searchUser.length > 0){
                 response.isValid = true
-                response.user = searchUser
+                response.user = searchUser.pop()
             }
-            console.log(response)
+
             return response
         } catch (err) {
             throw new Error(`Erro ao pesquisar endereço -> ${err}`)
         }
     }
+    
     async searchEnd(addressId){
         try {
             const queryAddress = `SELECT * FROM logali.address WHERE id = '${addressId}' `
             const address = await this.dbPool.query(queryAddress)
-            return address
+
+            return address.pop()
         } catch (err) {
             throw new Error(`Erro ao pesquisar endereço -> ${err}`)
         }

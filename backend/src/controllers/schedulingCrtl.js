@@ -1,4 +1,5 @@
 const Moment = require('moment')
+const _ = require("lodash")
 const Scheduling = require('../model/scheduling')
 
 class SchedulingCtrl {
@@ -84,7 +85,7 @@ class SchedulingCtrl {
             return response
         }
     }
-    async searchEnd(scheduling) {
+    async searchEnd(userId) {
         const response = {
             data:[],
             message: null,
@@ -92,23 +93,25 @@ class SchedulingCtrl {
         }
 
         try {
-                const responseIsValid = await this.scheduling.validateUserId(scheduling.userId) 
+            const responseIsValid = await this.scheduling.validateUserId(userId) 
 
-                if(responseIsValid.isValid){  
-                    const address = await this.scheduling.searchEnd(responseIsValid.user[0].addressId)
-                    if(address != ''){
-                        response.message = 'Endereço encontrado com sucesso'
-                        response.data=address
-                        response.statusCode=200}
-                    else{
-                        response.message = 'Endereço não encontrado.'
-                        response.data=address
-                        response.statusCode=404
-                    }
+            console.log(responseIsValid)
+            
+            if(responseIsValid.isValid){  
+                const address = await this.scheduling.searchEnd(responseIsValid.user.addressId)
+                if(!_.isEmpty(address)) {
+                    response.message = 'Endereço encontrado com sucesso'
+                    response.data = address
+                    response.statusCode = 200
+                } else {
+                    response.message = 'Endereço não encontrado.'
+                    response.data = address
+                    response.statusCode = 404
                 }
-                else
-                    response.message="O id do usuário não foi encontrado"
+            } else {
+                response.message="O id do usuário não foi encontrado"
             }
+        }
         catch (err) {
             response.message = `Erro desconhecido ao pesquisar endereço  -> ${err.toString()}`
         } finally {
@@ -135,6 +138,41 @@ class SchedulingCtrl {
         }
     }
 
+    valitadeParamsUpdate(dateTime, observation, idUser, id) {
+        const validatedParams = {
+            isValid: null,
+            message: null,
+            statusCode: null,
+            data: {
+                dateTime: null,
+                observation: observation,
+                idUser: idUser, 
+                id: id
+            }
+        }
+
+        const momentDateTime = Moment(dateTime, "DD/MM/YYYY HH:mm:ss")
+        validatedParams.data.dateTime = momentDateTime
+
+        if (typeof dateTime === 'undefined' || !momentDateTime.isValid()) {
+            validatedParams.isValid = false
+            validatedParams.message = "O parametro data e hora está incorreto"
+            validatedParams.statusCode = 400
+        } else if (!idUser) {
+            validatedParams.isValid = false
+            validatedParams.message = "O parametro id do usuario deve ser enviados"
+            validatedParams.statusCode = 400
+        } else if (!id) {
+            validatedParams.isValid = false
+            validatedParams.message = "O parametro id do agendamento deve ser enviados"
+            validatedParams.statusCode = 400
+        } else {
+            validatedParams.isValid = true
+            validatedParams.statusCode = 200
+        }
+
+        return validatedParams
+    }
     
     async update(scheduling) {
         const response = {
@@ -142,30 +180,40 @@ class SchedulingCtrl {
             statusCode: 500
         }
 
-        try { 
-            const createdSchedule = await this.scheduling.update(scheduling.id, scheduling.typeScheduling, scheduling.date,  scheduling.time, scheduling.observation)
-               
-            response.statusCode = 200
-            response.message = 'Agenda editada com sucesso'
+        try {
+            const hasScheluding = await this.scheduling.getSchedulingByIdAndIdUser(scheduling.id, scheduling.idUser)
+            console.log(hasScheluding.workerId)
+            if(hasScheluding && !_.isEmpty(hasScheluding)){
+                if(hasScheluding.workerId === null){
+                    await this.scheduling.update(scheduling.id, scheduling.dateTime, scheduling.observation)
+                    response.message = 'Agendamento editado com sucesso'
+                    response.statusCode = 200
+                } else {
+                    response.message = 'Esse agendamento não pode mais ser alterado pois um técnico já aceitou ele'
+                    response.statusCode = 400
+                }
+            } else {
+                response.message = 'Não foi encontrado o agendamento indicado para o seu usuario'
+                response.statusCode = 404
+            }
         }
         catch (err) {
-            response.message = `Erro desconhecido ao criar agendamento  -> ${err.toString()}`
+            response.message = `Erro desconhecido ao atualizar agendamento -> ${err.toString()}`
         } finally {
             return response
         }
     }
 
-    async delete(scheduling) {
+    async delete(idScheduling) {
         const response = {
-            insertId: null,
             message: null,
             statusCode: 500
         }
+
         try {
-            console.log(scheduling)
-            const deleteSchedule = await this.scheduling.delete(scheduling)
-            response.deleteId = deleteSchedule.deleteId
-            response.message = deleteSchedule.message
+            await this.scheduling.delete(idScheduling)
+            response.message = "Agendamento excluido com sucesso"
+            response.statusCode = 200
         }
         catch (err) {
             response.message = `Erro desconhecido ao cancelar agendamento --> ${err.toString()}`
