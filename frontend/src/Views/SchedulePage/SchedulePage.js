@@ -145,7 +145,7 @@ function MyVerticallyCenteredModal(props,mode) {
             console.log(response.data);
           })
           .catch(function (error) {
-            console.log(error);
+            console.log(error.response);
           });
 
           console.log(response);

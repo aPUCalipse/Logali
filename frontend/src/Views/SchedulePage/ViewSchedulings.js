@@ -112,15 +112,15 @@ export default function RecipeReviewCard() {
   }
 
   async function getScheduling(){
-    const response = await axios.post('http://localhost:8000/logali/app/scheduling/selectSchedulesFromUser',
-    userId)
+    const response = await axios.post('http://localhost:8000/logali/app/scheduling/select', {id:userId.userId})
       .then(function(response) {
         console.log(response);
         setData(response.data.data)
       })
       .catch(function (error) {
-        console.log(error);
+        console.log(error.response);
       });
+      console.log(response);
   }
 
   useEffect(() => {
