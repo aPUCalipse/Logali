@@ -95,8 +95,6 @@ class SchedulingCtrl {
         try {
             const responseIsValid = await this.scheduling.validateUserId(userId) 
 
-            console.log(responseIsValid)
-            
             if(responseIsValid.isValid){  
                 const address = await this.scheduling.searchEnd(responseIsValid.user.addressId)
                 if(!_.isEmpty(address)) {
@@ -197,7 +195,7 @@ class SchedulingCtrl {
 
     async select(filter) {
         const response = {
-            insertId: null,
+            data: null,
             message: null,
             statusCode: 500,
         }
@@ -211,7 +209,7 @@ class SchedulingCtrl {
                 filter.idUser
             )
             
-            response.message = selectedSchedules
+            response.data = selectedSchedules
             response.statusCode = 200
         }
         catch (err) {

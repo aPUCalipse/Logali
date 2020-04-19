@@ -168,7 +168,7 @@ class SchedulingRouter {
                 if(params.isValid){
                     const resp = await schedulingCtrl.select(params.data)
                     response.message = "Seleção realizada com sucesso"
-                    response.data = resp.body
+                    response.data = resp.data
                     res.status(200)
                 } else {
                     response.message = params.message

@@ -18,7 +18,6 @@ import {InputLabel, MenuItem} from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import Grid from '@material-ui/core/Grid';
 import TextareaAutosize from '@material-ui/core/TextareaAutosize';
-// import Alert from '@material-ui/lab/Alert';
 import * as Yup from 'yup';
 import Divider from '@material-ui/core/Divider';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
@@ -73,7 +72,7 @@ function MyVerticallyCenteredModal(props,mode) {
     const [date, setDate] = useState('');
     const [time, setTime] = useState('');
     const [modalShow, setModalShow] = React.useState(false);
-    const [userId] = useState('1');
+    const [userId] = useState('2');
     const [id] = useState('0');
     const [observation, setObservation] = useState('');
     const [count, setCount] = useState('0');
@@ -134,14 +133,14 @@ function MyVerticallyCenteredModal(props,mode) {
     }
    
       const objectData = {
-          userId:'1'
+          userId: userId
       }
       
       async function handleEndScheduling() {
-        console.log(userId)
+        console.log("BATATA", userId)
         const response = await axios.post('http://localhost:8000/logali/app/scheduling/searchEnd', objectData)
           .then(function (response) {
-              setEnd(response.data.data[0])
+              setEnd(response.data.data)
             console.log(response.data);
           })
           .catch(function (error) {

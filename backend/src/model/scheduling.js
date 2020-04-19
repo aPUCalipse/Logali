@@ -207,12 +207,7 @@ class Scheduling {
 
                     query += `limit ${this.getPageByPaginatio(page, pageSize)}`
 
-                console.log(query)
-
             const resp = await this.dbPool.query(query)
-
-            // console.log(resp)
-            console.log(resp.length)
 
             return resp;
         } catch (err) {

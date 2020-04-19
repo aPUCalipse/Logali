@@ -96,7 +96,7 @@ export default function RecipeReviewCard() {
 
 
   const userId={
-    userId: '1'
+    userId: '2s'
   }
  
   function splitDateTime(item){
@@ -112,7 +112,11 @@ export default function RecipeReviewCard() {
   }
 
   async function getScheduling(){
-    const response = await axios.post('http://localhost:8000/logali/app/scheduling/select', {id:userId.userId})
+    const response = await axios.post('http://localhost:8000/logali/app/scheduling/select', {
+        "idUser" : userId.userId,
+        "page": 1,
+        "pageSize": 10
+    })
       .then(function(response) {
         console.log(response);
         setData(response.data.data)
