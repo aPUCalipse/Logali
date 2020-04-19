@@ -156,12 +156,25 @@ class SchedulingRouter {
         try {
             const schedulingCtrl = new SchedulingCtrl(this.dbPool)
 
-            if (!_.isEmpty(req.body)) {              
-                const resp = await schedulingCtrl.select(req.body)
-                response.message = "Seleção realizada com sucesso"
-                response.data = resp.body
-                res.status(200)
-                  
+            if (!_.isEmpty(req.body)) {         
+                const params = schedulingCtrl.getDefultParams(
+                    req.body.page,
+                    req.body.pageSize,
+                    req.body.idTypeScheduling,
+                    req.body.idStatusScheduling,
+                    req.body.idUser
+                )
+
+                if(params.isValid){
+                    const resp = await schedulingCtrl.select(params.data)
+                    response.message = "Seleção realizada com sucesso"
+                    response.data = resp.body
+                    res.status(200)
+                } else {
+                    response.message = params.message
+                    response.data = params.data
+                    res.status(params.statusCode)
+                }
             } else {
                 response.message = "Os parametros não foram enviados"
                 response.data = req.body
@@ -172,7 +185,6 @@ class SchedulingRouter {
             response.message = "Erro ao realizar seleção"
             res.status(500)
         } finally {
-            console.log("resposta: " + response)
             res.send(response)
         }
     }

@@ -119,18 +119,101 @@ class SchedulingCtrl {
         }
     }
 
-    async select(userId) {
+    getDefultParams(page, pageSize, idTypeScheduling, idStatusScheduling, idUser) {
+        const validatedParams = {
+            isValid: true,
+            message: null,
+            statusCode: null,
+            data: {
+                page: null,
+                pageSize: null,
+                idTypeScheduling: null,
+                idStatusScheduling: null,
+                idUser: null
+            }
+        }
 
+        if(!page){
+            validatedParams.data.page = 1
+        } else {
+            const numberPage = parseInt(page)
+            if(!_.isNaN(numberPage)){
+                validatedParams.data.page = numberPage
+            } else {
+                validatedParams.data.page = 1
+            }
+        }
+
+        if(!pageSize){
+            validatedParams.data.pageSize = 10
+        } else {
+            const numberPageSize = parseInt(pageSize)
+            if(!_.isNaN(numberPageSize)){
+                validatedParams.data.pageSize = numberPageSize
+            } else {
+                validatedParams.data.pageSize = 10
+            }
+        }
+
+        if(!idTypeScheduling){
+            validatedParams.data.idTypeScheduling = null
+        } else {
+            const numberIdTypeScheduling = parseInt(idTypeScheduling)
+            if(!_.isNaN(numberIdTypeScheduling)){
+                validatedParams.data.idTypeScheduling = numberIdTypeScheduling
+            } else {
+                validatedParams.data.idTypeScheduling = null
+            }
+        }
+
+        if(!idStatusScheduling){
+            validatedParams.data.idStatusScheduling = null
+        } else {
+            const numberIdStatusScheduling = parseInt(idStatusScheduling)
+            if(!_.isNaN(numberIdStatusScheduling)){
+                validatedParams.data.idStatusScheduling = numberIdStatusScheduling
+            } else {
+                validatedParams.data.idStatusScheduling = null
+            }
+        }
+
+        if(!idUser){
+            validatedParams.isValid = false
+            validatedParams.message = "O parametro id do usuario deve ser enviado e deve ser maior que zero"
+            validatedParams.statusCode = 400
+        } else {
+            const numberIdUser = parseInt(idUser)
+            if(!_.isNaN(numberIdUser)){
+                validatedParams.data.idUser = numberIdUser
+            } else {
+                validatedParams.isValid = false
+                validatedParams.message = "O parametro id do usuario deve ser enviado e deve ser maior que zero"
+                validatedParams.statusCode = 400
+            }
+        }
+
+        return validatedParams
+    }
+
+    async select(filter) {
         const response = {
             insertId: null,
             message: null,
-            statusCode: userId === null ? 400 : 500,
+            statusCode: 500,
         }
+
         try {
-                const selectedSchedule = await this.scheduling.select(userId)
-                response.message = selectedSchedule
-                response.statusCode = 200
-            }
+            const selectedSchedules = await this.scheduling.select(
+                filter.page,
+                filter.pageSize,
+                filter.idTypeScheduling,
+                filter.idStatusScheduling,
+                filter.idUser
+            )
+            
+            response.message = selectedSchedules
+            response.statusCode = 200
+        }
         catch (err) {
             response.message = `Erro desconhecido ao pesquisar agendamentos  -> ${err.toString()}`
         } finally {
