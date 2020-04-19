@@ -1,0 +1,14 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\backend",
+    "\\backend\\src",
+    "\\frontend",
+    "\\frontend\\public",
+    "\\frontend\\src",
+    "\\frontend\\src\\Views",
+    "\\frontend\\src\\Views\\SchedulePage"
+  ],
+  "SelectedNode": "\\frontend\\src\\Views\\SchedulePage\\SchedulePage.module.css",
+  "PreviewInSolutionExplorer": false
+}

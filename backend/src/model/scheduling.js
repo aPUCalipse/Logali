@@ -26,13 +26,21 @@ class Scheduling {
         }
     }
 
-    async delete(userId){
+    async delete(idScheduling){
         try{
-            const query =  `DELETE FROM logali.scheduling WHERE userId = ${userId}`
-            
+            const query =  `DELETE ` +
+            `FROM logali.scheduling ` +
+            `where id = '${idScheduling}' `
+
+
             const resp = await this.dbPool.query(query)
-            return resp
+            if(resp && resp.affectedRows >= 1){
+                return resp
+            } else {
+                throw new Error(`O id Enviado não existe no banco`)
+            }
         } catch(err) {
+            console.log(err)
             throw new Error(`Erro excluir agendamento -> ${err}`)
         }
     }
@@ -54,38 +62,75 @@ class Scheduling {
         }
     }
 
-    async update(id, typeSchedulingId, date, time, observation) {
-        id='1'
+    async getSchedulingByIdAndIdUser(id, idUser) {
+        try {
+            const query =
+                `SELECT `+
+                    `workerId ` +
+                `FROM logali.scheduling ` +
+                `WHERE 1=1 ` +
+                `AND id = '${id}' ` +
+                `AND userId = '${idUser}'`
+          
+            const resp = await this.dbPool.query(query)
+
+            return resp.pop()
+        } catch (err) {
+            throw new Error(`Erro ao atualizar agendamento -> ${err}`)
+        }
+    }
+    
+    async update(id, dateTime, observation) {
         try {
             const query =
                 `UPDATE logali.scheduling ` +
-                `SET typeSchedulingId= '${typeSchedulingId}',` + 
-                `date = '${date}', ` +
-                `time = '${time}', ` +
-                `observation = '${observation}' ` +
-                `WHERE id = '${id}' `
-            console.log(query);
+                `SET ` +
+                    `dateTime = '${dateTime.format("YYYY-MM-DD HH:mm:ss")}' ` +
+                    ((observation) ? `, observation = '${observation}' ` : ` `)+
+                `WHERE id = '${id}' `          
+
+                console.log(query)
+
             const resp = await this.dbPool.query(query)
-            console.log(resp)
-            return resp
+            
+            if(resp && resp.affectedRows >= 1){
+                return resp
+            } else {
+                throw new Error(`O id Enviado não existe no banco`)
+            }
         } catch (err) {
-            throw new Error(`Erro ao editar agendamento -> ${err}`)
+            throw new Error(`Erro ao atualizar agendamento -> ${err}`)
         }
     }
 
-    async searchEnd(userId){
+    async validateUserId(userId){
+        const response = {
+            isValid: false, 
+            user:''
+        }
+
+        try {   
+            const searchUserQuery = `SELECT * FROM logali.user WHERE id = '${userId}' ` 
+
+            const searchUser = await this.dbPool.query(searchUserQuery)
+            
+            if(searchUser.length > 0){
+                response.isValid = true
+                response.user = searchUser.pop()
+            }
+
+            return response
+        } catch (err) {
+            throw new Error(`Erro ao pesquisar endereço -> ${err}`)
+        }
+    }
+    
+    async searchEnd(addressId){
         try {
-            userId = '1';
-            const address_idQuery =
-                `SELECT * FROM logali.user WHERE id = '${userId}' ` 
-            const resposte = await this.dbPool.query(address_idQuery)
-            const teste = resposte.address_id
-            console.log(resposte)
-            const query = `SELECT * FROM logali.address WHERE id = '${teste}' `
-            console.log(query);
-            const resp = await this.dbPool.query(query)
-            console.log(resp);
-            return resp
+            const queryAddress = `SELECT * FROM logali.address WHERE id = '${addressId}' `
+            const address = await this.dbPool.query(queryAddress)
+
+            return address.pop()
         } catch (err) {
             throw new Error(`Erro ao pesquisar endereço -> ${err}`)
         }
@@ -161,15 +206,71 @@ class Scheduling {
         }
     }
 
-    async select(userId){
-        userId=1
+    async select(page, pageSize, idTypeScheduling, idStatusScheduling, idUser){
         try {
-            const query = `SELECT * FROM logali.scheduling WHERE 1=1 AND userId = '${userId}'`
+            let query = `` +
+                    `SELECT ` +
+
+                    `s.userId 'idClient', ` +
+                    `uc.name 'clientName', ` +
+
+                    `s.typeSchedulingId, ` +
+                    `ts.name 'nametypeSchedulig', ` +
+
+                    `s.statusSchedulingId, ` +
+                    `ss.name 'nameStatusScheduling', ` +
+
+                    `s.workerId 'idWorker', ` +
+                    `uw.name 'workerName', ` +
+
+                    `s.id 'schedulingId', ` +
+                    `s.\`dateTime\`, ` +
+                    `s.observation, ` +
+                    `s.createdAt ` +
+                    `FROM logali.scheduling s ` +
+                
+                    `join logali.user uc ` +
+                    `on uc.id = s.userId ` +
+                
+                    `left join logali.user uw ` +
+                    `on uw.id = s.workerId ` +
+                
+                    `join logali.statusscheduling ss ` +
+                    `on ss.id = s.statusSchedulingId ` +
+                
+                    `join logali.typescheduling ts ` +
+                    `on ts.id = s.typeSchedulingId ` +
+                
+                    `join logali.address ad ` +
+                    `on ad.id = uc.addressId ` +
+                
+                    `where 1=1 `+
+                    `and uc.id = ${idUser} `
+
+                    if(idTypeScheduling){
+                        query += `and s.typeSchedulingId = ${idTypeScheduling} `
+                    }
+
+                    if(idStatusScheduling){
+                        query += `and s.statusSchedulingId = ${idStatusScheduling} `
+                    }
+
+                    query += `limit ${this.getPageByPaginatio(page, pageSize)}`
+
             const resp = await this.dbPool.query(query)
+
             return resp;
         } catch (err) {
             throw new Error(`Erro ao selecionar agendamentos -> ${err}`)
         }
+    }
+
+    getPageByPaginatio(page, pageSize){
+        const init = (page*pageSize)-pageSize
+        const end = pageSize
+
+        return `${init},${end}`
+        
     }
 }
 
