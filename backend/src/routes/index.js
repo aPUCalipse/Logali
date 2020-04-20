@@ -10,7 +10,7 @@ class RouteService {
         this.schedulingRouter = new SchedulingRouter(this.app, appBaseRoute, dbPool)
         this.registerRouter = new RegisterRouter(this.app,appBaseRoute,dbPool)
 		
-		this.loginRouter = new LoginRouter(this.app,appBaseRoute,dbPooll)
+		this.loginRouter = new LoginRouter(this.app,appBaseRoute,dbPool)
     }
 
     init() {

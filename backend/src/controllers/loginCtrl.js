@@ -19,7 +19,6 @@ class LoginCtrl {
         }
 
         const momentDateTime = Moment().format("YYYY-MM-DD HH:mm:ss")
-        validatedParams.data.CreatedAt = momentDateTime
 
         if (!login) {
             validatedParams.isValid = false
@@ -33,7 +32,7 @@ class LoginCtrl {
             validatedParams.isValid = false
             validatedParams.message = "O parâmetro tipo de usuário está incorreto"
             validatedParams.statusCode = 400
-        else {
+        }else {
             validatedParams.isValid = true
             validatedParams.statusCode = 200
         }
@@ -43,19 +42,18 @@ class LoginCtrl {
 
     async create(login) {
         const response = {
-            insertId: null,
             message: null,
             statusCode: 500
         }
 
         try {
 				const createdLogin = await this.login.validate(login.login, login.password, login.tipoUsuario)
-                response.insertId = createdLogin.insertId
-                response.message = createdLogin.message
+                response.message = createdLogin
         }
         catch (err) {
             response.message = `Erro desconhecido ao fazer login -> ${err.toString()}`
         } finally {
+            console.log(response)
             return response
         }
     }

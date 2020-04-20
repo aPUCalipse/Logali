@@ -3,7 +3,7 @@ const LoginCtrl = require("../controllers/loginCtrl")
 const baseModuleRoute = "/login"
 
 class LoginRouter {
-	constructor(app, appBaseRoute, dbPool) {
+    constructor(app, appBaseRoute, dbPool) {
         this.app = app
         this.dbPool = dbPool
         this.baseRoute = appBaseRoute + baseModuleRoute
@@ -12,6 +12,7 @@ class LoginRouter {
             message: null,
             data: {}
         }
+    }
 
 	init() {
         this.app.post(`${this.baseRoute}`, this.create.bind(this))
@@ -34,10 +35,10 @@ class LoginRouter {
                 )
 
                 if (validatedParams && validatedParams.isValid) {
-                    const resp = await registerCtrl.create(validatedParams.data)
+                    const resp = await loginCtrl.create(validatedParams.data)
 
-                    if (resp && resp.insertId) {
-                        response.message = "Cadastro realizado com sucesso"
+                    if (resp && resp.message === true) {
+                        response.message = "Login realizado com sucesso"
                         response.data = validatedParams.data
                         response.data.idRegister = resp.insertId
                         res.status(200)

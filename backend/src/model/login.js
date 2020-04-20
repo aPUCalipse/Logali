@@ -8,14 +8,23 @@ class Login {
 	async validate(login,senha,tipoUsuario){
 		try {
 			const query = 
-				`SELECT senha ` + 
+				`SELECT password ` + 
 				`FROM logali.user ` +
 				`WHERE login = '${login}' ` + 
-				`AND typeUser = ${tipoUsuario}`
+				`AND typeUserId = ${tipoUsuario}`
 				
 			const resp = await this.dbPool.query(query)
-            console.log(resp);
-			return resp === ${senha}
+            if (resp.length > 0) {
+                if (resp[0].password == senha) {
+                    return true;
+                }
+                else {
+                    return 'Senha incorreta'
+                }
+            }
+            else {
+                return 'Usuário não encontrado'
+            }
         } catch (err) {
             throw new Error(`Erro ao validar usuário -> ${err}`)
         }
