@@ -53,6 +53,7 @@ class Rating {
             const ratersID = await this.rating.validateRater(rateraterId, ratedId)
             if(validadeRater.isValid){
                 if(ratersID >= 0 || ratersID != null){
+                    const ratedUser = await this.rating.rate(raterId, ratedId, rate, observation, schedulingId)
                     response.message = 'Usuário avaliado com sucesso'
                     response.data = ratersID
                     response.statusCode = 200
@@ -62,6 +63,20 @@ class Rating {
                     response.statusCode = 404
                 }
             }
+
+            //Calculo da Média
+            const avgRate = await this.rating.validateAVG(raterId,ratedId, rate)
+            if(avgRate >=0 & avgRate != null){
+                const calculeAVG = await this.rating.avgRate(raterId, ratedId, rate)
+                response.message = 'Média atualizada com sucesso'
+                response.data = calculeAVG
+                response.statusCode = 200
+            }else{
+                response.message = 'Parâmetro média incorreto.'
+                    response.data = calculeAVG
+                    response.statusCode = 404
+            }
+
         }catch(err){
             response.message = `Erro desconhecido ao realizar a avaliação  -> ${err.toString()}`
         }finally {
