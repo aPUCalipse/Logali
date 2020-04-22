@@ -109,7 +109,7 @@ class Register extends Component {
                                 </Form.Group>
 
                                 <Form.Group as={Col} md={4}>
-                                    <Form.Label>Usuaio:</Form.Label>
+                                    <Form.Label>Usuário:</Form.Label>
                                     <Form.Control type="text" placeholder="Digite seu usuario" id="userInput" required="required" autoComplete="off"/>
                                 </Form.Group>
 

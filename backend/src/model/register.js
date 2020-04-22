@@ -30,7 +30,7 @@ class Register {
             }
             const query =
                 `INSERT INTO logali.user ` +
-                `(name, login, typeUserId,password, createdAt, addressId) VALUES ` +
+                `(name, login, typeUserId,password, createdAt, address_Id) VALUES ` +
                 `(
                 '${nome}', 
                 '${login}',

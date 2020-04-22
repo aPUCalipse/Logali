@@ -21,7 +21,9 @@ class SchedulingRouter {
         this.app.post(`${this.baseRoute}/searchEnd`, this.searchEnd.bind(this));
         this.app.delete(`${this.baseRoute}/delete/:idScheduling`, this.delete.bind(this));
         this.app.post(`${this.baseRoute}/select`, this.select.bind(this));
+        this.app.post(`${this.baseRoute}/selectUserId`, this.selectUser.bind(this));
     }
+
 
     /**
      * @params
@@ -224,6 +226,30 @@ class SchedulingRouter {
             res.send(response)
         }
     }
+
+    async selectUser(req, res) {
+        const response = _.clone(this.response)
+        try {
+            if(req.body && req.body.userId){
+                const schedulingCtrl = new SchedulingCtrl(this.dbPool)
+                const resp = await schedulingCtrl.selectUser(req.body.userId)
+
+                response.data = resp.data
+                response.message = resp.message
+                res.status(resp.statusCode)                  
+            } else {
+                response.message = "É necessário enviar o id do usuario"
+                res.status(400)                  
+            }
+        } catch (err) {
+            console.log(err)
+            response.message = "Erro ao realizar pesquisa"
+            res.status(500)
+        } finally {
+            res.send(response)
+        }
+    }
+
 }
 
 module.exports = SchedulingRouter

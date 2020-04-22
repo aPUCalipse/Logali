@@ -272,6 +272,18 @@ class Scheduling {
         return `${init},${end}`
         
     }
+
+    async selectUser(Id){
+        try {
+            const queryAddress = `SELECT name FROM logali.user WHERE id = '${Id}' `
+            const name = await this.dbPool.query(queryAddress)
+
+            return name
+        } catch (err) {
+            throw new Error(`Erro ao pesquisar id do usuário -> ${err}`)
+        }
+    }
+
 }
 
 module.exports = Scheduling

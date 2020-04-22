@@ -91,6 +91,7 @@ class SchedulingCtrl {
             return response
         }
     }
+
     async searchEnd(userId) {
         const response = {
             data:[],
@@ -304,6 +305,34 @@ class SchedulingCtrl {
         }
         catch (err) {
             response.message = `Erro desconhecido ao cancelar agendamento --> ${err.toString()}`
+        } finally {
+            return response
+        }
+    }
+
+    async selectUser(userId) {
+        const response = {
+            data:[],
+            message: null,
+            statusCode: 500
+        }
+
+        try {
+            const responseIsValid = await this.scheduling.validateUserId(userId) 
+
+            if(responseIsValid.isValid){  
+                    response.message = 'Usuário encontrado com sucesso'
+                    response.data = address
+                    response.statusCode = 200
+            } else {
+                    response.message = 'Usuário não encontrado.'
+                    response.data = address
+                    response.statusCode = 404
+                }
+            } 
+        
+        catch (err) {
+            response.message = `Erro desconhecido ao pesquisar -> ${err.toString()}`
         } finally {
             return response
         }

@@ -14,6 +14,10 @@ import MainLayout from '../MainLayout/MainLayout'
 //testando módulo de cep
 import cep from 'cep-promise'
 
+import isLoggedIn from "../src/Functions/verifySession"
+
+isLoggedIn()
+
 cep('05010000')
   .then(console.log)
 

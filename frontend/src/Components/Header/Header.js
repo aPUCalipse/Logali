@@ -14,11 +14,11 @@ function Header(){
             <Nav.Link href="#">Como funciona?</Nav.Link>
             <Nav.Link href="#link">Fale Conosco</Nav.Link>
             <NavDropdown title="Usuário" id="basic-nav-dropdown">
-            <NavDropdown.Item href="#action/3.1">Cadastrar-se</NavDropdown.Item>
-            <NavDropdown.Item href="#action/3.2">Entrar</NavDropdown.Item>
-            <NavDropdown.Item href="#action/3.3">Serviços</NavDropdown.Item>
+            <NavDropdown.Item href="/register">Cadastrar-se</NavDropdown.Item>
+            <NavDropdown.Item href="/login">Entrar</NavDropdown.Item>
+            <NavDropdown.Item href="#">Serviços</NavDropdown.Item>
             <NavDropdown.Divider />
-            <NavDropdown.Item href="#action/3.4">Avaliações</NavDropdown.Item>
+            <NavDropdown.Item href="#">Avaliações</NavDropdown.Item>
             </NavDropdown>
             </Nav>
 
