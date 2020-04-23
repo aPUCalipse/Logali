@@ -2,7 +2,7 @@ import { ToastProvider, useToasts } from 'react-toast-notifications'
 import React, { useState, Component } from 'react';
 import {navigate, A} from 'hookrouter';
 import {Row, Col, Form, Button, Container} from 'react-bootstrap'
-import api from '../../Components/Assets/api';
+import axios from 'axios';
 
 import style from './Login.module.css'
 
@@ -42,15 +42,6 @@ const FormLogin = () => {
                     }
                 )
                 return 
-            } else if(loginData.password.length < 8){
-                addToast(
-                    'A senha deve conter no minimo 8 carateres', 
-                    { 
-                        appearance: 'error',
-                        autoDismiss: true
-                    }
-                )
-                return 
             }
 
             if(!loginData.typeUser || loginData.typeUser.length < 1){
@@ -62,9 +53,18 @@ const FormLogin = () => {
                     }
                 )
                 return
-             }
+            }
 
-            await api.post("/logali/app/scheduling/select", loginData)
+            const dataRequestLogin = {
+                "login" : loginData.login,
+                "senha": loginData.password,
+                "tipoUsuario": loginData.typeUser
+            }
+
+            await axios.post(
+                'http://localhost:8000/logali/app/login',
+                dataRequestLogin
+            )
 
             addToast(
                 'Tudo certo, você será redirecionado...', 
@@ -73,9 +73,10 @@ const FormLogin = () => {
                     autoDismiss: true,
                     onDismiss: () => {
                         if(loginData.typeUser === '1'){
-                            navigate("/agendar")
+                            navigate("/")
+                            // navigate("/agendamentos")
                         } else if(loginData.typeUser === '2') {
-                            navigate("/agendamentos")
+                            navigate("/agendar")
                         }
                     }
                 }
@@ -87,7 +88,7 @@ const FormLogin = () => {
 
             if(err && err.response && err.response.data && err.response.data.message){
                 addToast(
-                    'rr.response.data.message', 
+                    err.response.data.message, 
                     { 
                         appearance: 'error',
                         autoDismiss: true
