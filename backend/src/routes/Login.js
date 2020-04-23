@@ -15,32 +15,32 @@ class LoginRouter {
     }
 
 	init() {
-        this.app.post(`${this.baseRoute}`, this.create.bind(this))
+        this.app.post(`${this.baseRoute}`, this.login.bind(this))
     }
 	
 	/**
      * @params
      *  login, senha, tipoUsuario
      */
-	 async create(req, res) {
+	 async login(req, res) {
         const response = _.clone(this.response)
         try {
             const loginCtrl = new LoginCtrl(this.dbPool)
 
             if (!_.isEmpty(req.body)) {
-                const validatedParams = loginCtrl.valitadeParamsCreate(
+                const validatedParams = loginCtrl.validateParamsLogin(
                     req.body.login,
                     req.body.senha,
                     req.body.tipoUsuario
                 )
 
                 if (validatedParams && validatedParams.isValid) {
-                    const resp = await loginCtrl.create(validatedParams.data)
+                    const resp = await loginCtrl.login(validatedParams.data)
 
                     if (resp && resp.message === true) {
                         response.message = "Login realizado com sucesso"
                         response.data = validatedParams.data
-                        response.data.idRegister = resp.insertId
+                        response.data.idUser = resp.userID
                         res.status(200)
                     } else {
                         response.message = `Erro ao realizar login -> ${resp.message}`

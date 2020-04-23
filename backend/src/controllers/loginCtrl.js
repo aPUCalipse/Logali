@@ -1,4 +1,3 @@
-const Moment = require('moment')
 const Login = require('../model/login')
 
 class LoginCtrl {
@@ -6,7 +5,7 @@ class LoginCtrl {
         this.login = new Login(dbPool)
     }
 
-    valitadeParamsCreate(login, senha, tipoUsuario) {
+    validateParamsLogin(login, senha, tipoUsuario) {
         const validatedParams = {
             isValid: null,
             message: null,
@@ -17,8 +16,6 @@ class LoginCtrl {
                 tipoUsuario: tipoUsuario
             }
         }
-
-        const momentDateTime = Moment().format("YYYY-MM-DD HH:mm:ss")
 
         if (!login) {
             validatedParams.isValid = false
@@ -40,15 +37,21 @@ class LoginCtrl {
         return validatedParams
     }
 
-    async create(login) {
+    async login(login) {
         const response = {
             message: null,
-            statusCode: 500
+            statusCode: 500,
+            userID: 0
         }
 
         try {
-				const createdLogin = await this.login.validate(login.login, login.password, login.tipoUsuario)
-                response.message = createdLogin
+				const userLogin = await this.login.validate(login.login, login.password, login.tipoUsuario)
+                response.message = userLogin.message
+                if(userLogin.message === 'Senha incorreta')
+                    response.statusCode = 400
+                else if(userLogin.message === 'Usuário não encontrado')
+                    response.statusCode = 404
+                response.userID = userLogin.userID
         }
         catch (err) {
             response.message = `Erro desconhecido ao fazer login -> ${err.toString()}`

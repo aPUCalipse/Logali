@@ -6,25 +6,31 @@ class Login {
     }
 
 	async validate(login,senha,tipoUsuario){
-		try {
+		const resp = {
+            message: null,
+            idUser: 0
+        }
+        try {
 			const query = 
-				`SELECT password ` + 
+				`SELECT id, password ` + 
 				`FROM logali.user ` +
 				`WHERE login = '${login}' ` + 
 				`AND typeUserId = ${tipoUsuario}`
 				
-			const resp = await this.dbPool.query(query)
-            if (resp.length > 0) {
-                if (resp[0].password == senha) {
-                    return true;
+			const qry = await this.dbPool.query(query)
+            if (qry.length > 0) {
+                if (qry[0].password == senha) {
+                    resp.message = true;
+                    resp.idUser = qry[0].id;
                 }
                 else {
-                    return 'Senha incorreta'
+                    resp.message = 'Senha incorreta'
                 }
             }
             else {
-                return 'Usuário não encontrado'
+                resp.message = 'Usuário não encontrado'
             }
+            return resp
         } catch (err) {
             throw new Error(`Erro ao validar usuário -> ${err}`)
         }
