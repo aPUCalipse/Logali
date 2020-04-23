@@ -214,7 +214,7 @@ class SchedulingCtrl {
                 filter.idStatusScheduling,
                 filter.idUser
             )
-            
+            console.log(selectedSchedules)
             response.data = selectedSchedules
             response.statusCode = 200
         }
