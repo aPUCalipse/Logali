@@ -61,10 +61,17 @@ const FormLogin = () => {
                 "tipoUsuario": loginData.typeUser
             }
 
-            await axios.post(
+            const resp = await axios.post(
                 'http://localhost:8000/logali/app/login',
                 dataRequestLogin
             )
+
+            const userData = {
+                idUser: resp.data.idUser,
+                isLogged: true
+            }
+
+            localStorage.setItem("userData", JSON.stringify(userData))
 
             addToast(
                 'Tudo certo, você será redirecionado...', 
