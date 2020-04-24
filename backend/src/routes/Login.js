@@ -35,7 +35,7 @@ class LoginRouter {
                 )
 
                 if (validatedParams && validatedParams.isValid) {
-                    const resp = await loginCtrl.login(validatedParams.data)
+                    const resp = await loginCtrl.VerifyLogin(validatedParams.data)
 
                     if (resp && resp.message === true) {
                         response.message = "Login realizado com sucesso"

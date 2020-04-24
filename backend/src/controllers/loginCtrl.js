@@ -37,7 +37,7 @@ class LoginCtrl {
         return validatedParams
     }
 
-    async login(login) {
+    async VerifyLogin(login) {
         const response = {
             message: null,
             statusCode: 500,
@@ -45,13 +45,15 @@ class LoginCtrl {
         }
 
         try {
-				const userLogin = await this.login.validate(login.login, login.password, login.tipoUsuario)
-                response.message = userLogin.message
-                if(userLogin.message === 'Senha incorreta')
-                    response.statusCode = 400
-                else if(userLogin.message === 'Usuário não encontrado')
-                    response.statusCode = 404
-                response.userID = userLogin.userID
+            const userLogin = await this.login.validate(login.login, login.password, login.tipoUsuario);
+            response.message = userLogin.message;
+            if (userLogin.message === 'Senha incorreta') {
+                response.statusCode = 400
+            }
+            else if (userLogin.message === 'Usuário não encontrado') {
+                response.statusCode = 404
+            }
+            response.userID = userLogin.userID
         }
         catch (err) {
             response.message = `Erro desconhecido ao fazer login -> ${err.toString()}`
