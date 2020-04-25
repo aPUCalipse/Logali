@@ -53,7 +53,7 @@ class LoginCtrl {
             else if (userLogin.message === 'Usuário não encontrado') {
                 response.statusCode = 404
             }
-            response.userID = userLogin.userID
+            response.userID = userLogin.idUser
         }
         catch (err) {
             response.message = `Erro desconhecido ao fazer login -> ${err.toString()}`
