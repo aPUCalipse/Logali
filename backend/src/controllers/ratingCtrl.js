@@ -1,7 +1,7 @@
 const Moment = require('moment')
 const Rating = require('../model/rating')
 
-class Rating {
+class RatingCtrl {
     constructor(dbPool) {
         this.rating = new Rating(dbPool)
     }
@@ -22,26 +22,26 @@ class Rating {
 
         if(!raterId){
             validatedParams.isValid = false
-            validatedParams.message = "O parametro raterId está incorreto"
+            validatedParams.message = "O parametro do tipo Avaliação id do usuário avaliador está incorreto"
             validatedParams.statusCode = 400
         } else if(!ratedId){
             validatedParams.isValid = false
-            validatedParams.message = "O parametro ratedId está incorreto"
+            validatedParams.message = "O parametro do tipo Avaliação id do usuário avaliado está incorreto"
             validatedParams.statusCode = 400
         } else if(rate <= 0 || rate == null){
             validatedParams.isValid = false
-            validatedParams.message = "O parametro rate está incorreto"
+            validatedParams.message = "O parametro do tipo Avaliação nota da avaliação está incorreto"
             validatedParams.statusCode = 400
         } else if(!schedulingId){
             validatedParams.isValid = false
-            validatedParams.message = "O parametro schedulingId está incorreto"
+            validatedParams.message = "O parametro do tipo Avaliação do agendamento está incorreto"
             validatedParams.statusCode = 400
         }
         return validatedParams;
     }
 
 
-    async rating(rating){
+    async avaliacao(rating){
         const response = {
             raterId,
             data: null,
@@ -50,33 +50,31 @@ class Rating {
         }
 
         try{
-            const ratersID = await this.rating.validateRater(rateraterId, ratedId)
+            const ratersID = await this.rating.validateRater(rating.rateraterId, rating.ratedId, rating.schedulingId)
             if(validadeRater.isValid){
                 if(ratersID >= 0 || ratersID != null){
-                    const ratedUser = await this.rating.rate(raterId, ratedId, rate, observation, schedulingId)
+                    const ratedUser = await this.rating.avaliar(rating.raterId, rating.ratedId, rating.rate, rating.observation, rating.schedulingId)
                     response.message = 'Usuário avaliado com sucesso'
-                    response.data = ratersID
+                    response.data = ratedUser
                     response.statusCode = 200
                 }else {
                     response.message = 'Usuário não encontrado.'
-                    response.data = ratersID
+                    response.data = ratedUser
                     response.statusCode = 404
                 }
-            }
-
-            //Calculo da Média
-            const avgRate = await this.rating.validateAVG(raterId,ratedId, rate)
-            if(avgRate >=0 & avgRate != null){
-                const calculeAVG = await this.rating.avgRate(raterId, ratedId, rate)
-                response.message = 'Média atualizada com sucesso'
-                response.data = calculeAVG
-                response.statusCode = 200
-            }else{
-                response.message = 'Parâmetro média incorreto.'
+                
+                //Calculo da Média
+                if(avgRate >=0 & avgRate != null){
+                    const calculeAVG = await this.rating.avgRate(rating.ratedId, rating.rate)
+                    response.message = 'Média atualizada com sucesso'
                     response.data = calculeAVG
-                    response.statusCode = 404
+                    response.statusCode = 200
+                }else{
+                    response.message = 'Parâmetro média incorreto.'
+                        response.data = calculeAVG
+                        response.statusCode = 404
+                }
             }
-
         }catch(err){
             response.message = `Erro desconhecido ao realizar a avaliação  -> ${err.toString()}`
         }finally {

@@ -10,7 +10,7 @@ class RouteService {
         this.app = expressInstance
         this.schedulingRouter = new SchedulingRouter(this.app, appBaseRoute, dbPool)
         this.registerRouter = new RegisterRouter(this.app,appBaseRoute,dbPool)
-        this.ratingRouter = new this.RatingRouter(this.app,appBaseRoute,dbPool)
+        this.ratingRouter = new RatingRouter(this.app,appBaseRoute,dbPool)
 
     }
 

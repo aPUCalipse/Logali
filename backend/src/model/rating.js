@@ -8,126 +8,83 @@ class rating {
 
 
 
-    validateAVG(raterId, ratedId, rate) {
-        const response = {
-            isValid: false,
-            rating: ''
-        }
+    avgRate(ratedId, rate) {
         try {
-            const searchRateUserQuery = `SELECT ` +
-                `raterId, ratedId, rate` +
-                `FROM logali.rating ` +
-                `WHERE raterId = '${raterId}' ` +
-                `AND ratedId = '${ratedId}' ` +
-                `AND rate = '${rate}' `
-
-            const searchQuery = await this.dbPool.query(searchRateUserQuery)
-            if (searchRateUserQuery.length > 0) {
-                response.isValid = true
-                response.rating = searchQuery.pop()
-                //response.rate = searchQuery.pop()
-            }
-            return response
-        } catch (err) {
-            throw new Error(`Erro ao calcular a média -> ${err}`)
-        }
-    }
-
-    avgRate(raterId, ratedId, rate){
-        try{
-            //---------------------------------------------------------//
-
-            //Já está com a nota Avaliada passada como parâmetro
-
-            // //busca no database a nota avaliada
-            // const query = `SELECT ` +
-            // `rate ` +
-            // `FROM logali.rating ` +
-            // `WHERE  raterId = '${raterId}' ` +
-            // `AND ratedId = '${ratedId}`
-
-            //---------------------------------------------------------//
-
-
-            //armazena a nota recebida na variavel
-            const storageRate = rate;
-            
-            console.log(storageRate)
-
-            //busca no database a nota atual do usuario que foi avaliado
-            const userQuery = `SELECT ` +
-            `rateAVG ` +
-            `FROM logali.user ` +
-            `WHERE  id = '${ratedId}' `
-
-            console.log(userQuery)
-
-            //calcula a média
-            storageRate = ( (StorageRate + userQuery) / 2 )  
-
-            console.log(storageRate)
-
             const update = `UPDATE logali.user ` +
-            `SET ` +
-            `rateAVG = '${storageRate}' ` +
-            `WHERE id = '${ratedId}' `
-            
-            console.log(update) 
+                `SET rateAVG = ( (rateAVG + ${rate}) / 2) ` +
+                `WHERE id = '${ratedId}' `
+
+            console.log(update)
 
             const resp = await this.dbPool.query(update)
 
-            if(resp && resp.affectedRows >= 1){
+            if (resp && resp.affectedRows >= 1) {
                 console.log(resp)
                 return resp
-            }else{
+            } else {
                 throw new Error(`O id Enviado não existe no banco`)
             }
-        }catch(err){
+        } catch (err) {
             throw new Error(`Erro ao atualizar a média -> ${err}`)
         }
     }
 
 
-validateRater(raterId, ratedId) {
-    const response = {
-        isValid: false,
-        rating: ''
-    }
-    try {
-        const searchRateQuery = `SELECT ` +
-            `raterId, ratedId ` +
-            `FROM logali.rating ` +
-            `WHERE raterId = '${raterId}' ` +
-            `AND ratedId = '${ratedId}' `
-
-        const searchRate = await this.dbPool.query(searchRateQuery)
-        if (searchRateQuery.length > 0) {
-            response.isValid = true
-            response.rate = searchRate.pop()
+    validateRater(raterId, ratedId, schedulingId) {
+        const response = {
+            isValid: false,
+            rating: ''
         }
-        return response
-    } catch (err) {
-        throw new Error(`Erro ao pesquisar avaliador -> ${err}`)
-    }
-}
+        try {
+            const searchRateQuery = `SELECT ` +
+                `raterId, ratedId, schedulingId ` +
+                `FROM logali.rating ` +
+                `WHERE raterId = '${raterId}' ` +
+                `AND ratedId = '${ratedId}' ` +
+                `AND schedulingId = '${schedulingId}' `
 
-async rate(raterId, ratedId, rate, observation, schedulingId) {
-    try {
-        const query =
-            `INSERT INTO logali.rating ` +
-            `(raterId, ratedId, rate, observation, schedulingId) VALUES ` +
-            `( +
+            const searchRate = await this.dbPool.query(searchRateQuery)
+            if (searchRate.length > 0) {
+                const searchAlreadyRaterQuery = `SELECT ` +
+                    `rate ` +
+                    `FROM logali.rating ` +
+                    `WHERE raterId = '${raterId}' ` +
+                    `AND ratedId = '${ratedId}' ` +
+                    `AND schedulingId = '${schedulingId}' `
+
+                    const searchRateAlready = await this.dbPool.query(searchAlreadyRaterQuery)    
+                if (searchRateAlready.length > 0) {
+                    throw new Error(`Usuário já avaliado -> ${searchAlreadyRater.message}`)
+                } else {
+                     response.isValid = true
+                     response.rate = searchRate.pop()
+                    return response
+                }
+            }
+            return response
+        } catch (err) {
+            throw new Error(`Erro ao pesquisar avaliador -> ${err}`)
+        }
+    }
+
+    async avaliar(raterId, ratedId, schedulingId, rate, observation) {
+        try {
+            const query =
+                `INSERT INTO logali.rating ` +
+                `(raterId, ratedId, schedulingId, rate, observation, createdAt) VALUES ` +
+                `( +
                 '${raterId} ', 
                 '${ratedId} ', 
-                '${rate} ', 
+                '${schedulingId} ',
+                '${rate} ',
                 '${observation} ', 
-                '${schedulingId} ' 
+                '${Moment().format("YYYY-MM-DD HH:mm:ss")}'
             )`
-        const resp = await this.dbPool.query(query)
-        return resp
-    } catch (err) {
-        throw new Error(`Erro ao inserir avaliação -> ${err}`)
-    }
+            const resp = await this.dbPool.query(query)
+            return resp
+        } catch (err) {
+            throw new Error(`Erro ao inserir avaliação -> ${err}`)
+        }
 
-}
+    }
 }

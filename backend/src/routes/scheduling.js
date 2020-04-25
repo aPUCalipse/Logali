@@ -21,6 +21,7 @@ class SchedulingRouter {
         this.app.post(`${this.baseRoute}/searchEnd`, this.searchEnd.bind(this));
         this.app.delete(`${this.baseRoute}/delete/:idScheduling`, this.delete.bind(this));
         this.app.post(`${this.baseRoute}/select`, this.select.bind(this));
+        this.app.get(`${this.baseRoute}/view`, this.viewScheduling.bind(this));
     }
 
     /**
@@ -85,9 +86,9 @@ class SchedulingRouter {
                     req.body.id
                 )
 
-                if(validatedParams && validatedParams.isValid){
+                if (validatedParams && validatedParams.isValid) {
                     const resp = await schedulingCtrl.update(validatedParams.data)
-                    
+
                     response.message = resp.message
                     response.data = resp
                     res.status(resp.statusCode)
@@ -95,7 +96,7 @@ class SchedulingRouter {
                     response.message = validatedParams.message
                     response.data = validatedParams.data
                     res.status(validatedParams.statusCode)
-                }                  
+                }
             } else {
                 response.message = "Os parametros não foram enviados"
                 response.data = req.body
@@ -114,10 +115,10 @@ class SchedulingRouter {
         const response = _.clone(this.response)
         try {
             const idScheduling = parseInt(req.params.id)
-            if(!_.isNaN(idScheduling) && idScheduling > 0){
+            if (!_.isNaN(idScheduling) && idScheduling > 0) {
                 const schedulingCtrl = new SchedulingCtrl(this.dbPool)
                 const resp = await schedulingCtrl.getId(idScheduling)
-                
+
                 response.data = resp.scheduling
                 response.message = resp.message
 
@@ -139,16 +140,16 @@ class SchedulingRouter {
     async searchEnd(req, res) {
         const response = _.clone(this.response)
         try {
-            if(req.body && req.body.userId){
+            if (req.body && req.body.userId) {
                 const schedulingCtrl = new SchedulingCtrl(this.dbPool)
                 const resp = await schedulingCtrl.searchEnd(req.body.userId)
 
                 response.data = resp.data
                 response.message = resp.message
-                res.status(resp.statusCode)                  
+                res.status(resp.statusCode)
             } else {
                 response.message = "É necessário enviar o id do usuario"
-                res.status(400)                  
+                res.status(400)
             }
         } catch (err) {
             console.log(err)
@@ -164,7 +165,7 @@ class SchedulingRouter {
         try {
             const schedulingCtrl = new SchedulingCtrl(this.dbPool)
 
-            if (!_.isEmpty(req.body)) {         
+            if (!_.isEmpty(req.body)) {
                 const params = schedulingCtrl.getDefultParams(
                     req.body.page,
                     req.body.pageSize,
@@ -173,7 +174,7 @@ class SchedulingRouter {
                     req.body.idUser
                 )
 
-                if(params.isValid){
+                if (params.isValid) {
                     const resp = await schedulingCtrl.select(params.data)
                     response.message = "Seleção realizada com sucesso"
                     response.data = resp.data
@@ -210,7 +211,7 @@ class SchedulingRouter {
 
                 response.message = responseOfDelet.message
                 res.status(responseOfDelet.statusCode)
-            }else{
+            } else {
                 response.message = "O id do agendamento deve ser enviado"
                 response.data = req.body
                 res.status(404)
@@ -220,10 +221,55 @@ class SchedulingRouter {
             response.message = "Erro ao realizar o cancelamento"
             res.status(500)
         }
-         finally {
+        finally {
             res.send(response)
         }
     }
+
+    async viewScheduling(req, resp) {
+        const response = _.clone(this.response)
+        try {
+            const schedulingCtrl = new SchedulingCtrl(this.dbPool)
+
+            if (!_.isEmpty(req.body)) {
+                const params = schedulingCtrl.getDefultParams(
+                    req.body.page,
+                    req.body.pageSize,
+                    req.body.idScheduling,
+                    req.body.idTypeScheduling,
+                    req.body.idStatusScheduling,
+                    req.body.idUser,
+                    req.body.dateTime,
+                    req.body.observation,
+                    req.body.createdAt
+                )
+                if (params.isValid) {
+                    const resp = await schedulingCtrl.viewScheduling(params.data)
+                    response.message = "Visualização realizada com sucesso"
+                    response.data = resp.data
+                    resp.status(200)
+                } else {
+                    response.message = params.message
+                    response.data = params.data
+                    resp.status(params.statusCode)
+                }
+            } else {
+                response.message = "Os parametros não foram enviados"
+                response.data = req.body
+                resp.status(400)
+            }
+        } catch (err) {
+            console.log(err)
+            response.message = "Erro ao realizar visualização"
+            resp.status(500)
+        } finally {
+            console.log("resposta: " + response)
+            resp.send(response)
+        }
+    }
+
 }
+
+
 
 module.exports = SchedulingRouter

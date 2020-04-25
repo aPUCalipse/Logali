@@ -309,6 +309,36 @@ class SchedulingCtrl {
         }
     }
 
+
+    async viewScheduling(params){
+        const response = {
+            data: null,
+            message: null,
+            statusCode: 500,
+        }
+
+        try {
+            const selectedSchedules = await this.scheduling.get(
+                params.page,
+                params.pageSize,
+                params.idScheduling,
+                params.idTypeScheduling,
+                params.idStatusScheduling,
+                params.idUser,
+                params.dateTime,
+                params.observation,
+                params.createdAt
+            )
+            
+            response.data = selectedSchedules
+            response.statusCode = 200
+        }
+        catch (err) {
+            response.message = `Erro desconhecido ao pesquisar agendamentos  -> ${err.toString()}`
+        } finally {
+            return response
+        }
+    }
     
 }
 

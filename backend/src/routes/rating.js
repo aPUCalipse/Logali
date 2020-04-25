@@ -19,7 +19,7 @@ class RatingRouter {
     }
 
 
-    async rate(req, res){
+    async avaliar(req, res){
         const response = _.clone(this.response)
 
         try{
@@ -27,15 +27,15 @@ class RatingRouter {
 
             if(!_.isEmpty(req.body)){
                 const validatedParams = ratingCtrl.valitadeParamsRating(
-                    raterId, 
-                    ratedId, 
-                    rate, 
-                    observation, 
-                    schedulingId 
+                    req.body.raterId, 
+                    req.body.ratedId, 
+                    req.body.rate, 
+                    req.body.observation, 
+                    req.body.schedulingId 
                 )
                 
-                if(validatedParams && validatedParams.isEmpty){
-                    const resp = await ratingCtrl.rating(validatedParams.data)
+                if(validatedParams && validatedParams.isValid){
+                    const resp = await ratingCtrl.avaliacao(validatedParams.data)
 
                     response.message = "Avaliação realizada com sucesso"
                     response.data = resp
