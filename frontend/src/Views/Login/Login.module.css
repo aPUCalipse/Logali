@@ -1,0 +1,238 @@
+@media only screen and (max-device-width: 1920px) {
+    .boxLogin{
+        background-color: #FFF;
+        padding: 10%;
+    }
+    
+    .greenBox{
+        background-color: #5bd1cb;
+        padding: 1%;
+        width: 35%;
+        margin: 10% auto;
+    }
+    
+    .backgound{
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        min-height: 100%;
+        max-height: 100%;
+        background-image: url('../../Images/barbant.jpg');
+        background-size: cover;
+        background-attachment: fixed;
+        background-repeat: no-repeat;
+    }
+}
+
+
+@media only screen and (max-device-width: 1024px) {
+    .boxLogin{
+        background-color: #FFF;
+        padding: 10%;
+    }
+    
+    .greenBox{
+        background-color: #5bd1cb;
+        padding: 3%;
+        width: 53%;
+        margin: 10% auto;
+    }
+    
+    .backgound{
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        min-height: 100%;
+        max-height: 100%;
+        background-image: url('../../Images/barbant.jpg');
+        background-size: cover;
+        background-attachment: fixed;
+        background-repeat: no-repeat;
+    }
+}
+
+@media only screen and (max-device-width: 900px) {
+    .boxLogin{
+        background-color: #FFF;
+        padding: 10%;
+    }
+    
+    .greenBox{
+        background-color: #5bd1cb;
+        padding: 2%;
+        width: 47%;
+        margin: 8% auto;
+    }
+    
+    .backgound{
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        min-height: 100%;
+        max-height: 100%;
+        background-image: url('../../Images/barbant.jpg');
+        background-size: cover;
+        background-attachment: fixed;
+        background-repeat: no-repeat;
+    }
+}
+
+@media only screen and (max-device-width: 768px) {
+    .boxLogin{
+        background-color: #FFF;
+        padding: 10%;
+    }
+    
+    .greenBox{
+        background-color: #5bd1cb;
+        padding: 3%;
+        width: 58%;
+        margin: 10% auto;
+        font-size: 17px;
+    }
+    
+    .backgound{
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        min-height: 100%;
+        max-height: 100%;
+        background-image: url('../../Images/barbant.jpg');
+        background-size: cover;
+        background-attachment: fixed;
+        background-repeat: no-repeat;
+    }
+}
+
+@media only screen and (max-device-width: 720px) {
+    .boxLogin{
+        background-color: #FFF;
+        padding: 10%;
+    }
+    
+    .greenBox{
+        background-color: #5bd1cb;
+        padding: 3%;
+        width: 73%;
+        margin: 13% auto;
+    }
+    
+    .backgound{
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        min-height: 100%;
+        max-height: 100%;
+        background-image: url('../../Images/barbant.jpg');
+        background-size: cover;
+        background-attachment: fixed;
+        background-repeat: no-repeat;
+    }
+}
+
+@media only screen and (max-device-width: 480px) {
+    .boxLogin{
+        background-color: #FFF;
+        padding: 10%;
+    }
+    
+    .greenBox{
+        background-color: #5bd1cb;
+        padding: 4%;
+        width: 94%;
+        margin: 12% auto;
+    }
+    
+    .backgound{
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        min-height: 100%;
+        max-height: 100%;
+        background-image: url('../../Images/barbant.jpg');
+        background-size: cover;
+        background-attachment: fixed;
+        background-repeat: no-repeat;
+    }
+}
+
+@media only screen and (max-device-width: 320px) {
+    .boxLogin{
+        background-color: #FFF;
+        padding: 6%;   
+    }
+    
+    .greenBox{
+        background-color: #5bd1cb;
+        padding: 4%;
+        width: 100%;
+        margin: 30% auto;
+        font-size: 13px;
+    }
+    
+    .backgound{
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        min-height: 100%;
+        max-height: 100%;
+        background-image: url('../../Images/barbant.jpg');
+        background-size: cover;
+        background-attachment: fixed;
+        background-repeat: no-repeat;
+    }
+}
+
+@media only screen and (max-device-width: 360px) {
+    .boxLogin{
+        background-color: #FFF;
+        padding: 6%;   
+    }
+    
+    .greenBox{
+        background-color: #5bd1cb;
+        padding: 4%;
+        width: 100%;
+        margin: 25% auto;
+        font-size: 13px;
+    }
+    
+    .backgound{
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        min-height: 100%;
+        max-height: 100%;
+        background-image: url('../../Images/barbant.jpg');
+        background-size: cover;
+        background-attachment: fixed;
+        background-repeat: no-repeat;
+    }
+}
+
+@media only screen and (min-device-width: 2048px) {
+    .boxLogin{
+        background-color: #FFF;
+        padding: 10%;
+    }
+    
+    .greenBox{
+        background-color: #5bd1cb;
+        padding: 3%;
+        width: 45%;
+        margin: 12% auto;
+        font-size: 19px;
+    }
+    
+    .backgound{
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        min-height: 100%;
+        max-height: 100%;
+        background-image: url('../../Images/barbant.jpg');
+        background-size: cover;
+        background-attachment: fixed;
+        background-repeat: no-repeat;
+    }
+}

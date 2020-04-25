@@ -19,6 +19,7 @@
     "react-bootstrap": "^1.0.0",
     "react-dom": "^16.13.0",
     "react-scripts": "3.4.0",
+    "react-toast-notifications": "^2.4.0",
     "yup": "^0.28.3"
   },
   "scripts": {
