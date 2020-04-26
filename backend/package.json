@@ -9,6 +9,7 @@
   "author": "ariel barcelos, karolina vaz, kelton melo, marcos felipe, luiz jesus",
   "license": "ISC",
   "dependencies": {
+    "amqplib": "^0.5.5",
     "bluebird": "^3.7.2",
     "cep-promise": "^3.0.9",
     "chai": "^4.2.0",

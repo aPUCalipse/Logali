@@ -1,6 +1,7 @@
 const Moment = require('moment')
 const _ = require("lodash")
 const Scheduling = require('../model/scheduling')
+var amqp = require('amqplib/callback_api');
 
 class SchedulingCtrl {
     constructor(dbPool) {
@@ -307,6 +308,60 @@ class SchedulingCtrl {
         } finally {
             return response
         }
+    }
+
+    async verifyAcceptance(idScheduling, idWorker) {
+        const response = {
+            message: null,
+            canAcept: null,
+            statusCode: 500
+        }
+
+        try {
+            //verify if the user exists and if he is a worker
+            const scheduling = await this.scheduling.getSimplifyedById(idScheduling)
+            if(scheduling){
+                if(!scheduling.workerId && scheduling.workerId === null){
+                    response.message = "Seu aceite foi inserido na fila de agendamentos, caso vc seja o priemiro da fila ele será enviado aos seus agendamentos"
+                    response.statusCode = 200
+                    response.canAcept = true
+                } else {
+                    response.message = "Sinto muito!! O agendamento já aceitado por outro técnico"
+                    response.statusCode = 400
+                    response.canAcept = false
+                }
+            } else {
+                response.message = "O agendamento não foi encontrado, pode ter sido deletado ou não existe"
+                response.statusCode = 404
+                response.canAcept = false
+            }
+        }
+        catch (err) {
+            response.message = `Erro desconhecido ao cancelar agendamento --> ${err.toString()}`
+        } finally {
+            return response
+        }
+    }
+
+    insertInQueueAcept(message){
+        amqp.connect('amqp://localhost', function(errorConnect, connection) {
+            if (errorConnect) {
+                throw errorConnect;
+            }
+            connection.createChannel(function(errorCreateChannel, channel) {
+                if (errorCreateChannel) {
+                    throw errorCreateChannel;
+                }
+                var queue = 'scheduling-acept';
+                var msg = message;
+
+                channel.sendToQueue(queue, Buffer.from(msg));
+
+                channel.close()
+                connection.close()
+            });
+
+        });
     }
 
     

@@ -21,6 +21,7 @@ class SchedulingRouter {
         this.app.post(`${this.baseRoute}/searchEnd`, this.searchEnd.bind(this));
         this.app.delete(`${this.baseRoute}/delete/:idScheduling`, this.delete.bind(this));
         this.app.post(`${this.baseRoute}/select`, this.select.bind(this));
+        this.app.post(`${this.baseRoute}/acept`, this.acept.bind(this));
     }
 
     /**
@@ -218,6 +219,58 @@ class SchedulingRouter {
         } catch (err) {
             console.log(err)
             response.message = "Erro ao realizar o cancelamento"
+            res.status(500)
+        }
+         finally {
+            res.send(response)
+        }
+    }
+
+    /**
+     * 
+     * @param {*} idScheduling 
+     * @param {*} idWorker
+     */
+    async acept(req, res) {
+        const response = _.clone(this.response)
+        try {
+            const schedulingCtrl = new SchedulingCtrl(this.dbPool)
+
+            const numberIdScheduling = parseInt(req.body.idScheduling)
+            const numberIdWorker = parseInt(req.body.idScheduling)
+
+            if (
+                (!_.isNaN(numberIdScheduling) && numberIdScheduling > 0) &&
+                (!_.isNaN(numberIdWorker) && numberIdWorker > 0)
+            ) {
+                const verifyedAcceptanceScheduling = await schedulingCtrl.verifyAcceptance(numberIdScheduling, numberIdWorker)
+
+                if(verifyedAcceptanceScheduling.canAcept){
+                    try{
+                        const message = JSON.stringify({
+                            idScheduling: numberIdScheduling,
+                            idWorker: numberIdWorker
+                        })
+                        
+                        schedulingCtrl.insertInQueueAcept(message)
+                    } catch(err){
+                        console.log("Erro ao inserir no rabbitMQ")
+                        console.log(err)
+                    }
+                }
+                
+                response.message = verifyedAcceptanceScheduling.message
+                response.data = req.body
+                res.status(verifyedAcceptanceScheduling.statusCode)
+                
+            }else{
+                response.message = "O id do agendamento ou o id do técnico deve ser enviado"
+                response.data = req.body
+                res.status(404)
+            }
+        } catch (err) {
+            console.log(err)
+            response.message = "Erro ao realizar o aceite do agendamento"
             res.status(500)
         }
          finally {
