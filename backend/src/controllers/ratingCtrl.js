@@ -7,6 +7,7 @@ class RatingCtrl {
     }
 
     valitadeParamsRating(raterId, ratedId, rate, observation, schedulingId ) {
+
         const validatedParams = {
             isValid: null,
             message: null,
@@ -14,9 +15,9 @@ class RatingCtrl {
             data: {
                 raterId: raterId,
                 ratedId: ratedId,
+                schedulingId: schedulingId,
                 rate: rate,
-                observation: observation,
-                schedulingId: schedulingId
+                observation: observation
             }
         }
 
@@ -36,6 +37,9 @@ class RatingCtrl {
             validatedParams.isValid = false
             validatedParams.message = "O parametro do tipo Avaliação do agendamento está incorreto"
             validatedParams.statusCode = 400
+        }else {
+            validatedParams.isValid = true
+            validatedParams.statusCode = 200
         }
         return validatedParams;
     }
@@ -43,17 +47,30 @@ class RatingCtrl {
 
     async avaliacao(rating){
         const response = {
-            raterId,
-            data: null,
+            data: {},
             message: null,
             statusCode: 500
         }
 
         try{
-            const ratersID = await this.rating.validateRater(rating.rateraterId, rating.ratedId, rating.schedulingId)
-            if(validadeRater.isValid){
+            const ratersID = await this.rating.validateRater(
+                rating.data.raterId,
+                rating.data.ratedId,
+                rating.data.schedulingId
+            )
+            
+            if(ratersID && ratersID.isValid){
+                
                 if(ratersID >= 0 || ratersID != null){
-                    const ratedUser = await this.rating.avaliar(rating.raterId, rating.ratedId, rating.rate, rating.observation, rating.schedulingId)
+
+                    const ratedUser = await this.rating.avaliar(
+                        rating.data.raterId,
+                        rating.data.ratedId,
+                        rating.data.schedulingId,
+                        rating.data.rate,
+                        rating.data.observation
+                        )
+
                     response.message = 'Usuário avaliado com sucesso'
                     response.data = ratedUser
                     response.statusCode = 200
@@ -63,16 +80,46 @@ class RatingCtrl {
                     response.statusCode = 404
                 }
                 
-                //Calculo da Média
-                if(avgRate >=0 & avgRate != null){
-                    const calculeAVG = await this.rating.avgRate(rating.ratedId, rating.rate)
+
+                //---> CALCULO DA MÉDIA <---
+
+                //pega média atual
+                var getAVG = await this.rating.getAvgRate(rating.data.ratedId)
+              
+                //Se o usuário já estiver sido avaliado antes
+                var calculeAVG =null;
+                if(getAVG > 0 && getAVG != null)
+                {
+                    calculeAVG = await this.rating.avgRate(
+                        rating.data.ratedId,
+                        rating.data.rate
+                        );
+                        
                     response.message = 'Média atualizada com sucesso'
                     response.data = calculeAVG
                     response.statusCode = 200
+                }
+                else{
+                    response.message = 'Parâmetro média incorreto.'
+                    response.data = calculeAVG
+                    response.statusCode = 404
+                }
+
+
+                //Se for a primeira avaliação do usuário 
+                var  calculeFisrtAVG = null;
+                if(getAVG == 0){
+                    calculeFisrtAVG = await this.rating.fisrtAVG(
+                        rating.data.ratedId,
+                        rating.data.rate
+                    )
+                    response.message = "Usuário avaliado com sucesso"
+                    response.data = calculeFisrtAVG
+                    response.statusCode = 200
                 }else{
                     response.message = 'Parâmetro média incorreto.'
-                        response.data = calculeAVG
-                        response.statusCode = 404
+                    response.data = calculeFisrtAVG
+                    response.statusCode = 404
                 }
             }
         }catch(err){
@@ -80,6 +127,6 @@ class RatingCtrl {
         }finally {
             return response
         }
-    }    
+     }    
 }
 module.exports = RatingCtrl
