@@ -237,7 +237,7 @@ class SchedulingRouter {
             const schedulingCtrl = new SchedulingCtrl(this.dbPool)
 
             const numberIdScheduling = parseInt(req.body.idScheduling)
-            const numberIdWorker = parseInt(req.body.idScheduling)
+            const numberIdWorker = parseInt(req.body.idWorker)
 
             if (
                 (!_.isNaN(numberIdScheduling) && numberIdScheduling > 0) &&

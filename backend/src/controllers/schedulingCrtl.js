@@ -326,9 +326,15 @@ class SchedulingCtrl {
                     response.statusCode = 200
                     response.canAcept = true
                 } else {
-                    response.message = "Sinto muito!! O agendamento já aceitado por outro técnico"
-                    response.statusCode = 400
-                    response.canAcept = false
+                    if(scheduling.workerId == idWorker){
+                        response.message = "Você já aceitou esse agendamento antes"
+                        response.statusCode = 400
+                        response.canAcept = false
+                    } else {
+                        response.message = "Sinto muito!! O agendamento já aceitado por outro técnico"
+                        response.statusCode = 400
+                        response.canAcept = false
+                    }
                 }
             } else {
                 response.message = "O agendamento não foi encontrado, pode ter sido deletado ou não existe"
