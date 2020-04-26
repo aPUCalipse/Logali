@@ -1,11 +1,15 @@
 const Moment = require('moment')
 const _ = require("lodash")
 const Scheduling = require('../model/scheduling')
+
+const UserCtrl = require('./userCtrl')
+
 var amqp = require('amqplib/callback_api');
 
 class SchedulingCtrl {
     constructor(dbPool) {
         this.scheduling = new Scheduling(dbPool)
+        this.userCtrl = new UserCtrl(dbPool)
     }
 
     valitadeParamsCreate(userId, typeScheduling, dateTime, observation) {
@@ -318,27 +322,37 @@ class SchedulingCtrl {
         }
 
         try {
-            const scheduling = await this.scheduling.getSimplifyedById(idScheduling)
-            if(scheduling){
-                if(!scheduling.workerId && scheduling.workerId === null){
-                    response.message = "Seu aceite foi inserido na fila de agendamentos, caso vc seja o priemiro da fila ele será enviado aos seus agendamentos"
-                    response.statusCode = 200
-                    response.canAcept = true
-                } else {
-                    if(scheduling.workerId == idWorker){
-                        response.message = "Você já aceitou esse agendamento antes"
-                        response.statusCode = 400
-                        response.canAcept = false
-                    } else {
-                        response.message = "Sinto muito!! O agendamento já aceitado por outro técnico"
-                        response.statusCode = 400
-                        response.canAcept = false
-                    }
-                }
-            } else {
-                response.message = "O agendamento não foi encontrado, pode ter sido deletado ou não existe"
-                response.statusCode = 404
+            const user = await this.userCtrl.getUserById(idWorker)
+
+            console.log(user)
+
+            if(!user || _.isEmpty(user.data)){
+                response.message = user.message
+                response.statusCode = user.statusCode
                 response.canAcept = false
+            } else {
+                const scheduling = await this.scheduling.getSimplifyedById(idScheduling)
+                if(scheduling){
+                    if(!scheduling.workerId && scheduling.workerId === null){
+                        response.message = "Seu aceite foi inserido na fila de agendamentos, caso vc seja o priemiro da fila ele será enviado aos seus agendamentos"
+                        response.statusCode = 200
+                        response.canAcept = true
+                    } else {
+                        if(scheduling.workerId == idWorker){
+                            response.message = "Você já aceitou esse agendamento antes"
+                            response.statusCode = 400
+                            response.canAcept = false
+                        } else {
+                            response.message = "Sinto muito!! O agendamento já aceitado por outro técnico"
+                            response.statusCode = 400
+                            response.canAcept = false
+                        }
+                    }
+                } else {
+                    response.message = "O agendamento não foi encontrado, pode ter sido deletado ou não existe"
+                    response.statusCode = 404
+                    response.canAcept = false
+                }
             }
         }
         catch (err) {
