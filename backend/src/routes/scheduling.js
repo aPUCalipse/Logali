@@ -22,6 +22,7 @@ class SchedulingRouter {
         this.app.delete(`${this.baseRoute}/delete/:idScheduling`, this.delete.bind(this));
         this.app.post(`${this.baseRoute}/select`, this.select.bind(this));
         this.app.post(`${this.baseRoute}/acept`, this.acept.bind(this));
+        this.app.post(`${this.baseRoute}/cancelAcept`, this.cancelAcept.bind(this));
     }
 
     /**
@@ -264,13 +265,49 @@ class SchedulingRouter {
                 res.status(verifyedAcceptanceScheduling.statusCode)
                 
             }else{
-                response.message = "O id do agendamento ou o id do técnico deve ser enviado"
+                response.message = "O id do agendamento e o id do técnico devem ser enviados e devem ser maior que zero"
                 response.data = req.body
                 res.status(404)
             }
         } catch (err) {
             console.log(err)
             response.message = "Erro ao realizar o aceite do agendamento"
+            res.status(500)
+        }
+         finally {
+            res.send(response)
+        }
+    }
+
+
+    /**
+     * @param {*} idScheduling 
+     * @param {*} idWorker
+     */
+    async cancelAcept(req, res) {
+        const response = _.clone(this.response)
+        try {
+            const schedulingCtrl = new SchedulingCtrl(this.dbPool)
+
+            const numberIdScheduling = parseInt(req.body.idScheduling)
+            const numberIdWorker = parseInt(req.body.idWorker)
+
+            if (
+                (!_.isNaN(numberIdScheduling) && numberIdScheduling > 0) &&
+                (!_.isNaN(numberIdWorker) && numberIdWorker > 0)
+            ) {
+                const canceledAcept = await schedulingCtrl.canceledAcept(numberIdScheduling, numberIdWorker)
+                response.message = canceledAcept.message
+                response.data = req.body
+                res.status(canceledAcept.statusCode)
+            } else {
+                response.message = "O id do agendamento e o id do técnico devem ser enviados e devem ser maior que zero"
+                response.data = req.body
+                res.status(400)
+            }
+        } catch (err) {
+            console.log(err)
+            response.message = "Erro ao realizar o cancelamento do aceite do agendamento"
             res.status(500)
         }
          finally {

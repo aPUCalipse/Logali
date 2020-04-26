@@ -318,7 +318,6 @@ class SchedulingCtrl {
         }
 
         try {
-            //verify if the user exists and if he is a worker
             const scheduling = await this.scheduling.getSimplifyedById(idScheduling)
             if(scheduling){
                 if(!scheduling.workerId && scheduling.workerId === null){
@@ -334,6 +333,49 @@ class SchedulingCtrl {
                         response.message = "Sinto muito!! O agendamento já aceitado por outro técnico"
                         response.statusCode = 400
                         response.canAcept = false
+                    }
+                }
+            } else {
+                response.message = "O agendamento não foi encontrado, pode ter sido deletado ou não existe"
+                response.statusCode = 404
+                response.canAcept = false
+            }
+        }
+        catch (err) {
+            response.message = `Erro desconhecido ao cancelar agendamento --> ${err.toString()}`
+        } finally {
+            return response
+        }
+    }
+
+    async canceledAcept(idScheduling, idWorker) {
+        const response = {
+            message: null,
+            statusCode: 500
+        }
+
+        try {
+            const scheduling = await this.scheduling.getSimplifyedById(idScheduling)
+            console.log(scheduling)
+            if(scheduling){
+                if(!scheduling.workerId && scheduling.workerId === null){
+                    response.message = "Esse agendamento não foi alocado ao seu usuario"
+                    response.statusCode = 400
+                    response.canAcept = true
+                } else {
+                    if(scheduling.workerId === idWorker){
+                        const resp = await this.scheduling.cancelAcept(idScheduling)
+
+                        if(resp && resp.affectedRows >= 1){
+                            response.message = "O Aceite foi cancelado com sucesso"
+                            response.statusCode = 200
+                        } else {
+                            response.message = "Erro desconhecido ao cancelar aceite no banco de dados"
+                            response.statusCode = 500
+                        }
+                    } else {
+                        response.message = "Esse agendamento não foi alocado ao seu usuario"
+                        response.statusCode = 400
                     }
                 }
             } else {
