@@ -72,7 +72,7 @@ function MyVerticallyCenteredModal(props,mode) {
     const [date, setDate] = useState('');
     const [time, setTime] = useState('');
     const [modalShow, setModalShow] = React.useState(false);
-    const [userId] = useState('2');
+    const [userId] = useState('1');
     const [id] = useState('0');
     const [observation, setObservation] = useState('');
     const [count, setCount] = useState('0');

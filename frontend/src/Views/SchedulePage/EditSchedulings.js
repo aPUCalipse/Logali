@@ -10,6 +10,8 @@ import EditIcon from '@material-ui/icons/Edit';
 import TextField from '@material-ui/core/TextField';
 import SaveRoundedIcon from '@material-ui/icons/SaveRounded';
 import { Formik, Form, Field } from "formik";
+import Select from '@material-ui/core/Select';
+import {InputLabel, MenuItem} from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import Grid from '@material-ui/core/Grid';
 import IconButton from '@material-ui/core/IconButton';
@@ -18,6 +20,7 @@ import * as Yup from 'yup';
 import Divider from '@material-ui/core/Divider';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
+import Tooltip from '@material-ui/core/Tooltip';
 import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
 import axios from 'axios';
 
@@ -127,7 +130,7 @@ function MyVerticallyCenteredModal(props,mode) {
                             justify="center"
                             alignItems="center">
                             <Grid item xs={12} >
-                                <TextField 
+                                {/* <TextField 
                                     id="standard-basic" 
                                     name="typeScheduling" 
                                     helperText="" 
@@ -136,7 +139,20 @@ function MyVerticallyCenteredModal(props,mode) {
                                     onChange={e => setTypeScheduling(e.target.value)} 
                                     label="Servi&ccedil;o" 
                                     color="#45B39D" 
-                                    value={typeScheduling}/>
+                                    value={typeScheduling}/> */}
+                                     <InputLabel id="demo-simple-select-label" required>Servi&ccedil;o</InputLabel>
+                                    <Select
+                                labelId="demo-simple-select-label"
+                                id="demo-simple-select"
+                                className={classes.body}
+                                required
+                                onChange={e => setTypeScheduling(e.target.value)}
+                                value={typeScheduling}
+                                >
+                                <MenuItem value={1}>Instalação</MenuItem>
+                                <MenuItem value={2}>Manutenção em rede</MenuItem>
+                                <MenuItem value={3}>BUG</MenuItem>
+                                </Select>
                             </Grid>
                             <Grid item xs={12} sm={6}>
                                 <TextField
@@ -231,9 +247,11 @@ export default props => {
     }
     return (
         <>
-            <IconButton onClick={() => eventEdit()} aria-label="edit" disabled={props.disabled}>
-                <EditIcon />
-            </IconButton>
+            <Tooltip title="Editar">
+                <IconButton onClick={() => eventEdit()} aria-label="edit" disabled={props.disabled}>
+                    <EditIcon />
+                </IconButton>
+            </Tooltip>
             <MyVerticallyCenteredModal
                 data = {props.data}
                 show={modalShow}

@@ -6,10 +6,15 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import { Grid} from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import TimelapseIcon from '@material-ui/icons/Timelapse';
 import CloseIcon from '@material-ui/icons/Close';
 import Tooltip from '@material-ui/core/Tooltip';
+import ScheduleIcon from '@material-ui/icons/Schedule';
 import Modal from "react-bootstrap/Modal";
 import StarBorderIcon from '@material-ui/icons/StarBorder';
+import Container from 'react-bootstrap/Container'
+import Row from 'react-bootstrap/Row'
+import Col from 'react-bootstrap/Col'
 import Rating from '@material-ui/lab/Rating';
 import Box from '@material-ui/core/Box';
 import TextareaAutosize from '@material-ui/core/TextareaAutosize';
@@ -48,6 +53,8 @@ import SaveRoundedIcon from '@material-ui/icons/SaveRounded';
 const useStyles = makeStyles((theme) => ({
   root: {
     maxWidth: 265,
+    marginBottom: theme.spacing(2),
+    marginTop: theme.spacing(2)
   },
   media: {
     height: 0,
@@ -68,7 +75,7 @@ const useStyles = makeStyles((theme) => ({
     height: theme.spacing(40),
   },
   avatar: {
-    backgroundColor: "#4caf50",
+    backgroundColor: "#ffc107",
     color: 'white'
   },
   avatar2: {
@@ -302,7 +309,8 @@ export default function RecipeReviewCard() {
         let timeSplit = arrayData[1].split(':')
         let timeCopy = timeSplit[0] + ':' + timeSplit[1]
         
-        return dataCopy + ' ' + timeCopy
+        return dataCopy + ' ' + timeCopy 
+        
   }
 
   async function getScheduling(){
@@ -310,8 +318,8 @@ export default function RecipeReviewCard() {
         "idUser" : userId.userId,
         "page": 1,
         "pageSize": 10,
-        "idTypeScheduling": 1,
-        "idStatusScheduling": 1,
+        "idTypeScheduling": '',
+        "idStatusScheduling": '',
     })
       .then(function(response) {
         console.log(response);
@@ -338,14 +346,6 @@ export default function RecipeReviewCard() {
       }else{
         handleDeleteScheduling(id);
         setValidateType(false);
-      }
-    };
-
-    let axiosConfigDelete = {
-      headers: {
-        'Content-Type': 'application/json;charset=UTF-8',
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods" : "DELETE"
       }
     };
 
@@ -379,88 +379,94 @@ export default function RecipeReviewCard() {
           </Typography>
         </Toolbar>
       </AppBar>
-    
-      {console.log(data)}
+
       {data == null || data.length == 0?
+        <>
+          <Grid
+            container
+            spacing={0}
+            alignItems="center"
+            justify="center"
+          >
+            <Grid
+              item
+              alignItems="center"
+              justify="center"
+              className={classes.text}
+            >
+              <h6>Não se encontra agendamentos cadastrados até o momento.</h6>
+            </Grid>
+            <Grid
+              item
+              alignItems="center"
+              justify="center"
+            >
+              <img
+              alt="List Empty"
+              src={listEmpty}
+              className={classes.listEmptyStyle} /> 
+            </Grid>
+          </Grid>
+      </>:
       <>
-      <Grid
-                container
-                spacing={0}
-                alignItems="center"
-                justify="center"
-                >
-                    <Grid
-                        item
-                        alignItems="center"
-                        justify="center"
-                       className={classes.text}
-                    >
-      <h6>Não se encontra agendamentos cadastrados até o momento.</h6>
-      </Grid>
-      <Grid
-                      item
-                      alignItems="center"
-                      justify="center"
-                    >
-          <img
-          alt="List Empty"
-          src={listEmpty}
-          className={classes.listEmptyStyle} /> </Grid></Grid></>:
-     data.map((item) => (
-    <GridList cellHeight={250} className={classes.gridList} cols={8}>
-      
-    <GridListTile key={item.id} cols={5}>
-    
-    <Card className={classes.root}>
-      <CardHeader
-        avatar={
-         item.statusSchedulingId == '1' ? 
-         <Avatar aria-label="recipe" className={classes.avatar}>
-            <EventAvailableIcon/>
-          </Avatar>:
-          <Avatar aria-label="recipe" className={classes.avatar2}>
-            <EventBusyIcon/>
-          </Avatar>}
-        
-        title={item.nametypeSchedulig}
-        
-        subheader={splitDateTime(item)}
-      />
-      <CardContent>
-        <Typography variant="body2" color="textSecondary" component="p">
-          Observação
-        </Typography>
-        <Typography variant="body2" color="textSecondary" component="p">
-        {item.observation} 
-        </Typography>
-      </CardContent>
-      <CardActions disableSpacing>
-      <Tooltip title="Editar">
-        <EditScheduling data={item} disabled={item.statusSchedulingId == '1'?false:true}/>
-       </Tooltip>
-       <Tooltip title="Deletar">
-        <IconButton aria-label="share">
-          <DeleteForeverIcon  onClick={() => handleClickValidate(item.id)}/>
-        </IconButton>
+      <Container>
+      <Row xs={1} sm={2} md={3} lg={4}>
+      {data.map((item) => (
+          <Col>
+          <Card className={classes.root}>
+            <CardHeader
+              avatar={
+              item.statusSchedulingId == '1' ? 
+              <Avatar aria-label="recipe" color='warning.main' className={classes.avatar}>
+                  <ScheduleIcon/>
+              </Avatar>:
+              <Avatar aria-label="recipe" className={classes.avatar2}>
+                <TimelapseIcon/>
+              </Avatar>}
+              
+              title={item.nametypeSchedulig}
+              
+              subheader={<>{item.nameStatusScheduling}<p>{splitDateTime(item)}</p></>}
+            />
+            <CardContent>
+            <Typography variant="body2" color="textSecondary" component="p">
+              Observação
+            </Typography>
+            <Typography variant="body2" color="textSecondary" component="p">
+              {item.observation} 
+            </Typography>
+        </CardContent>
+        <CardActions disableSpacing>
+        <Tooltip title="Editar">
+          <EditScheduling data={item} disabled={item.statusSchedulingId == '1'?false:true}/>
         </Tooltip>
-        <Tooltip title="Avaliação">
-        <IconButton
-            onClick={() => avaliacao(true, item)}
-        >
-         <StarBorderIcon/>
-        </IconButton>
-        </Tooltip>
-      </CardActions>
-    </Card>
-    </GridListTile>
-   
-</GridList>
-  ))}
+        <Tooltip title="Deletar">
+          <IconButton aria-label="share">
+            <DeleteForeverIcon  onClick={() => handleClickValidate(item.id)}/>
+          </IconButton>
+          </Tooltip>
+          <Tooltip title="Avaliação">
+          <IconButton
+              onClick={() => avaliacao(true, item)}
+          >
+          <StarBorderIcon/>
+          </IconButton>
+          </Tooltip>
+        </CardActions>
+      </Card>
+      </Col>
+      ))}
+    </Row>
+    </Container>
+  </>
+}
+<>
    <MyVerticallyCenteredModal
         show={modalShow}
         onHide={() => setModalShow(false)}
         selected={selected}
       />
+     </>
 </div>
   );
 }
