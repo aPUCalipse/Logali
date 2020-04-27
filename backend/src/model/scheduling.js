@@ -136,6 +136,38 @@ class Scheduling {
         }
     }
 
+    async getSimplifyedById(id){
+        try {
+            const query = `` +
+                `SELECT *   ` +
+                `FROM logali.scheduling s ` +
+                `where s.id = ${id}`
+          
+            const resp = await this.dbPool.query(query);
+           
+            return resp.pop()
+        } catch (err) {
+            console.log(err)
+            throw new Error(`Erro ao pesquisar agendamento -> ${err}`)
+        }
+    }
+
+    async cancelAcept(id){
+        try {
+            const query = `` +
+                `UPDATE logali.scheduling ` +
+                `SET workerId = null ` +
+                `where id = ${id}`
+          
+            const resp = await this.dbPool.query(query);
+           
+            return resp
+        } catch (err) {
+            console.log(err)
+            throw new Error(`Erro ao pesquisar agendamento -> ${err}`)
+        }
+    }
+    
     async getId(id){
         try {
             const query = `` +
