@@ -21,7 +21,7 @@ class SchedulingRouter {
         this.app.post(`${this.baseRoute}/searchEnd`, this.searchEnd.bind(this));
         this.app.delete(`${this.baseRoute}/delete/:idScheduling`, this.delete.bind(this));
         this.app.post(`${this.baseRoute}/select`, this.select.bind(this));
-        this.app.get(`${this.baseRoute}/view`, this.viewScheduling.bind(this));
+        this.app.post(`${this.baseRoute}/view`, this.viewScheduling.bind(this));
     }
 
     /**
@@ -226,45 +226,49 @@ class SchedulingRouter {
         }
     }
 
-    async viewScheduling(req, resp) {
+    async viewScheduling(req, res) {
         const response = _.clone(this.response)
         try {
+            
+            
+
             const schedulingCtrl = new SchedulingCtrl(this.dbPool)
 
             if (!_.isEmpty(req.body)) {
-                const params = schedulingCtrl.getDefultParams(
+
+                const params = schedulingCtrl.getPageParams(
                     req.body.page,
                     req.body.pageSize,
-                    req.body.idScheduling,
-                    req.body.idTypeScheduling,
-                    req.body.idStatusScheduling,
-                    req.body.idUser,
-                    req.body.dateTime,
-                    req.body.observation,
-                    req.body.createdAt
                 )
+                
+
                 if (params.isValid) {
+                    
                     const resp = await schedulingCtrl.viewScheduling(params.data)
-                    response.message = "Visualização realizada com sucesso"
+                    response.message = resp.message
                     response.data = resp.data
-                    resp.status(200)
+                    res.send(response);
+
+                    // response.message = "Visualização realizada com sucesso"
+                    // response.data = resp.data
+                    // resp.status(200)
                 } else {
                     response.message = params.message
                     response.data = params.data
-                    resp.status(params.statusCode)
+                    res.status(params.statusCode)
                 }
             } else {
                 response.message = "Os parametros não foram enviados"
                 response.data = req.body
-                resp.status(400)
+                res.status(400)
             }
         } catch (err) {
             console.log(err)
             response.message = "Erro ao realizar visualização"
-            resp.status(500)
+            res.status(500)
         } finally {
             console.log("resposta: " + response)
-            resp.send(response)
+            res.send(response)
         }
     }
 

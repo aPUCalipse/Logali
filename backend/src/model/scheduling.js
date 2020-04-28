@@ -275,9 +275,19 @@ class Scheduling {
 
 
 
-    async viewScheduling(page, pageSize, idTypeScheduling, idStatusScheduling,){
+    async viewScheduling(page, pageSize){
+
+        // var object ={
+        //     "page": page,
+        //     "pageSize": pageSize
+            
+        // }
+        // object.message = "entrei no model"
+        // return object;
+
         try{
-            const query = `SELECT `+
+            var query = `` +
+            `SELECT `+
 
             //dados do cliente
             `s.userId 'idClient', ` +
@@ -314,9 +324,6 @@ class Scheduling {
         `join logali.user uc ` +
         `on uc.id = s.userId ` +
         
-        //join para coletar dados do técnico se existir
-        `left join logali.user uw ` +
-        `on uw.id = s.workerId ` +
         
         //join para coletar dados do status do agendamento
         `join logali.statusscheduling ss ` +
@@ -329,16 +336,6 @@ class Scheduling {
         //join para coletar dados do endereço do cliente
         `join logali.address ad ` +
         `on ad.id = uc.addressId `
-        
-        //`where s.id = ${id}`
-
-        if(idTypeScheduling){
-            query += `and s.typeSchedulingId = ${idTypeScheduling} `
-        }
-
-        if(idStatusScheduling){
-            query += `and s.statusSchedulingId = ${idStatusScheduling} `
-        }
   
         query += `limit ${this.getPageByPaginatio(page, pageSize)}`
 

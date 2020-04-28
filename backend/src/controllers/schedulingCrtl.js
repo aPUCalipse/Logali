@@ -310,34 +310,82 @@ class SchedulingCtrl {
     }
 
 
+
+
+
+
+
+
+
+
     async viewScheduling(params){
         const response = {
-            data: null,
+            data: {},
             message: null,
             statusCode: 500,
         }
 
+        // response.data = params.data
+        // response.message = "aqui funciona"
+        // return response;
+
+
         try {
-            const selectedSchedules = await this.scheduling.get(
+            const selectedSchedules = await this.scheduling.viewScheduling(
                 params.page,
-                params.pageSize,
-                params.idScheduling,
-                params.idTypeScheduling,
-                params.idStatusScheduling,
-                params.idUser,
-                params.dateTime,
-                params.observation,
-                params.createdAt
+                params.pageSize
             )
-            
+
+
+            // response.message= selectedSchedules.message
+            // response.data = selectedSchedules
+            // return response;
+
             response.data = selectedSchedules
             response.statusCode = 200
         }
         catch (err) {
-            response.message = `Erro desconhecido ao pesquisar agendamentos  -> ${err.toString()}`
+            response.message = `Erro desconhecido ao selecionar agendamentos  -> ${err.toString()}`
         } finally {
             return response
         }
+    }
+
+
+    getPageParams(page, pageSize,) {
+        const validatedParams = {
+            isValid: true,
+            message: null,
+            statusCode: null,
+            data: {
+                page: null,
+                pageSize: null,
+            }
+        }
+
+        if(!page){
+            validatedParams.data.page = 1
+        } else {
+            const numberPage = parseInt(page)
+            if(!_.isNaN(numberPage)){
+                validatedParams.data.page = numberPage
+            } else {
+                validatedParams.data.page = 1
+            }
+        }
+
+        if(!pageSize){
+            validatedParams.data.pageSize = 10
+        } else {
+            const numberPageSize = parseInt(pageSize)
+            if(!_.isNaN(numberPageSize)){
+                validatedParams.data.pageSize = numberPageSize
+            } else {
+                validatedParams.data.pageSize = 10
+            }
+        }
+
+        return validatedParams
     }
     
 }

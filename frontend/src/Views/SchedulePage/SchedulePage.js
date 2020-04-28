@@ -386,3 +386,42 @@ function App() {
 }
 
 export default App;
+
+
+
+
+/*
+
+
+
+
+
+const [look, setLook] = useState('');
+
+
+useEffect(() =>{
+    if(look == null || look == ''){
+        handleViewScheduling();
+    }
+})
+
+async function handleViewScheduling(){
+    console.log(estou aqui)
+    const resp = await axious.get('http://localhost/8000/logali/app/scheduling/view' {
+        "page": 1,
+        "pageSize": 10,
+    })
+      .then(function(resp) {
+        setLook(resp.data.data)
+    })
+       .catch(function(error){
+        console.log(error.resp)
+    });
+
+    console.log(resp)
+    return resp
+};
+
+
+
+*/
