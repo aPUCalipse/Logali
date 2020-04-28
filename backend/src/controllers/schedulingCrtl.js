@@ -10,6 +10,7 @@ class SchedulingCtrl {
     constructor(dbPool) {
         this.scheduling = new Scheduling(dbPool)
         this.userCtrl = new UserCtrl(dbPool)
+        this.SchedulingCtrl = new SchedulingCtrl(dbPool)
     }
 
     valitadeParamsCreate(userId, typeScheduling, dateTime, observation) {
@@ -334,22 +335,22 @@ class SchedulingCtrl {
                 const scheduling = await this.scheduling.getSimplifyedById(idScheduling)
                 if(scheduling){
                     if(!scheduling.workerId && scheduling.workerId === null){
-                        response.message = "Seu aceite foi inserido na fila de agendamentos, caso vc seja o priemiro da fila ele será enviado aos seus agendamentos"
+                        response.message = "Seu aceite foi inserido na fila de agendamentos; caso você seja o primeiro da fila, ele será enviado aos seus agendamentos."
                         response.statusCode = 200
                         response.canAcept = true
                     } else {
                         if(scheduling.workerId == idWorker){
-                            response.message = "Você já aceitou esse agendamento antes"
+                            response.message = "Você já aceitou esse agendamento antes."
                             response.statusCode = 400
                             response.canAcept = false
                         } else {
-                            response.message = "Sinto muito!! O agendamento já aceitado por outro técnico"
+                            response.message = "Sinto muito!! O agendamento já foi aceito por outro técnico."
                             response.statusCode = 400
                             response.canAcept = false
                         }
                     }
                 } else {
-                    response.message = "O agendamento não foi encontrado, pode ter sido deletado ou não existe"
+                    response.message = "O agendamento não foi encontrado, pode ter sido deletado ou não existe."
                     response.statusCode = 404
                     response.canAcept = false
                 }
@@ -425,6 +426,28 @@ class SchedulingCtrl {
 
         });
     }
+
+    async updateWorkerId(WorkerId, id){
+        const response = {
+            message: null,
+            statusCode: 500
+        }
+        try{
+            const scheduling = await this.scheduling.updateWorkerId(WorkerId, id)
+            if(scheduling){
+                response.message = "Worker atualizado"
+                response.statusCode = 200
+            } else {
+                response.message = "Worker não atualizado"
+                response.statusCode = 400
+            }
+        } catch(err){
+            console.log("Erro em updateWorkerId -> " + err)
+        } finally {
+            return response;
+        }
+    }
+    
 
     
 }
