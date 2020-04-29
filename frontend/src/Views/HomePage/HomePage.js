@@ -9,10 +9,16 @@ import location from '../../Images/location.svg'
 //stylesheet
 import style from './HomePage.module.css'
 
+//layout padronizado
 import MainLayout from '../MainLayout/MainLayout'
 
 //testando módulo de cep
 import cep from 'cep-promise'
+
+//verificação de sessão
+import {isLoggedIn} from "../../Functions/verifySession"
+
+isLoggedIn()
 
 cep('05010000')
   .then(console.log)
