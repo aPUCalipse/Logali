@@ -24,6 +24,7 @@ class SchedulingRouter {
         this.app.post(`${this.baseRoute}/acept`, this.acept.bind(this));
         this.app.post(`${this.baseRoute}/cancelAcept`, this.cancelAcept.bind(this));
         this.app.post(`${this.baseRoute}/view`, this.viewScheduling.bind(this));
+        this.app.post(`${this.baseRoute}/updateWorkerId`, this.updateWorkerId.bind(this))
     }
 
     /**
@@ -281,6 +282,7 @@ class SchedulingRouter {
         }
     }
 
+
     /**
      * @param {*} idScheduling 
      * @param {*} idWorker
@@ -352,6 +354,42 @@ class SchedulingRouter {
         }
     }
 
+
+    async updateWorkerId(req, res){
+        const response = _.clone(this.response)
+        try {
+            const schedulingCtrl = new SchedulingCtrl(this.dbPool)
+
+            if (!_.isEmpty(req.body)) {
+                const validatedParams = schedulingCtrl.valitadeParamsUpdate(
+                    req.body.workerId,
+                    req.body.id
+                )
+
+                if(validatedParams && validatedParams.isValid){
+                    const resp = await schedulingCtrl.updateWorkerId(validatedParams.data)
+                    
+                    response.message = resp.message
+                    response.data = resp
+                    res.status(resp.statusCode)
+                } else {
+                    response.message = validatedParams.message
+                    response.data = validatedParams.data
+                    res.status(validatedParams.statusCode)
+                }                  
+            } else {
+                response.message = "Os parametros não foram enviados"
+                response.data = req.body
+                res.status(400)
+            }
+        } catch (err) {
+            console.log(err)
+            response.message = "Erro ao realizar edição"
+            res.status(500)
+        } finally {
+            res.send(response)
+        }
+    }
 }
 
 

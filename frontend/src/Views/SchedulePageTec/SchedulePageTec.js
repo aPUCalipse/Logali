@@ -340,148 +340,148 @@ export default function Technical() {
     
      
   function getWeekDays() {
-      const today = new Date()
-    const days = [today];
-    for (let i = 1; i < 7; i += 1) {
-      days.push(
-        moment(today)
-          .add(i, 'days')
-          .toDate()
-      );
-    }
-
-
-
-    function getWeekDays() {
         const today = new Date()
         const days = [today];
         for (let i = 1; i < 7; i += 1) {
-            days.push(
-                moment(today)
-                    .add(i, 'days')
-                    .toDate()
-            );
-        }
-        return days;
+        days.push(
+            moment(today)
+            .add(i, 'days')
+            .toDate()
+        );
+    }
     }
 
 
-    function dateSplit(item) {
-        let arrayData = item.dateTime.split(' ')
-        let dateSplit = arrayData[0].split('-')
-        return dateSplit[2] + '/' + dateSplit[1] + '/' + dateSplit[0]
-    }
 
-    useEffect(() => {
-        if (week.length == 0)
-            setWeek(getWeekDays());
-
-        if (data == null || data.length == 0)
-            getScheduling()
-
-    })
-
-    const settings = {
-        dots: true,
-        infinite: false,
-        speed: 500,
-        slidesToShow: 3,
-        slidesToScroll: 3,
-        initialSlide: 0,
-        responsive: [
-            {
-                breakpoint: 1024,
-                settings: {
-                    slidesToShow: 3,
-                    slidesToScroll: 3,
-                    infinite: true,
-                    dots: true
-                }
-            },
-            {
-                breakpoint: 600,
-                settings: {
-                    slidesToShow: 2,
-                    slidesToScroll: 2,
-                    initialSlide: 2
-                }
-            },
-            {
-                breakpoint: 480,
-                settings: {
-                    slidesToShow: 1,
-                    slidesToScroll: 1
-                }
+        function getWeekDays() {
+            const today = new Date()
+            const days = [today];
+            for (let i = 1; i < 7; i += 1) {
+                days.push(
+                    moment(today)
+                        .add(i, 'days')
+                        .toDate()
+                );
             }
-        ]
-    };
+            return days;
+        }
 
-    return (
-        <div className={classes.root}>
-            <AppBar position="static" className={classes.tabTitle}>
-                <Toolbar variant="dense">
-                    <Typography variant="h6" >
-                        Agenda
-                </Typography>
-                </Toolbar>
-            </AppBar>
-            <AppBar position="static" className={classes.tabs}>
-                <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
-                    <Tab label="Tudo" {...a11yProps(0)} />
-                    <Tab label="Hoje" {...a11yProps(1)} />
-                    <Tab label="Semana" {...a11yProps(2)} />
-                </Tabs>
-            </AppBar>
-            <TabPanel value={value} index={0}>
-                <Container>
-                    <Row xs={1} sm={2} md={3} lg={3}>
-                        {data.map((item) => (
-                            <Col>
-                                <ListTable item={item} week={week} />
-                            </Col>
-                        ))}
-                    </Row>
-                </Container>
-            </TabPanel>
-            <TabPanel value={value} index={1}>
-                <Container>
-                    <Row xs={1} sm={2} md={3} lg={3}>
-                        {data.map((item) => (
-                            dateSplit(item) == (week[0].getDate() + '/0' + (week[0].getMonth() + 1) + '/' + week[0].getFullYear()) ?
+
+        function dateSplit(item) {
+            let arrayData = item.dateTime.split(' ')
+            let dateSplit = arrayData[0].split('-')
+            return dateSplit[2] + '/' + dateSplit[1] + '/' + dateSplit[0]
+        }
+
+        useEffect(() => {
+            if (week.length == 0)
+                setWeek(getWeekDays());
+
+            if (data == null || data.length == 0)
+                getScheduling()
+        })
+
+        const settings = {
+            dots: true,
+            infinite: false,
+            speed: 500,
+            slidesToShow: 3,
+            slidesToScroll: 3,
+            initialSlide: 0,
+            responsive: [
+                {
+                    breakpoint: 1024,
+                    settings: {
+                        slidesToShow: 3,
+                        slidesToScroll: 3,
+                        infinite: true,
+                        dots: true
+                    }
+                },
+                {
+                    breakpoint: 600,
+                    settings: {
+                        slidesToShow: 2,
+                        slidesToScroll: 2,
+                        initialSlide: 2
+                    }
+                },
+                {
+                    breakpoint: 480,
+                    settings: {
+                        slidesToShow: 1,
+                        slidesToScroll: 1
+                    }
+                }
+            ]
+        };
+
+        return (
+            <div className={classes.root}>
+                <AppBar position="static" className={classes.tabTitle}>
+                    <Toolbar variant="dense">
+                        <Typography variant="h6" >
+                            Agenda
+                    </Typography>
+                    </Toolbar>
+                </AppBar>
+                <AppBar position="static" className={classes.tabs}>
+                    <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
+                        <Tab label="Tudo" {...a11yProps(0)} />
+                        <Tab label="Hoje" {...a11yProps(1)} />
+                        <Tab label="Semana" {...a11yProps(2)} />
+                    </Tabs>
+                </AppBar>
+                <TabPanel value={value} index={0}>
+                    <Container>
+                        <Row xs={1} sm={2} md={3} lg={3}>
+                            {data.map((item) => (
                                 <Col>
                                     <ListTable item={item} week={week} />
-                                </Col> : ''
-                        ))}
-                    </Row>
-                </Container>
-            </TabPanel>
-            <TabPanel value={value} index={2}>
-                <Slider {...settings} >
-                    {week.map((date) => (
-                        <Container>
-                            <Row xs={12} lg={12}>
-                                <Col>
-                                    <Card className={classes.rootCard}>
-                                        <CardActionArea>
-                                            <CardContent>
-                                                <Typography gutterBottom variant="h5" component="h2">
-                                                    {date.getDate()} / 0{date.getMonth() + 1}
-                                                </Typography>
-                                                {data.map((item) => (
-                                                    dateSplit(item) == (date.getDate() + '/0' + (date.getMonth() + 1) + '/' + date.getFullYear()) ?
-                                                        <Col>
-                                                            <ListTable item={item} week={week} />
-                                                        </Col> : ''
-                                                ))}
-                                            </CardContent>
-                                        </CardActionArea>
-                                    </Card>
                                 </Col>
-                            </Row>
-                        </Container>
-                    ))}
-                </Slider>
-            </TabPanel>
-        </div>
-    );
+                            ))}
+                        </Row>
+                    </Container>
+                </TabPanel>
+                <TabPanel value={value} index={1}>
+                    <Container>
+                        <Row xs={1} sm={2} md={3} lg={3}>
+                            {data.map((item) => (
+                                dateSplit(item) == (week[0].getDate() + '/0' + (week[0].getMonth() + 1) + '/' + week[0].getFullYear()) ?
+                                    <Col>
+                                        <ListTable item={item} week={week} />
+                                    </Col> : ''
+                            ))}
+                        </Row>
+                    </Container>
+                </TabPanel>
+                <TabPanel value={value} index={2}>
+                    <Slider {...settings} >
+                        {week.map((date) => (
+                            <Container>
+                                <Row xs={12} lg={12}>
+                                    <Col>
+                                        <Card className={classes.rootCard}>
+                                            <CardActionArea>
+                                                <CardContent>
+                                                    <Typography gutterBottom variant="h5" component="h2">
+                                                        {date.getDate()} / 0{date.getMonth() + 1}
+                                                    </Typography>
+                                                    {data.map((item) => (
+                                                        dateSplit(item) == (date.getDate() + '/0' + (date.getMonth() + 1) + '/' + date.getFullYear()) ?
+                                                            <Col>
+                                                                <ListTable item={item} week={week} />
+                                                            </Col> : ''
+                                                    ))}
+                                                </CardContent>
+                                            </CardActionArea>
+                                        </Card>
+                                    </Col>
+                                </Row>
+                            </Container>
+                        ))}
+                    </Slider>
+                </TabPanel>
+            </div>
+        );
 }
