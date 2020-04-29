@@ -21,6 +21,8 @@ class SchedulingRouter {
         this.app.post(`${this.baseRoute}/searchEnd`, this.searchEnd.bind(this));
         this.app.delete(`${this.baseRoute}/delete/:idScheduling`, this.delete.bind(this));
         this.app.post(`${this.baseRoute}/select`, this.select.bind(this));
+        this.app.post(`${this.baseRoute}/acept`, this.acept.bind(this));
+        this.app.post(`${this.baseRoute}/cancelAcept`, this.cancelAcept.bind(this));
         this.app.post(`${this.baseRoute}/view`, this.viewScheduling.bind(this));
     }
 
@@ -225,44 +227,6 @@ class SchedulingRouter {
             res.send(response)
         }
     }
-
-    async viewScheduling(req, res) {
-        const response = _.clone(this.response)
-        try {
-
-            const schedulingCtrl = new SchedulingCtrl(this.dbPool)
-
-            if (!_.isEmpty(req.body)) {
-
-                const params = schedulingCtrl.getPageParams(
-                    req.body.page,
-                    req.body.pageSize                    
-                )
-                
-                if (params.isValid) {
-                    const resp = await schedulingCtrl.viewScheduling(params.data)
-                    response.message = resp.message
-                    response.data = resp.data
-s                } else {
-                    response.message = params.message
-                    response.data = params.data
-                    res.status(params.statusCode)
-                }
-            } else {
-                response.message = "Os parametros não foram enviados"
-                response.data = req.body
-                res.status(400)
-            }
-        } catch (err) {
-            console.log(err)
-            response.message = "Erro ao realizar visualização"
-            res.status(500)
-        } finally {
-            console.log("resposta: " + response)
-            res.send(response)
-        }
-    }
-
 }
 
 

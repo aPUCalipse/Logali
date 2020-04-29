@@ -67,7 +67,7 @@ const FormLogin = () => {
             )
 
             const userData = {
-                idUser: resp.data.idUser,
+                idUser: resp.data.data.idUser,
                 isLogged: true
             }
 
@@ -133,8 +133,8 @@ const FormLogin = () => {
                                 <Form.Label>Tipo de usuario</Form.Label>
                                 <Form.Control as="select"custom id="typeUser" onChange={handleInputChange}>
                                     <option name="optionTypeUser" value="">Selecione o tipo de usuario</option>
-                                    <option name="optionTypeUser" value="1">Técnico</option>
-                                    <option name="optionTypeUser" value="2">Cliente</option>
+                                    <option name="optionTypeUser" value="2">Técnico</option>
+                                    <option name="optionTypeUser" value="1">Cliente</option>
                                 </Form.Control>
                             </Form.Group>
 
