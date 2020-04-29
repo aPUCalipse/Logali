@@ -10,7 +10,6 @@ class SchedulingCtrl {
     constructor(dbPool) {
         this.scheduling = new Scheduling(dbPool)
         this.userCtrl = new UserCtrl(dbPool)
-        this.SchedulingCtrl = new SchedulingCtrl(dbPool)
     }
 
     valitadeParamsCreate(userId, typeScheduling, dateTime, observation) {
@@ -325,8 +324,6 @@ class SchedulingCtrl {
         try {
             const user = await this.userCtrl.getUserById(idWorker)
 
-            console.log(user)
-
             if(!user || _.isEmpty(user.data)){
                 response.message = user.message
                 response.statusCode = user.statusCode
@@ -420,10 +417,11 @@ class SchedulingCtrl {
 
                 channel.sendToQueue(queue, Buffer.from(msg));
 
-                channel.close()
-                connection.close()
+                setTimeout(() => {
+                    channel.close()
+                    connection.close()
+                }, 1000);
             });
-
         });
     }
 

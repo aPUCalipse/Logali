@@ -1,39 +1,45 @@
-import schedulingCtrl from '../controllers/schedulingCrtl'
-import schedulingModel from '../model/scheduling'
+const amqp = require('amqplib/callback_api')
+const SchedulingCtrl = require('../controllers/schedulingCrtl')
+const SchedulingModel = require('../model/scheduling')
 
-export function consumeFromQueueAccept(message){
+module.exports = async function consumeFromQueueAccept(dbPool){
 
-    amqp.connect('amqp://localhost', function(errorConnect, connection) {
+    const schedulingCtrl = new SchedulingCtrl(dbPool)
+    const schedulingModel = new SchedulingModel(dbPool)
+
+    amqp.connect('amqp://localhost', async function(errorConnect, connection) {
         if (errorConnect) {
             throw errorConnect;
         }
-        connection.createChannel(function(errorCreateChannel, channel) {
+        connection.createChannel(async function(errorCreateChannel, channel) {
             if (errorCreateChannel) {
                 throw errorCreateChannel;
             }
 
             //passar nome da fila por parâmetro talvez
             var queue = 'scheduling-acept';
-            let msg = message;
 
             channel.consume(
                 //queue name
                 queue, 
 
                 //action to consume data
-                function(msg){
+                async function(msg){
+                    console.log("consumi")
                     const response = {
                         message: null,
                         statusCode: 500
                     }
 
-                    let idScheduling = parseInt(JSON.parse(message).idScheduling)
-                    let idWorker = parseInt(JSON.parse(message).idWorker)
+                    const message = JSON.parse(msg.content.toString())
+
+                    let idScheduling = parseInt(message.idScheduling)
+                    let idWorker = parseInt(message.idWorker)
 
                     try{
                         const respVal = await schedulingCtrl.verifyAcceptance(idScheduling, idWorker);
                         if(respVal.canAcept){
-                            const update = await schedulingModel.updateWorkerId(idWorker, id)
+                            const update = await schedulingModel.updateWorkerId(idWorker, idScheduling)
                             if(update){
                                 response.message = "Inserção da fila para o banco realizada com sucesso"
                                 response.statusCode = 200
@@ -46,6 +52,8 @@ export function consumeFromQueueAccept(message){
                         console.log("Erro na persistência na fila de agendamentos -> " + err)
                     }finally{
                         console.log("OLHA A MENSAGEMMM: " + msg.content.toString());
+                        channel.close()
+                        connection.close()
                         return response;
                     }
                 },
@@ -53,9 +61,6 @@ export function consumeFromQueueAccept(message){
                 //delete message from queue on read 
                 {noAck: true}
             )
-
-            channel.close()
-            connection.close()
         });
 
     });

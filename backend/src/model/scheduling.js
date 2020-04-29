@@ -308,7 +308,8 @@ class Scheduling {
             const query =
                 `UPDATE logali.scheduling ` +
                 `SET ` +
-                    `WorkerId = '${WorkerId}' ` +
+                    `WorkerId = '${WorkerId}' ,` +
+                    `statusSchedulingId = '2' ` +
                 `WHERE id = '${id}' `          
 
                 console.log(query)
