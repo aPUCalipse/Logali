@@ -156,7 +156,8 @@ class Scheduling {
         try {
             const query = `` +
                 `UPDATE logali.scheduling ` +
-                `SET workerId = null ` +
+                `SET workerId = null, ` +
+                `statusSchedulingId = 1 ` +
                 `where id = ${id}`
           
             const resp = await this.dbPool.query(query);

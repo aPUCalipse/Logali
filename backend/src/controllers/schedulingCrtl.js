@@ -370,7 +370,6 @@ class SchedulingCtrl {
 
         try {
             const scheduling = await this.scheduling.getSimplifyedById(idScheduling)
-            console.log(scheduling)
             if(scheduling){
                 if(!scheduling.workerId && scheduling.workerId === null){
                     response.message = "Esse agendamento não foi alocado ao seu usuario"
