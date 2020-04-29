@@ -72,7 +72,7 @@ function MyVerticallyCenteredModal(props,mode) {
     const [date, setDate] = useState('');
     const [time, setTime] = useState('');
     const [modalShow, setModalShow] = React.useState(false);
-    const [userId] = useState('2');
+    const [userId] = useState('1');
     const [id] = useState('0');
     const [observation, setObservation] = useState('');
     const [count, setCount] = useState('0');
@@ -386,3 +386,42 @@ function App() {
 }
 
 export default App;
+
+
+
+
+/*
+
+
+
+
+
+const [look, setLook] = useState('');
+
+
+useEffect(() =>{
+    if(look == null || look == ''){
+        handleViewScheduling();
+    }
+})
+
+async function handleViewScheduling(){
+    console.log(estou aqui)
+    const resp = await axious.get('http://localhost/8000/logali/app/scheduling/view' {
+        "page": 1,
+        "pageSize": 10,
+    })
+      .then(function(resp) {
+        setLook(resp.data.data)
+    })
+       .catch(function(error){
+        console.log(error.resp)
+    });
+
+    console.log(resp)
+    return resp
+};
+
+
+
+*/

@@ -40,7 +40,7 @@ class LoginRouter {
                     if (resp && resp.message === true) {
                         response.message = "Login realizado com sucesso"
                         response.data = validatedParams.data
-                        response.data.idUser = resp.userID
+                        response.data.idUser = resp.idUser
                         res.status(200)
                     } else {
                         response.message = `Erro ao realizar login -> ${resp.message}`
