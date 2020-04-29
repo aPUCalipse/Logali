@@ -131,6 +131,16 @@ function ListTable(props) {
         setDlgOpen(false);
     };
 
+
+    const handleOpenAcceptS = () => {
+        setDlgOpen(false)
+        handleAcceptance()
+    }
+
+    const handleCloseAcceptN = () => {
+        setDlgOpen(false)
+    }
+
     async function handleEndScheduling() {
         console.log("BATATA", userId)
         const response = await axios.post('http://localhost:8000/logali/app/scheduling/searchEnd', objectData)
@@ -165,12 +175,35 @@ function ListTable(props) {
             }
             else {
                 console.log("Cancelado com sucesso");
+                
             }
         }
         else {
         alert('Você não está logado, entre no sistema para executar esta ação');
     }
 }
+
+async function handleAcceptance() {
+    const tec = JSON.parse(localStorage.getItem('userData'))
+    if (tec.isLogged === true) {
+        const response = await axios.post(
+            'http://localhost:8000/logali/app/scheduling/acept',
+            {
+                idScheduling: item.schedulingId,
+                idWorker: tec.idUser,
+            });
+        if (response.status != 200) {
+            throw Error(response.body.message);
+        }
+        else {
+            console.log("Aceite realizado com sucesso");
+        }
+    }
+    else {
+    alert('Não foi possível aceitar o agendamento');
+}
+}
+
 
 function date(item) {
     let arrayData = item.dateTime.split(' ')
@@ -235,10 +268,10 @@ return (
             >
                 <ExpandMoreIcon />
             </IconButton>
-            <Button variant="contained" size="small" id={"btnRecuse" + item.schedulingId} className={classes.recuse}>
+            <Button variant="contained" size="small" id={"btnRecuse" + item.schedulingId} className={classes.recuse} onClick={handleCloseAcceptN}>
                 Recusar
                 </Button>
-            <Button variant="contained" size="small" id={"btnAccept" + item.schedulingId} className={classes.accept}>
+            <Button variant="contained" size="small" id={"btnAccept" + item.schedulingId} className={classes.accept} onClick={handleOpenAcceptS}>
                 Aceitar
                 </Button>
             <Button variant="contained" size="small" id={"btnCancel" + item.schedulingId} className={classes.recuse} style={{ display: "none" }} onClick={() => setDlgOpen(true)}>
