@@ -15,7 +15,7 @@ class RatingRouter {
     }
 
     init() {
-        this.app.post(`${this.baseRoute}/avaliar`, this.avaliar.bind(this))
+        this.app.post(`${this.baseRoute}/create`, this.avaliar.bind(this))
     }
 
 
@@ -34,8 +34,6 @@ class RatingRouter {
                     req.body.observation,
                     req.body.schedulingId
                 )
-
-                 
 
                 if(validatedParams && validatedParams.isValid) {
                     

@@ -309,15 +309,6 @@ class SchedulingCtrl {
         }
     }
 
-
-
-
-
-
-
-
-
-
     async viewScheduling(params){
         const response = {
             data: {},
@@ -325,21 +316,11 @@ class SchedulingCtrl {
             statusCode: 500,
         }
 
-        // response.data = params.data
-        // response.message = "aqui funciona"
-        // return response;
-
-
         try {
             const selectedSchedules = await this.scheduling.viewScheduling(
                 params.page,
                 params.pageSize
             )
-
-
-            // response.message= selectedSchedules.message
-            // response.data = selectedSchedules
-            // return response;
 
             response.data = selectedSchedules
             response.statusCode = 200
@@ -352,16 +333,18 @@ class SchedulingCtrl {
     }
 
 
-    getPageParams(page, pageSize,) {
+    getPageParams(page, pageSize) {
         const validatedParams = {
             isValid: true,
             message: null,
             statusCode: null,
             data: {
                 page: null,
-                pageSize: null,
+                pageSize: nulls
             }
         }
+
+        const numberIdWorker = parseInt(idWorker)
 
         if(!page){
             validatedParams.data.page = 1

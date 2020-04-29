@@ -14,12 +14,24 @@ class Rating {
 
             const resp = await this.dbPool.query(select)
 
-            if(resp >=0 && avgRate != null){
-                console.log(resp)
-                return resp
-            } else{
-                return 0;
-            }
+            return resp.pop()
+            
+        }catch(err){
+            throw new Error(`Erro ao selecionar a média do usuário -> ${err}`)
+        }
+        
+    }
+
+    async getHistoryQtd(ratedId){
+        try{
+            const select = `SELECT 1 ` +
+            `FROM logali.rating ` +
+            `WHERE ratedId = '${ratedId}' `+
+            `limit 1` 
+
+            const resp = await this.dbPool.query(select)
+
+            return resp
         }catch(err){
             throw new Error(`Erro ao selecionar a média do usuário -> ${err}`)
         }
@@ -30,39 +42,12 @@ class Rating {
         try {
 
             const update = `UPDATE logali.user ` +
-                `SET rateAVG = ( (rateAVG + '${rate}' ) / 2) ` +
-                `WHERE id = '${ratedId}' `
-
-            console.log(update)
-
-            const resp = await this.dbPool.query(update)
-
-            if (resp && resp.affectedRows >= 1) {
-                console.log(resp)
-                return resp
-            } else {
-                throw new Error(`O id Enviado não existe no banco`)
-            }
-        } catch (err) {
-            throw new Error(`Erro ao atualizar a média -> ${err}`)
-        }
-    }
-
-
-
-
-    async fisrtAVG(ratedId, rate) {
-        try {
-            const update = `UPDATE logali.user ` +
                 `SET rateAVG = '${rate}' ` +
                 `WHERE id = '${ratedId}' `
 
-            console.log(update)
-
             const resp = await this.dbPool.query(update)
 
             if (resp && resp.affectedRows >= 1) {
-                console.log(resp)
                 return resp
             } else {
                 throw new Error(`O id Enviado não existe no banco`)
@@ -71,11 +56,6 @@ class Rating {
             throw new Error(`Erro ao atualizar a média -> ${err}`)
         }
     }
-
-
-
-
-
 
     async validateRater(raterId, ratedId, schedulingId) {
         const response = {
@@ -91,10 +71,12 @@ class Rating {
                 `AND ratedId = '${ratedId}' ` +
                 `AND schedulingId = '${schedulingId}' `
 
+                console.log(searchRateQuery)
+
             const searchRate = await this.dbPool.query(searchRateQuery)
 
             if(searchRate.length > 0){
-                throw new Error(`Usuário já avaliado -> ${searchRateAlready.message}`)
+                throw new Error(`Usuário já avaliado`)
             }else{
                 response.isValid = true
                 response.rate = searchRate.pop()

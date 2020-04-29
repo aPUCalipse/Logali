@@ -229,8 +229,6 @@ class SchedulingRouter {
     async viewScheduling(req, res) {
         const response = _.clone(this.response)
         try {
-            
-            
 
             const schedulingCtrl = new SchedulingCtrl(this.dbPool)
 
@@ -238,21 +236,14 @@ class SchedulingRouter {
 
                 const params = schedulingCtrl.getPageParams(
                     req.body.page,
-                    req.body.pageSize,
+                    req.body.pageSize                    
                 )
                 
-
                 if (params.isValid) {
-                    
                     const resp = await schedulingCtrl.viewScheduling(params.data)
                     response.message = resp.message
                     response.data = resp.data
-                    res.send(response);
-
-                    // response.message = "Visualização realizada com sucesso"
-                    // response.data = resp.data
-                    // resp.status(200)
-                } else {
+s                } else {
                     response.message = params.message
                     response.data = params.data
                     res.status(params.statusCode)

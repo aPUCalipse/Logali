@@ -23,21 +23,25 @@ class RatingCtrl {
 
         if(!raterId){
             validatedParams.isValid = false
-            validatedParams.message = "O parametro do tipo Avaliação id do usuário avaliador está incorreto"
+            validatedParams.message = "O parametro id do usuário avaliador está incorreto"
             validatedParams.statusCode = 400
         } else if(!ratedId){
             validatedParams.isValid = false
-            validatedParams.message = "O parametro do tipo Avaliação id do usuário avaliado está incorreto"
+            validatedParams.message = "O parametro id do usuário avaliado está incorreto"
             validatedParams.statusCode = 400
-        } else if(rate <= 0 || rate == null){
+        } else if(rate < 0 || rate == null){
             validatedParams.isValid = false
-            validatedParams.message = "O parametro do tipo Avaliação nota da avaliação está incorreto"
+            validatedParams.message = "O parametro nota da avaliação está incorreto"
+            validatedParams.statusCode = 400
+        } else if(rate < 0 || rate > 5){
+            validatedParams.isValid = false
+            validatedParams.message = "O parametro nota da avaliação deve estar entre 0 e 5"
             validatedParams.statusCode = 400
         } else if(!schedulingId){
             validatedParams.isValid = false
-            validatedParams.message = "O parametro do tipo Avaliação do agendamento está incorreto"
+            validatedParams.message = "O parametro do id agendamento está incorreto"
             validatedParams.statusCode = 400
-        }else {
+        } else {
             validatedParams.isValid = true
             validatedParams.statusCode = 200
         }
@@ -60,67 +64,33 @@ class RatingCtrl {
             )
             
             if(ratersID && ratersID.isValid){
-                
-                if(ratersID >= 0 || ratersID != null){
+                let historyQtd = await this.rating.getHistoryQtd(rating.data.ratedId)
 
-                    const ratedUser = await this.rating.avaliar(
-                        rating.data.raterId,
-                        rating.data.ratedId,
-                        rating.data.schedulingId,
-                        rating.data.rate,
-                        rating.data.observation
-                        )
+                await this.rating.avaliar(
+                    rating.data.raterId,
+                    rating.data.ratedId,
+                    rating.data.schedulingId,
+                    rating.data.rate,
+                    rating.data.observation
+                )
 
-                    response.message = 'Usuário avaliado com sucesso'
-                    response.data = ratedUser
-                    response.statusCode = 200
-                }else {
-                    response.message = 'Usuário não encontrado.'
-                    response.data = ratedUser
-                    response.statusCode = 404
-                }
-                
+                response.message = 'Usuário avaliado com sucesso'
+                response.statusCode = 200                
 
-                //---> CALCULO DA MÉDIA <---
+                let getAVG = await this.rating.getAvgRate(rating.data.ratedId)
 
-                //pega média atual
-                var getAVG = await this.rating.getAvgRate(rating.data.ratedId)
-              
-                //Se o usuário já estiver sido avaliado antes
-                var calculeAVG =null;
-                if(getAVG > 0 && getAVG != null)
-                {
-                    calculeAVG = await this.rating.avgRate(
-                        rating.data.ratedId,
-                        rating.data.rate
-                        );
-                        
-                    response.message = 'Média atualizada com sucesso'
-                    response.data = calculeAVG
-                    response.statusCode = 200
-                }
-                else{
-                    response.message = 'Parâmetro média incorreto.'
-                    response.data = calculeAVG
-                    response.statusCode = 404
+                let newRate = null
+
+                if(historyQtd && historyQtd.length !== 0){
+                    newRate = (getAVG.rateAVG + rating.data.rate) / 2
+                } else {
+                    newRate = rating.data.rate
                 }
 
-
-                //Se for a primeira avaliação do usuário 
-                var  calculeFisrtAVG = null;
-                if(getAVG == 0){
-                    calculeFisrtAVG = await this.rating.fisrtAVG(
-                        rating.data.ratedId,
-                        rating.data.rate
-                    )
-                    response.message = "Usuário avaliado com sucesso"
-                    response.data = calculeFisrtAVG
-                    response.statusCode = 200
-                }else{
-                    response.message = 'Parâmetro média incorreto.'
-                    response.data = calculeFisrtAVG
-                    response.statusCode = 404
-                }
+                await this.rating.avgRate(
+                    rating.data.ratedId,
+                    newRate
+                );
             }
         }catch(err){
             response.message = `Erro desconhecido ao realizar a avaliação  -> ${err.toString()}`
