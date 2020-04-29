@@ -340,11 +340,9 @@ class SchedulingCtrl {
             statusCode: null,
             data: {
                 page: null,
-                pageSize: nulls
+                pageSize: null
             }
         }
-
-        const numberIdWorker = parseInt(idWorker)
 
         if(!page){
             validatedParams.data.page = 1

@@ -226,16 +226,15 @@ export default function Technical() {
       setValue(newValue);
     };
     async function getScheduling(){
-        const response = await axios.post('http://localhost:8000/logali/app/scheduling/select', {
-            "idUser" : 1,
+        const response = await axios.post('http://localhost:8000/logali/app/scheduling/view', {
             "page": 1,
-            "pageSize": 10,
-            "idTypeScheduling": '',
-            "idStatusScheduling": '',
+            "pageSize": 10
         })
           .then(function(response) {
             console.log(response);
-            setData(response.data.data)
+            if(response.data && response.data.data && response.data.data.length > 0){
+              setData(response.data.data)
+            }
           })
           .catch(function (error) {
             console.log(error.response);

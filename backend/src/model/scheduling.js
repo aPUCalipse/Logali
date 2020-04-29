@@ -303,8 +303,10 @@ class Scheduling {
                         `on ts.id = s.typeSchedulingId ` +
                     `join logali.address ad ` +
                         `on ad.id = uc.addressId `+
-                `WHERE s.workerId = null `+
+                `WHERE s.workerId is null `+
                 `LIMIT ${this.getPageByPaginatio(page, pageSize)}`
+
+            console.log(query)
 
             const resp = await this.dbPool.query(query);
 
