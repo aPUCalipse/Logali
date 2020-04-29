@@ -373,6 +373,8 @@ class SchedulingCtrl {
 
         return validatedParams
     }
+
+    
     async verifyAcceptance(idScheduling, idWorker) {
         const response = {
             message: null,

@@ -227,6 +227,131 @@ class SchedulingRouter {
             res.send(response)
         }
     }
+
+
+        /**
+     * 
+     * @param {*} idScheduling 
+     * @param {*} idWorker
+     */
+    async acept(req, res) {
+        const response = _.clone(this.response)
+        try {
+            const schedulingCtrl = new SchedulingCtrl(this.dbPool)
+
+            const numberIdScheduling = parseInt(req.body.idScheduling)
+            const numberIdWorker = parseInt(req.body.idWorker)
+
+            if (
+                (!_.isNaN(numberIdScheduling) && numberIdScheduling > 0) &&
+                (!_.isNaN(numberIdWorker) && numberIdWorker > 0)
+            ) {
+                const verifyedAcceptanceScheduling = await schedulingCtrl.verifyAcceptance(numberIdScheduling, numberIdWorker)
+
+                if(verifyedAcceptanceScheduling.canAcept){
+                    try{
+                        const message = JSON.stringify({
+                            idScheduling: numberIdScheduling,
+                            idWorker: numberIdWorker
+                        })
+                        
+                        schedulingCtrl.insertInQueueAcept(message)
+                    } catch(err){
+                        console.log("Erro ao inserir no rabbitMQ")
+                        console.log(err)
+                    }
+                }
+                
+                response.message = verifyedAcceptanceScheduling.message
+                response.data = req.body
+                res.status(verifyedAcceptanceScheduling.statusCode)
+                
+            }else{
+                response.message = "O id do agendamento e o id do técnico devem ser enviados e devem ser maior que zero"
+                response.data = req.body
+                res.status(404)
+            }
+        } catch (err) {
+            console.log(err)
+            response.message = "Erro ao realizar o aceite do agendamento"
+            res.status(500)
+        }
+         finally {
+            res.send(response)
+        }
+    }
+
+    /**
+     * @param {*} idScheduling 
+     * @param {*} idWorker
+     */
+    async cancelAcept(req, res) {
+        const response = _.clone(this.response)
+        try {
+            const schedulingCtrl = new SchedulingCtrl(this.dbPool)
+
+            const numberIdScheduling = parseInt(req.body.idScheduling)
+            const numberIdWorker = parseInt(req.body.idWorker)
+
+            if (
+                (!_.isNaN(numberIdScheduling) && numberIdScheduling > 0) &&
+                (!_.isNaN(numberIdWorker) && numberIdWorker > 0)
+            ) {
+                const canceledAcept = await schedulingCtrl.canceledAcept(numberIdScheduling, numberIdWorker)
+                response.message = canceledAcept.message
+                response.data = req.body
+                res.status(canceledAcept.statusCode)
+            } else {
+                response.message = "O id do agendamento e o id do técnico devem ser enviados e devem ser maior que zero"
+                response.data = req.body
+                res.status(400)
+            }
+        } catch (err) {
+            console.log(err)
+            response.message = "Erro ao realizar o cancelamento do aceite do agendamento"
+            res.status(500)
+        }
+         finally {
+            res.send(response)
+        }
+    }
+
+    async viewScheduling(req, res) {
+        const response = _.clone(this.response)
+        try {
+            const schedulingCtrl = new SchedulingCtrl(this.dbPool)
+
+            if (!_.isEmpty(req.body)) {
+                const params = schedulingCtrl.getPageParams(
+                    req.body.page,
+                    req.body.pageSize
+                )
+
+                if (params.isValid) {
+                    const resp = await schedulingCtrl.viewScheduling(params.data)
+                    response.message = "Seleção realizada com sucesso"
+                    response.data = resp.data
+                    res.status(200)
+                } else {
+                    response.message = params.message
+                    response.data = params.data
+                    res.status(params.statusCode)
+                }
+            } else {
+                response.message = "Os parametros não foram enviados"
+                response.data = req.body
+                res.status(400)
+            }
+        } catch (err) {
+            console.log(err)
+            response.message = "Erro ao realizar seleção"
+            res.status(500)
+        } finally {
+            console.log("resposta: " + response)
+            res.send(response)
+        }
+    }
+
 }
 
 
