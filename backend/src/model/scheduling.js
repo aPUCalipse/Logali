@@ -351,6 +351,29 @@ class Scheduling {
     }
 
 
+
+    async updateWorkerId(WorkerId, id) {
+        try {
+            const query =
+                `UPDATE logali.scheduling ` +
+                `SET ` +
+                    `WorkerId = '${WorkerId}' ,` +
+                    `statusSchedulingId = '2' ` +
+                `WHERE id = '${id}' `          
+
+                console.log(query)
+
+            const resp = await this.dbPool.query(query)
+            
+            if(resp && resp.affectedRows >= 1){
+                return resp
+            } else {
+                throw new Error(`Não foi possível atualizar o agendamento. Provavelmente ele foi excluído ou não existe.`)
+            }
+        } catch (err) {
+            throw new Error(`Erro ao atualizar agendamento -> ${err}`)
+        }
+    }
 }
 
 module.exports = Scheduling
