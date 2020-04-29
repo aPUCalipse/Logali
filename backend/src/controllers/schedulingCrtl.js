@@ -309,6 +309,67 @@ class SchedulingCtrl {
         }
     }
 
+    async viewScheduling(params){
+        const response = {
+            data: {},
+            message: null,
+            statusCode: 500,
+        }
+
+        try {
+            const selectedSchedules = await this.scheduling.viewScheduling(
+                params.page,
+                params.pageSize
+            )
+
+            response.data = selectedSchedules
+            response.statusCode = 200
+        }
+        catch (err) {
+            response.message = `Erro desconhecido ao selecionar agendamentos  -> ${err.toString()}`
+        } finally {
+            return response
+        }
+    }
+
+
+    getPageParams(page, pageSize) {
+        const validatedParams = {
+            isValid: true,
+            message: null,
+            statusCode: null,
+            data: {
+                page: null,
+                pageSize: nulls
+            }
+        }
+
+        const numberIdWorker = parseInt(idWorker)
+
+        if(!page){
+            validatedParams.data.page = 1
+        } else {
+            const numberPage = parseInt(page)
+            if(!_.isNaN(numberPage)){
+                validatedParams.data.page = numberPage
+            } else {
+                validatedParams.data.page = 1
+            }
+        }
+
+        if(!pageSize){
+            validatedParams.data.pageSize = 10
+        } else {
+            const numberPageSize = parseInt(pageSize)
+            if(!_.isNaN(numberPageSize)){
+                validatedParams.data.pageSize = numberPageSize
+            } else {
+                validatedParams.data.pageSize = 10
+            }
+        }
+
+        return validatedParams
+    }
     
 }
 

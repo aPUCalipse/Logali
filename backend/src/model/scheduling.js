@@ -270,6 +270,52 @@ class Scheduling {
         return `${init},${end}`
         
     }
+
+    async viewScheduling(page, pageSize, idWorker){
+        try{
+            var query = `` +
+                `SELECT `+
+                    `s.userId 'idClient', ` +
+                    `uc.name 'clientName', `+
+                    `ad.geoLocX,  ` +
+                    `ad.geoLocY,  ` +
+                    `ad.zipCode,  ` +
+                    `ad.number,  ` +
+                    `ad.street,  ` +
+                    `ad.complement,  ` +
+                    `ad.neighborhood,  ` +
+                    `ad.city,  ` +
+                    `ad.state, ` +
+                    `s.typeSchedulingId, ` +
+                    `ts.name 'nametypeSchedulig', ` +
+                    `s.statusSchedulingId, ` +
+                    `ss.name 'nameStatusScheduling', ` +
+                    `s.id 'schedulingId', ` +
+                    `s.\`dateTime\`, ` +
+                    `s.observation, ` +
+                    `s.createdAt ` +
+                `FROM logali.scheduling s ` +
+                    `join logali.user uc ` +
+                        `on uc.id = s.userId ` +
+                    `join logali.statusscheduling ss ` +
+                        `on ss.id = s.statusSchedulingId ` +
+                    `join logali.typescheduling ts ` +
+                        `on ts.id = s.typeSchedulingId ` +
+                    `join logali.address ad ` +
+                        `on ad.id = uc.addressId `+
+                `WHERE s.workerId = null `+
+                `LIMIT ${this.getPageByPaginatio(page, pageSize)}`
+
+            const resp = await this.dbPool.query(query);
+
+            return resp;
+        } catch(err) {
+            console.log(err)
+            throw new Error(`Erro ao pesquisar agendamento -> ${err}`)
+        }
+    }
+
+
 }
 
 module.exports = Scheduling
