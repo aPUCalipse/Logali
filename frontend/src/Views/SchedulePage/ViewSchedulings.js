@@ -156,14 +156,16 @@ function MyVerticallyCenteredModal(props) {
   const [observation, setObservation] = React.useState('');
 
   async function handleRating() {
-    const response = await axios.post('http://localhost:8000/logali/app/avaliar/rate', {
-      "raterId": selected.idClient,
-      "ratedId": selected.idWorker,
-      "schedulingId": selected.schedulingId,
-      "rate":value,
-      "observation":observation,
-
-    })
+    const response = await axios.post(
+      'http://localhost:8000/logali/app/rating/create', 
+      {
+        "raterId": selected.idClient,
+        "ratedId": selected.idWorker,
+        "schedulingId": selected.schedulingId ,
+        "rate":value,
+        "observation": observation
+      }
+    )
       .then(function (response) {
         console.log(response.data);
       })
@@ -349,10 +351,7 @@ export default function RecipeReviewCard() {
     };
 
     async function handleDeleteScheduling(id) {
-        const user = JSON.parse(localStorage.getItem('userData'))
-      const response = await axios.delete('http://localhost:8000/logali/app/scheduling/delete',{
-          data: {'idScheduling':id, 'userId': user.idUser},
-      })
+      const response = await axios.delete(`http://localhost:8000/logali/app/scheduling/delete/${id}`)
         .then(function (response) {
           console.log(response);
         })
@@ -362,8 +361,7 @@ export default function RecipeReviewCard() {
   
         console.log(response);
       };
-  return (
-   
+  return (   
     <div className={classes.root4}>
        <AppBar position="static" className={classes.tabTitle}>
         <Toolbar variant="dense">
@@ -435,7 +433,7 @@ export default function RecipeReviewCard() {
         </Tooltip>
         <Tooltip title="Deletar">
           <IconButton aria-label="share">
-            <DeleteForeverIcon onClick={() => handleClickValidate(item.schedulingId)} />
+            <DeleteForeverIcon  onClick={() => handleClickValidate(item.schedulingId)}/>
           </IconButton>
           </Tooltip>
           <Tooltip title="Avaliação">

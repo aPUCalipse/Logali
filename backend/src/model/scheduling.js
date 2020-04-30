@@ -28,9 +28,12 @@ class Scheduling {
 
     async delete(idScheduling){
         try{
-            const query =  `DELETE ` +
-            `FROM logali.scheduling ` +
-            `where id = '${idScheduling}' `
+            const now = Moment().format("YYYY-MM-DD HH:mm:ss")
+            const query = 
+                `UPDATE logali.scheduling ` +
+                `SET ` +
+                    `deletedAt = '${now}' ` +
+                `WHERE id = '${idScheduling}' ` 
 
 
             const resp = await this.dbPool.query(query)
@@ -53,7 +56,8 @@ class Scheduling {
                 `WHERE 1=1 ` +
                 `AND userId = '${userId}' ` +
                 `AND typeSchedulingId = '${typeScheduling}' ` +
-                `AND dateTime = '${dateTime.format("YYYY-MM-DD HH:mm:ss")}'`
+                `AND dateTime = '${dateTime.format("YYYY-MM-DD HH:mm:ss")}' ` +
+                `AND deletedAt is null`
 
             const resp = await this.dbPool.query(query)
             return resp.pop()
@@ -70,7 +74,8 @@ class Scheduling {
                 `FROM logali.scheduling ` +
                 `WHERE 1=1 ` +
                 `AND id = '${id}' ` +
-                `AND userId = '${idUser}'`
+                `AND userId = '${idUser}' `+
+                `AND deletedAt is null`
           
             const resp = await this.dbPool.query(query)
 
@@ -87,7 +92,8 @@ class Scheduling {
                 `SET ` +
                     `dateTime = '${dateTime.format("YYYY-MM-DD HH:mm:ss")}' ` +
                     ((observation) ? `, observation = '${observation}' ` : ` `)+
-                `WHERE id = '${id}' `          
+                `WHERE id = '${id}' `+
+                `AND deletedAt is null`
 
                 console.log(query)
 
@@ -141,7 +147,8 @@ class Scheduling {
             const query = `` +
                 `SELECT *   ` +
                 `FROM logali.scheduling s ` +
-                `where s.id = ${id}`
+                `where s.id = ${id} ` + 
+                `AND deletedAt is null`
           
             const resp = await this.dbPool.query(query);
            
@@ -158,7 +165,8 @@ class Scheduling {
                 `UPDATE logali.scheduling ` +
                 `SET workerId = null, ` +
                 `statusSchedulingId = 1 ` +
-                `where id = ${id}`
+                `where id = ${id} ` + 
+                `AND deletedAt is null`
           
             const resp = await this.dbPool.query(query);
            
@@ -228,7 +236,8 @@ class Scheduling {
                 `join logali.address ad ` +
                 `on ad.id = uc.addressId ` +
                 
-                `where s.id = ${id}`
+                `where s.id = ${id} ` +
+                `AND deletedAt is null`
           
             const resp = await this.dbPool.query(query);
            
@@ -278,7 +287,8 @@ class Scheduling {
                     `on ad.id = uc.addressId ` +
                 
                     `where 1=1 `+
-                    `and uc.id = ${idUser} `
+                    `and uc.id = ${idUser} ` +
+                    `AND deletedAt is null `
 
                     if(idTypeScheduling){
                         query += `and s.typeSchedulingId = ${idTypeScheduling} `
@@ -338,6 +348,7 @@ class Scheduling {
                         `on ad.id = uc.addressId `+
                 `WHERE 1=1 `+
                     `AND s.workerId is null `+
+                    `AND deletedAt is null ` +
                     `OR s.workerId = ${idWorker} `+
                 `ORDER BY s.workerId DESC `+
                 `LIMIT ${this.getPageByPaginatio(page, pageSize)} `
@@ -353,8 +364,6 @@ class Scheduling {
         }
     }
 
-
-
     async updateWorkerId(WorkerId, id) {
         try {
             const query =
@@ -362,7 +371,8 @@ class Scheduling {
                 `SET ` +
                     `WorkerId = '${WorkerId}' ,` +
                     `statusSchedulingId = '2' ` +
-                `WHERE id = '${id}' `          
+                `WHERE id = '${id}' ` + 
+                `AND deletedAt is null `        
 
                 console.log(query)
 
