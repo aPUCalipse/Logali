@@ -141,20 +141,20 @@ function ListTable(props) {
         setDlgOpen(false)
     }
 
-    async function handleEndScheduling() {
-        console.log("BATATA", userId)
-        const response = await axios.post('http://localhost:8000/logali/app/scheduling/searchEnd', objectData)
-            .then(function (response) {
-                setEnd(response.data.data)
-                console.log(response.data);
-            })
-            .catch(function (error) {
-                console.log(error.response);
-            });
+    // async function handleEndScheduling() {
+    //     console.log("BATATA", userId)
+    //     const response = await axios.post('http://localhost:8000/logali/app/scheduling/searchEnd', objectData)
+    //         .then(function (response) {
+    //             setEnd(response.data.data)
+    //             console.log(response.data);
+    //         })
+    //         .catch(function (error) {
+    //             console.log(error.response);
+    //         });
 
-        console.log(response);
-        return response
-    };
+    //     console.log(response);
+    //     return response
+    // };
 
     const handleExpandClick = () => {
         setExpanded(!expanded);
@@ -171,11 +171,10 @@ function ListTable(props) {
                 });
             if (response.status != 200) {
                 throw Error(response.body.message);
-                console.log(response.body.message)
             }
             else {
                 console.log("Cancelado com sucesso");
-                
+                window.location.reload()               
             }
         }
         else {
@@ -197,6 +196,7 @@ async function handleAcceptance() {
         }
         else {
             console.log("Aceite realizado com sucesso");
+            window.location.reload()
         }
     }
     else {
@@ -225,18 +225,18 @@ function splitDateTime(item) {
 }
 
 useEffect(() => {
-    if (end == null || end == '') {
-        handleEndScheduling();
-    }
+    // if (end == null || end == '') {
+    //     handleEndScheduling();
+    // }
     if (item.statusSchedulingId != 2) {
         document.getElementById("btnCancel" + item.schedulingId).setAttribute('style', 'display: none')
         document.getElementById("btnAccept" + item.schedulingId).removeAttribute('style', 'display: none')
-        document.getElementById("btnRecuse" + item.schedulingId).removeAttribute('style', 'display: none')
+        // document.getElementById("btnRecuse" + item.schedulingId).removeAttribute('style', 'display: none')
     }
     else {
         document.getElementById("btnCancel" + item.schedulingId).removeAttribute('style', 'display: none')
         document.getElementById("btnAccept" + item.schedulingId).setAttribute('style', 'display: none')
-        document.getElementById("btnRecuse" + item.schedulingId).setAttribute('style', 'display: none')
+        // document.getElementById("btnRecuse" + item.schedulingId).setAttribute('style', 'display: none')
     }
 })
 
@@ -268,15 +268,15 @@ return (
             >
                 <ExpandMoreIcon />
             </IconButton>
-            <Button variant="contained" size="small" id={"btnRecuse" + item.schedulingId} className={classes.recuse} onClick={handleCloseAcceptN}>
+            {/* <Button variant="contained" size="small" id={"btnRecuse" + item.schedulingId} className={classes.recuse} onClick={handleCloseAcceptN}>
                 Recusar
-                </Button>
+                </Button> */}
             <Button variant="contained" size="small" id={"btnAccept" + item.schedulingId} className={classes.accept} onClick={handleOpenAcceptS}>
                 Aceitar
-                </Button>
+            </Button>
             <Button variant="contained" size="small" id={"btnCancel" + item.schedulingId} className={classes.recuse} style={{ display: "none" }} onClick={() => setDlgOpen(true)}>
                 Cancelar aceite
-                </Button>
+            </Button>
         </CardActions>
         <Collapse in={expanded} timeout="auto" unmountOnExit>
             <CardContent>
@@ -289,7 +289,7 @@ return (
                 </Typography>
                 <Typography paragraph>
                     <b>Endereço:</b>
-                    {'Rua ' + end.street + ', ' + end.number + ', bairro ' + end.neighborhood + '. ' + end.city + ' - ' + end.state}
+                    {'Rua ' + item.street + ', ' + item.number + ', bairro ' + item.neighborhood + '. ' + item.city + ' - ' + item.state}
                 </Typography>
             </CardContent>
         </Collapse>
@@ -322,9 +322,11 @@ export default function Technical() {
         setValue(newValue);
     };
     async function getScheduling(){
+        const tec = JSON.parse(localStorage.getItem('userData'))
         const response = await axios.post('http://localhost:8000/logali/app/scheduling/view', {
             "page": 1,
-            "pageSize": 10
+            "pageSize": 100,
+            "idWorker": tec.idUser,
         })
           .then(function(response) {
             console.log(response);

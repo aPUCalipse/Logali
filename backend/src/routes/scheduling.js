@@ -326,7 +326,8 @@ class SchedulingRouter {
             if (!_.isEmpty(req.body)) {
                 const params = schedulingCtrl.getPageParams(
                     req.body.page,
-                    req.body.pageSize
+                    req.body.pageSize,
+                    req.body.idWorker
                 )
 
                 if (params.isValid) {

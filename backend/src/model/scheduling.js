@@ -336,8 +336,11 @@ class Scheduling {
                         `on ts.id = s.typeSchedulingId ` +
                     `join logali.address ad ` +
                         `on ad.id = uc.addressId `+
-                `WHERE s.workerId is null `+
-                `LIMIT ${this.getPageByPaginatio(page, pageSize)}`
+                `WHERE 1=1 `+
+                    `AND s.workerId is null `+
+                    `OR s.workerId = ${idWorker} `+
+                `ORDER BY s.workerId DESC `+
+                `LIMIT ${this.getPageByPaginatio(page, pageSize)} `
 
             console.log(query)
 
