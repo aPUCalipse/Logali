@@ -1,0 +1,38 @@
+@import url('https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300&display=swap');
+
+body{
+    height: 100%;
+    width: 100%;
+}
+
+.position_body{
+    margin-left: 0px !important;
+    margin-right: 0px !important;
+}
+
+.jumbotron{
+    background-color: unset !important;
+}
+
+.MainLayout_Container{
+    margin-top: 0px;
+    max-height: 100%;
+    flex-direction: column;
+    min-height: 100vh;
+    position: relative;
+    background-image: url('../../Images/barbant.jpg');
+    background-size: cover;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+}
+
+.MainLayout_Background_Image{
+    height: 100%;
+    width: 100%;
+}
+
+@media(max-width: 500px){
+    .Background_Image{
+        display: none;
+    }
+}
