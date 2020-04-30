@@ -274,7 +274,6 @@ class SchedulingCtrl {
 
         try {
             const hasScheluding = await this.scheduling.getSchedulingByIdAndIdUser(scheduling.id, scheduling.idUser)
-            console.log(hasScheluding.workerId)
             if(hasScheluding && !_.isEmpty(hasScheluding)){
                 if(hasScheluding.workerId === null){
                     await this.scheduling.update(scheduling.id, scheduling.dateTime, scheduling.observation)

@@ -19,7 +19,7 @@ class SchedulingRouter {
         this.app.put(`${this.baseRoute}/update`, this.update.bind(this));
         this.app.get(`${this.baseRoute}/getId`, this.getId.bind(this));
         this.app.post(`${this.baseRoute}/searchEnd`, this.searchEnd.bind(this));
-        this.app.delete(`${this.baseRoute}/delete/:idScheduling`, this.delete.bind(this));
+        this.app.delete(`${this.baseRoute}/delete`, this.delete.bind(this));
         this.app.post(`${this.baseRoute}/select`, this.select.bind(this));
         this.app.post(`${this.baseRoute}/acept`, this.acept.bind(this));
         this.app.post(`${this.baseRoute}/cancelAcept`, this.cancelAcept.bind(this));
@@ -207,8 +207,7 @@ class SchedulingRouter {
         try {
             const schedulingCtrl = new SchedulingCtrl(this.dbPool)
 
-            const idScheduling = parseInt(req.params.idScheduling)
-
+            const idScheduling = parseInt(req.body.idScheduling)
             if (!_.isNaN(idScheduling) && idScheduling > 0) {
                 const responseOfDelet = await schedulingCtrl.delete(idScheduling)
 

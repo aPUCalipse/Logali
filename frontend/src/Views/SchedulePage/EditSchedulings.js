@@ -68,7 +68,7 @@ function MyVerticallyCenteredModal(props,mode) {
     const [date, setDate] = useState(props.data == null ?'':props.data.dateTime.split(' ')[0]);
     const [time, setTime] = useState(props.data == null ?'':props.data.dateTime.split(' ')[1]);
 
-    const [dateTime] = date + " " + time; 
+    const [dateTime] = date + ' ' + time; 
     const [userId] = useState('1');
     const [id] = useState(props.data == null ?'':props.data.id);
     const [observation, setObservation] = useState(props.data==null?'':props.data.observation);
@@ -89,17 +89,18 @@ function MyVerticallyCenteredModal(props,mode) {
     
     
     async function handleEditScheduling(e) {
-        var id = props.data.id
+        const user = JSON.parse(localStorage.getItem('userData'))
+        var idUser = user.idUser
+        var id = props.data.schedulingId
+        console.log(id)
         var postData = {
                 id,
-                typeScheduling,
-                date,
-                time,
+                idUser,
+                dateTime,
                 observation
           };
         e.preventDefault();
-        const response = await axios.put('http://localhost:8000/logali/app/scheduling/update', postData,
-        axiosConfig)
+        const response = await axios.put('http://localhost:8000/logali/app/scheduling/update', postData)
           .then(function (response) {
             console.log(response);
           })

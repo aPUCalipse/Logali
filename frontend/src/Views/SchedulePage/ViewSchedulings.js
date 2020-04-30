@@ -290,11 +290,6 @@ export default function RecipeReviewCard() {
     setExpanded(!expanded);
   };
 
-
-  const userId={
-    userId: '1'
-  }
-
   function avaliacao(show, item){
     setSelected(item);
     setModalShow(true)
@@ -313,9 +308,11 @@ export default function RecipeReviewCard() {
         
   }
 
-  async function getScheduling(){
+    async function getScheduling() {
+        const user = JSON.parse(localStorage.getItem('userData'))
+        
     const response = await axios.post('http://localhost:8000/logali/app/scheduling/select', {
-        "idUser" : userId.userId,
+        "idUser" : user.idUser,
         "page": 1,
         "pageSize": 10,
         "idTypeScheduling": '',
@@ -338,26 +335,23 @@ export default function RecipeReviewCard() {
     });
 
     function handleClickValidate(id) {
+        const user = JSON.parse(localStorage.getItem('userData'))
+        const userId = user.idUser
       if(userId == 0){
         if(userId == 0)
           setValidateType(true)
         else
           setValidateType(false)
-      }else{
+      } else {
         handleDeleteScheduling(id);
         setValidateType(false);
       }
     };
 
     async function handleDeleteScheduling(id) {
-      console.log(id)
+        const user = JSON.parse(localStorage.getItem('userData'))
       const response = await axios.delete('http://localhost:8000/logali/app/scheduling/delete',{
-        data:{'id':id, 'userId':userId.userId},
-        headers: {
-          'Content-Type': 'application/json;charset=UTF-8',
-          "Access-Control-Allow-Origin": "*",
-          "Access-Control-Allow-Methods" : "DELETE"
-        }
+          data: {'idScheduling':id, 'userId': user.idUser},
       })
         .then(function (response) {
           console.log(response);
@@ -367,7 +361,6 @@ export default function RecipeReviewCard() {
         });
   
         console.log(response);
-        alert("Agendamento Deletado com Sucesso");
       };
   return (
    
@@ -442,7 +435,7 @@ export default function RecipeReviewCard() {
         </Tooltip>
         <Tooltip title="Deletar">
           <IconButton aria-label="share">
-            <DeleteForeverIcon  onClick={() => handleClickValidate(item.id)}/>
+            <DeleteForeverIcon onClick={() => handleClickValidate(item.schedulingId)} />
           </IconButton>
           </Tooltip>
           <Tooltip title="Avaliação">
