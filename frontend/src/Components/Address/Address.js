@@ -20,7 +20,7 @@ function Address() {
                 
                 <Form.Group as={Col} md={2} name="enderecoCliente" style={{ display: "none" }}>
                     <Form.Label>Número</Form.Label>
-                    <Form.Control type="text" placeholder="Digite o numero da sua residencia" id="numberInput" required="required" autoComplete="off"/>
+                    <Form.Control type="number" placeholder="Digite o numero da sua residencia" id="numberInput" required="required" autoComplete="off"/>
                 </Form.Group>
 
                 <Form.Group as={Col} md={4} name="enderecoCliente" style={{ display: "none" }}>
