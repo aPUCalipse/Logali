@@ -94,13 +94,12 @@ function MyVerticallyCenteredModal(props,mode) {
         var id = props.data.schedulingId
         const dateTimeMoment = moment(`${date} ${time}`, "YYYY-MM-DD HH:mm:ss")
         var postData = {
-            id: id,
             dateTime: dateTimeMoment.format('DD/MM/YYYY HH:mm:ss'),
             observation: observation,
             idUser: props.data.idClient
         };
         e.preventDefault();
-        const response = await axios.put('http://localhost:8000/logali/app/scheduling/update', postData)
+        const response = await axios.put(`http://localhost:8000/logali/app/scheduling/update/${id}`, postData)
           .then(function (response) {
             console.log(response);
           })

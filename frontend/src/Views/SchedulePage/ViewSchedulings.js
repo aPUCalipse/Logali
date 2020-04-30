@@ -167,6 +167,7 @@ function MyVerticallyCenteredModal(props) {
       }
     )
       .then(function (response) {
+        alert(response.data.message)
         console.log(response.data);
       })
       .catch(function (error) {
@@ -354,6 +355,8 @@ export default function RecipeReviewCard() {
       const response = await axios.delete(`http://localhost:8000/logali/app/scheduling/delete/${id}`)
         .then(function (response) {
           console.log(response);
+          alert("Deletado com sucesso")
+          window.location.reload()
         })
         .catch(function (error) {
           console.log(error);
@@ -437,7 +440,7 @@ export default function RecipeReviewCard() {
           </IconButton>
           </Tooltip>
           <Tooltip title="Avaliação">
-          <IconButton
+          <IconButton disabled={item.statusSchedulingId != '1' ? false : true}
               onClick={() => avaliacao(true, item)}
           >
           <StarBorderIcon/>
