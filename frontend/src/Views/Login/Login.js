@@ -80,10 +80,9 @@ const FormLogin = () => {
                     autoDismiss: true,
                     onDismiss: () => {
                         if(loginData.typeUser === '1'){
-                            navigate("/")
-                            // navigate("/agendamentos")
-                        } else if(loginData.typeUser === '2') {
                             navigate("/agendar")
+                        } else if(loginData.typeUser === '2') {
+                            navigate("/agenda")
                         }
                     }
                 }
