@@ -3,6 +3,7 @@ import React, { useState, Component } from 'react';
 import {navigate, A} from 'hookrouter';
 import {Row, Col, Form, Button, Container} from 'react-bootstrap'
 import axios from 'axios';
+import MainLayout from '../MainLayout/MainLayout'
 
 import style from './Login.module.css'
 
@@ -68,6 +69,7 @@ const FormLogin = () => {
 
             const userData = {
                 idUser: resp.data.data.idUser,
+                typeUser: loginData.typeUser,
                 isLogged: true
             }
 
