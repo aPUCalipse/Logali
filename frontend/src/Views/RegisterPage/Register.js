@@ -3,13 +3,14 @@ import {Row, Col, Form, Button, Card} from 'react-bootstrap'
 import style from './RegisterPage.module.css';
 import api from '../../Components/Assets/api';
 import "bootstrap/dist/css/bootstrap.min.css";
+import {navigate, A} from 'hookrouter';
 
 //componentes 
 import MainLayout from '../MainLayout/MainLayout'
 import Address from '../../Components/Address/Address'
 
 class Register extends Component {
-
+    
     constructor(props) {
         super(props);
     }
@@ -37,6 +38,7 @@ class Register extends Component {
             selectedOption: 1
         });
     }
+  
 
     handleRegister = async () => {
         if (
@@ -82,7 +84,8 @@ class Register extends Component {
 
                 }
                 else {
-                    alert("Usuário Cadastrado com sucesso");
+                     alert("Usuário Cadastrado com sucesso");
+                     navigate("/login")
                 }
             }
             else {
@@ -94,6 +97,7 @@ class Register extends Component {
             console.log(document.getElementById('senhaInput').value + " / " + document.getElementById('confirmaInput').value);
         }
     }
+   
 
     render() {
         return (
@@ -101,16 +105,16 @@ class Register extends Component {
                 <MainLayout>
                     <Card body>
                             <h1 className={style.title}>Cadastrar-se</h1>
-
                             <Form as={Row}>
                                 <Form.Group as={Col} md={4}>
                                     <Form.Label>Nome:</Form.Label>
                                     <Form.Control type="text" placeholder="Digite seu nome" id="nameInput" required="required" autoComplete="off"/>
                                 </Form.Group>
-
+                                
                                 <Form.Group as={Col} md={4}>
-                                    <Form.Label>Usuaio:</Form.Label>
-                                    <Form.Control type="text" placeholder="Digite seu usuario" id="userInput" required="required" autoComplete="off"/>
+                                    <Form.Label>Usuário:</Form.Label>
+                                 <Form.Control type="text" placeholder="Digite seu usuario" id="userInput" required="required" autoComplete="off"/>
+                                   
                                 </Form.Group>
 
                                 <Col md={4}></Col>
@@ -149,13 +153,13 @@ class Register extends Component {
 
                                 <Address />
 
-                                <Col md={11}></Col>
+                                <Col md={10}></Col>
                                 <Col md={1}>
                                     <Button variant="success" onClick={this.handleRegister}>Registrar</Button>
                                 </Col>
                             </Form>
                         </Card>
-                </MainLayout>   
+                </MainLayout> 
             </div>
         );
     }
