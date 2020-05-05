@@ -274,7 +274,6 @@ class SchedulingCtrl {
 
         try {
             const hasScheluding = await this.scheduling.getSchedulingByIdAndIdUser(scheduling.id, scheduling.idUser)
-            console.log(hasScheluding.workerId)
             if(hasScheluding && !_.isEmpty(hasScheluding)){
                 if(hasScheluding.workerId === null){
                     await this.scheduling.update(scheduling.id, scheduling.dateTime, scheduling.observation)
@@ -324,7 +323,8 @@ class SchedulingCtrl {
         try {
             const selectedSchedules = await this.scheduling.viewScheduling(
                 params.page,
-                params.pageSize
+                params.pageSize,
+                params.idWorker
             )
 
             response.data = selectedSchedules
@@ -338,16 +338,19 @@ class SchedulingCtrl {
     }
 
 
-    getPageParams(page, pageSize) {
+    getPageParams(page, pageSize, idWorker) {
         const validatedParams = {
             isValid: true,
             message: null,
             statusCode: null,
             data: {
                 page: null,
-                pageSize: null
+                pageSize: null,
+                idWorker: null
             }
         }
+
+        const numberIdWorker = parseInt(idWorker)
 
         if(!page){
             validatedParams.data.page = 1
@@ -369,6 +372,14 @@ class SchedulingCtrl {
             } else {
                 validatedParams.data.pageSize = 10
             }
+        }
+
+        if(_.isNaN(numberIdWorker) || numberIdWorker <= 0){
+            validatedParams.isValid = false
+            validatedParams.message = "O parametro id do técnico deve ser enviado e deve ser amior que zero"
+            validatedParams.statusCode = 400
+        } else {
+            validatedParams.data.idWorker = numberIdWorker
         }
 
         return validatedParams

@@ -15,17 +15,13 @@ async function getUser(userId){
   }
 
 export function isLoggedIn(){
-    //TESTES
-    window.localStorage.setItem('user', '{"name" : "Luiz Henrique Silva Jesus", "id" : 1}')
-    //FIM-TESTES
-
-    var user = window.localStorage.getItem('user')
-    if(user){
-      if(JSON.parse(user).name === getUser(JSON.parse(user).id)){
+    var user = window.localStorage.getItem('userData')
+    if (user) {
+        if (JSON.parse(user).isLoggedIn) {
         console.log("LOGADO")
         return true
-      } else {console.log("NEM ACHOU"); return false} 
-    } else {console.log("NEM ACHOU 2"); return false}
+      } else {console.log("Deslogado"); return false} 
+    } else {console.log("NEM ACHOU"); return false}
     // return user ? JSON.parse(user).name === getUser(JSON.parse(user).id) ? true : false : false
 }
 

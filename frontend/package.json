@@ -23,6 +23,7 @@
     "react-scripts": "3.4.0",
     "react-slick": "^0.25.2",
     "react-toast-notifications": "^2.4.0",
+    "request-promise": "^4.2.5",
     "slick-carousel": "^1.8.1",
     "yup": "^0.28.3"
   },

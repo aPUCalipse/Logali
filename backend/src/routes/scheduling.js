@@ -16,7 +16,7 @@ class SchedulingRouter {
 
     init() {
         this.app.post(`${this.baseRoute}/create`, this.create.bind(this));
-        this.app.put(`${this.baseRoute}/update`, this.update.bind(this));
+        this.app.put(`${this.baseRoute}/update/:idScheduling`, this.update.bind(this));
         this.app.get(`${this.baseRoute}/getId`, this.getId.bind(this));
         this.app.post(`${this.baseRoute}/searchEnd`, this.searchEnd.bind(this));
         this.app.delete(`${this.baseRoute}/delete/:idScheduling`, this.delete.bind(this));
@@ -86,7 +86,7 @@ class SchedulingRouter {
                     req.body.dateTime,
                     req.body.observation,
                     req.body.idUser,
-                    req.body.id
+                    req.params.idScheduling
                 )
 
                 if (validatedParams && validatedParams.isValid) {
@@ -208,7 +208,6 @@ class SchedulingRouter {
             const schedulingCtrl = new SchedulingCtrl(this.dbPool)
 
             const idScheduling = parseInt(req.params.idScheduling)
-
             if (!_.isNaN(idScheduling) && idScheduling > 0) {
                 const responseOfDelet = await schedulingCtrl.delete(idScheduling)
 
@@ -326,7 +325,8 @@ class SchedulingRouter {
             if (!_.isEmpty(req.body)) {
                 const params = schedulingCtrl.getPageParams(
                     req.body.page,
-                    req.body.pageSize
+                    req.body.pageSize,
+                    req.body.idWorker
                 )
 
                 if (params.isValid) {

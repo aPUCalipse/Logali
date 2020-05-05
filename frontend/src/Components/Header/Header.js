@@ -4,30 +4,38 @@ import {Container, Row, Col, Navbar, Nav, NavDropdown, Form, FormControl, Button
 //import hat from '../../Images/hat.png'
 
 function Header(){
+    function checkIsLogged(){
+      setTimeout(() => {
+        console.log("to aqui")
+        const userData = JSON.parse(localStorage.getItem("userData"))
+        if(userData && userData.isLogged){
+          if(userData.typeUser === '1'){
+            document.getElementById('agendamentosCliente').removeAttribute('style')
+          } else if(userData.typeUser === '2') {
+            document.getElementById('agendamentosTecnico').removeAttribute('style')
+          }
+        }
+      }, 10);
+    }
     return(
         <Navbar expand="lg" className={style.Navbar_defaults}>
             <div className={style.Navbar_offset}></div>
-            <Navbar.Brand className={style.Navbar_title} href="#home">Logali</Navbar.Brand>
+            <Navbar.Brand className={style.Navbar_title} href="/">Logali</Navbar.Brand>
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
             <Navbar.Collapse id="basic-navbar-nav">
-            <Nav className="mr-auto">
-            <Nav.Link href="#">Como funciona?</Nav.Link>
-            <Nav.Link href="#link">Fale Conosco</Nav.Link>
-            <NavDropdown title="Usuário" id="basic-nav-dropdown">
-            <NavDropdown.Item href="#action/3.1">Cadastrar-se</NavDropdown.Item>
-            <NavDropdown.Item href="#action/3.2">Entrar</NavDropdown.Item>
-            <NavDropdown.Item href="#action/3.3">Serviços</NavDropdown.Item>
-            <NavDropdown.Divider />
-            <NavDropdown.Item href="#action/3.4">Avaliações</NavDropdown.Item>
-            </NavDropdown>
-            </Nav>
-
-    {/* <Form inline>
-      <FormControl type="text" placeholder="Search" className="mr-sm-2" />
-      <Button variant="outline-success">Search</Button>
-    </Form> */}
-  </Navbar.Collapse>
-</Navbar>
+              <Nav className="mr-auto">
+                <Nav.Link href="/register">Cadastrar-se</Nav.Link>
+                <Nav.Link href="/login">Logar</Nav.Link>
+                <div id="agendamentosCliente" style={{display: 'none'}}>
+                  <Nav.Link href="/agendar">Meus Agendamentos</Nav.Link>
+                </div>
+                <div id="agendamentosTecnico" style={{display: 'none'}}>
+                  <Nav.Link href="/agenda">Meus Agendamentos</Nav.Link>
+                </div>
+              </Nav>
+            </Navbar.Collapse>
+            {checkIsLogged()}
+        </Navbar>
     );
 }
 

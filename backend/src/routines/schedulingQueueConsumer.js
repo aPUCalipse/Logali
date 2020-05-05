@@ -52,8 +52,6 @@ module.exports = async function consumeFromQueueAccept(dbPool){
                         console.log("Erro na persistência na fila de agendamentos -> " + err)
                     }finally{
                         console.log("OLHA A MENSAGEMMM: " + msg.content.toString());
-                        channel.close()
-                        connection.close()
                         return response;
                     }
                 },

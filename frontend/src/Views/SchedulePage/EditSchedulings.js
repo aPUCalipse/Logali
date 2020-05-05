@@ -23,6 +23,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 import Tooltip from '@material-ui/core/Tooltip';
 import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
 import axios from 'axios';
+import moment from 'moment'
 
 const useStyles = makeStyles(theme => ({
     paper: {
@@ -68,7 +69,7 @@ function MyVerticallyCenteredModal(props,mode) {
     const [date, setDate] = useState(props.data == null ?'':props.data.dateTime.split(' ')[0]);
     const [time, setTime] = useState(props.data == null ?'':props.data.dateTime.split(' ')[1]);
 
-    const [dateTime] = date + " " + time; 
+    const [dateTime] = date + ' ' + time; 
     const [userId] = useState('1');
     const [id] = useState(props.data == null ?'':props.data.id);
     const [observation, setObservation] = useState(props.data==null?'':props.data.observation);
@@ -89,17 +90,16 @@ function MyVerticallyCenteredModal(props,mode) {
     
     
     async function handleEditScheduling(e) {
-        var id = props.data.id
+        console.log(props.data)
+        var id = props.data.schedulingId
+        const dateTimeMoment = moment(`${date} ${time}`, "YYYY-MM-DD HH:mm:ss")
         var postData = {
-                id,
-                typeScheduling,
-                date,
-                time,
-                observation
-          };
+            dateTime: dateTimeMoment.format('DD/MM/YYYY HH:mm:ss'),
+            observation: observation,
+            idUser: props.data.idClient
+        };
         e.preventDefault();
-        const response = await axios.put('http://localhost:8000/logali/app/scheduling/update', postData,
-        axiosConfig)
+        const response = await axios.put(`http://localhost:8000/logali/app/scheduling/update/${id}`, postData)
           .then(function (response) {
             console.log(response);
           })
@@ -129,31 +129,6 @@ function MyVerticallyCenteredModal(props,mode) {
                             spacing={0.5}
                             justify="center"
                             alignItems="center">
-                            <Grid item xs={12} >
-                                {/* <TextField 
-                                    id="standard-basic" 
-                                    name="typeScheduling" 
-                                    helperText="" 
-                                    required 
-                                    className={classes.body} 
-                                    onChange={e => setTypeScheduling(e.target.value)} 
-                                    label="Servi&ccedil;o" 
-                                    color="#45B39D" 
-                                    value={typeScheduling}/> */}
-                                     <InputLabel id="demo-simple-select-label" required>Servi&ccedil;o</InputLabel>
-                                    <Select
-                                labelId="demo-simple-select-label"
-                                id="demo-simple-select"
-                                className={classes.body}
-                                required
-                                onChange={e => setTypeScheduling(e.target.value)}
-                                value={typeScheduling}
-                                >
-                                <MenuItem value={1}>Instalação</MenuItem>
-                                <MenuItem value={2}>Manutenção em rede</MenuItem>
-                                <MenuItem value={3}>BUG</MenuItem>
-                                </Select>
-                            </Grid>
                             <Grid item xs={12} sm={6}>
                                 <TextField
                                     id="standard-basic"

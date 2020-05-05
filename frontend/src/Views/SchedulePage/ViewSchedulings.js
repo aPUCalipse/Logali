@@ -156,15 +156,18 @@ function MyVerticallyCenteredModal(props) {
   const [observation, setObservation] = React.useState('');
 
   async function handleRating() {
-    const response = await axios.post('http://localhost:8000/logali/app/avaliar/rate', {
-      "raterId": selected.idClient,
-      "ratedId": selected.idWorker,
-      "schedulingId": selected.schedulingId,
-      "rate":value,
-      "observation":observation,
-
-    })
+    const response = await axios.post(
+      'http://localhost:8000/logali/app/rating/create', 
+      {
+        "raterId": selected.idClient,
+        "ratedId": selected.idWorker,
+        "schedulingId": selected.schedulingId ,
+        "rate":value,
+        "observation": observation
+      }
+    )
       .then(function (response) {
+        alert(response.data.message)
         console.log(response.data);
       })
       .catch(function (error) {
@@ -290,11 +293,6 @@ export default function RecipeReviewCard() {
     setExpanded(!expanded);
   };
 
-
-  const userId={
-    userId: '1'
-  }
-
   function avaliacao(show, item){
     setSelected(item);
     setModalShow(true)
@@ -313,9 +311,11 @@ export default function RecipeReviewCard() {
         
   }
 
-  async function getScheduling(){
+    async function getScheduling() {
+        const user = JSON.parse(localStorage.getItem('userData'))
+        
     const response = await axios.post('http://localhost:8000/logali/app/scheduling/select', {
-        "idUser" : userId.userId,
+        "idUser" : user.idUser,
         "page": 1,
         "pageSize": 10,
         "idTypeScheduling": '',
@@ -338,39 +338,33 @@ export default function RecipeReviewCard() {
     });
 
     function handleClickValidate(id) {
+        const user = JSON.parse(localStorage.getItem('userData'))
+        const userId = user.idUser
       if(userId == 0){
         if(userId == 0)
           setValidateType(true)
         else
           setValidateType(false)
-      }else{
+      } else {
         handleDeleteScheduling(id);
         setValidateType(false);
       }
     };
 
     async function handleDeleteScheduling(id) {
-      console.log(id)
-      const response = await axios.delete('http://localhost:8000/logali/app/scheduling/delete',{
-        data:{'id':id, 'userId':userId.userId},
-        headers: {
-          'Content-Type': 'application/json;charset=UTF-8',
-          "Access-Control-Allow-Origin": "*",
-          "Access-Control-Allow-Methods" : "DELETE"
-        }
-      })
+      const response = await axios.delete(`http://localhost:8000/logali/app/scheduling/delete/${id}`)
         .then(function (response) {
           console.log(response);
+          alert("Deletado com sucesso")
+          window.location.reload()
         })
         .catch(function (error) {
           console.log(error);
         });
   
         console.log(response);
-        alert("Agendamento Deletado com Sucesso");
       };
-  return (
-   
+  return (   
     <div className={classes.root4}>
        <AppBar position="static" className={classes.tabTitle}>
         <Toolbar variant="dense">
@@ -442,11 +436,11 @@ export default function RecipeReviewCard() {
         </Tooltip>
         <Tooltip title="Deletar">
           <IconButton aria-label="share">
-            <DeleteForeverIcon  onClick={() => handleClickValidate(item.id)}/>
+            <DeleteForeverIcon  onClick={() => handleClickValidate(item.schedulingId)}/>
           </IconButton>
           </Tooltip>
           <Tooltip title="Avaliação">
-          <IconButton
+          <IconButton disabled={item.statusSchedulingId != '1' ? false : true}
               onClick={() => avaliacao(true, item)}
           >
           <StarBorderIcon/>
