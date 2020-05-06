@@ -285,9 +285,15 @@ export default function RecipeReviewCard() {
   const classes = useStyles();
   const [expanded, setExpanded] = React.useState(false);
   const [data, setData] = React.useState([]);
+  const [hasCalled, setHasCalled] = React.useState(false);
   const [validateType, setValidateType] = React.useState(false);
   const [modalShow, setModalShow] = React.useState(false);
   const [selected, setSelected] = React.useState([]);
+
+  if(!hasCalled){
+    setHasCalled(true)
+    getScheduling()
+  }
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
@@ -331,11 +337,11 @@ export default function RecipeReviewCard() {
       console.log(response);
   }
 
-  useEffect(() => {
-      if(data == null || data.length == 0 ){
-        getScheduling()
-      }
-    });
+  // useEffect(() => {
+  //     if(data == null || data.length == 0 ){
+        
+  //     }
+  //   });
 
     function handleClickValidate(id) {
         const user = JSON.parse(localStorage.getItem('userData'))
