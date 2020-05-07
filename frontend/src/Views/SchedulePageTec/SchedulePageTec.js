@@ -243,7 +243,7 @@ useEffect(() => {
 return (
     <Card className={classes.card}>
         <CardHeader
-            title={item.nametypeSchedulig}
+            title={item.nametypeSchedulig + ' - ' + item.clientName}
             subheader='Distância: 3 Km'
         />
         <CardContent>
