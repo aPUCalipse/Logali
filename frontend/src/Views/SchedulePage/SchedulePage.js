@@ -72,7 +72,8 @@ function MyVerticallyCenteredModal(props,mode) {
     const [date, setDate] = useState('');
     const [time, setTime] = useState('');
     const [modalShow, setModalShow] = React.useState(false);
-    const [userId] = useState('1');
+    const userData = JSON.parse(localStorage.getItem("userData"));
+    const userId = userData.idUser;
     const [id] = useState('0');
     const [observation, setObservation] = useState('');
     const [count, setCount] = useState('0');
@@ -86,7 +87,7 @@ function MyVerticallyCenteredModal(props,mode) {
 
     async function handleAddScheduling(e) {
         e.preventDefault();
-        
+
         const dateArray = date.split("-");
         console.log(dateArray)
         const dateTime=(dateArray[2] + "-" + dateArray[1] + "-" +  dateArray[0] + " " + time + ":00" );
@@ -137,7 +138,7 @@ function MyVerticallyCenteredModal(props,mode) {
       }
       
       async function handleEndScheduling() {
-        console.log("BATATA", userId)
+        console.log("BATATA " + userId)
         const response = await axios.post('http://localhost:8000/logali/app/scheduling/searchEnd', objectData)
           .then(function (response) {
               setEnd(response.data.data)

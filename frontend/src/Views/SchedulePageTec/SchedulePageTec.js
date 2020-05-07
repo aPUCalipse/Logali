@@ -115,7 +115,8 @@ function ListTable(props) {
     const classes = useStyles();
     const [expanded, setExpanded] = React.useState(false);
     const [end, setEnd] = useState('');
-    const [userId] = useState('1');
+    const userData = JSON.parse(localStorage.getItem("userData"));
+    const userId = userData.idUser;
     const objectData = {
         userId: userId
     }
