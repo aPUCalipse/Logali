@@ -517,7 +517,26 @@ class SchedulingCtrl {
         }
     }
     
-
+    async closeScheduling(WorkerId, id) {
+        const response = {
+            message: null,
+            statusCode: 500
+        }
+        try {
+            const scheduling = await this.scheduling.closeScheduling(WorkerId, id)
+            if (scheduling) {
+                response.message = "Agendamento finalizado"
+                response.statusCode = 200
+            } else {
+                response.message = "Agendamento não finalizado"
+                response.statusCode = 400
+            }
+        } catch (err) {
+            console.log("Erro ao fechar agendamento -> " + err)
+        } finally {
+            return response;
+        }
+    }
     
 }
 

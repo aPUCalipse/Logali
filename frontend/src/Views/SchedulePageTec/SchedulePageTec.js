@@ -205,6 +205,27 @@ async function handleAcceptance() {
 }
 }
 
+    async function handleFinish() {
+        const tec = JSON.parse(localStorage.getItem('userData'))
+        if (tec.isLogged === true) {
+            const response = await axios.post(
+                'http://localhost:8000/logali/app/scheduling/closeScheduling',
+                {
+                    idScheduling: item.schedulingId,
+                    idWorker: tec.idUser,
+                });
+            if (response.status != 200) {
+                throw Error(response.body.message);
+            }
+            else {
+                console.log("Finalizado com sucesso");
+                window.location.reload()
+            }
+        }
+        else {
+            alert('Você não está logado, entre no sistema para executar esta ação');
+        }
+    }
 
 function date(item) {
     let arrayData = item.dateTime.split(' ')
@@ -229,15 +250,18 @@ useEffect(() => {
     // if (end == null || end == '') {
     //     handleEndScheduling();
     // }
-    if (item.statusSchedulingId != 2) {
+    if (item.statusSchedulingId == 1) {
         document.getElementById("btnCancel" + item.schedulingId).setAttribute('style', 'display: none')
         document.getElementById("btnAccept" + item.schedulingId).removeAttribute('style', 'display: none')
+        document.getElementById("btnFinish" + item.schedulingId).setAttribute('style', 'display: none')
         // document.getElementById("btnRecuse" + item.schedulingId).removeAttribute('style', 'display: none')
     }
     else {
-        document.getElementById("btnCancel" + item.schedulingId).removeAttribute('style', 'display: none')
         document.getElementById("btnAccept" + item.schedulingId).setAttribute('style', 'display: none')
-        // document.getElementById("btnRecuse" + item.schedulingId).setAttribute('style', 'display: none')
+        if (item.statusSchedulingId !== 4 && item.statusSchedulingId !== 5) {
+            document.getElementById("btnCancel" + item.schedulingId).removeAttribute('style', 'display: none')
+            document.getElementById("btnFinish" + item.schedulingId).removeAttribute('style', 'display: none')
+        } // document.getElementById("btnRecuse" + item.schedulingId).setAttribute('style', 'display: none')
     }
 })
 
@@ -277,6 +301,9 @@ return (
             </Button>
             <Button variant="contained" size="small" id={"btnCancel" + item.schedulingId} className={classes.recuse} style={{ display: "none" }} onClick={() => setDlgOpen(true)}>
                 Cancelar aceite
+            </Button>
+            <Button variant="contained" size="small" id={"btnFinish" + item.schedulingId} className={classes.primary} style={{ display: "none" }} onClick={handleFinish}>
+                Finalizar atendimento
             </Button>
         </CardActions>
         <Collapse in={expanded} timeout="auto" unmountOnExit>
