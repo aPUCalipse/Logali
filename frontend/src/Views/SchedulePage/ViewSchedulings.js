@@ -446,7 +446,7 @@ export default function RecipeReviewCard() {
           </IconButton>
           </Tooltip>
           <Tooltip title="Avaliação">
-          <IconButton disabled={item.statusSchedulingId != '1' ? false : true}
+          <IconButton disabled={item.statusSchedulingId == 5 ? false : true}
               onClick={() => avaliacao(true, item)}
           >
           <StarBorderIcon/>

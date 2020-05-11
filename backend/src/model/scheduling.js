@@ -87,12 +87,14 @@ class Scheduling {
     
     async update(id, dateTime, observation) {
         try {
+            const now = Moment().format("YYYY-MM-DD HH:mm:ss")
             const query =
                 `UPDATE logali.scheduling ` +
                 `SET ` +
                     `dateTime = '${dateTime.format("YYYY-MM-DD HH:mm:ss")}' ` +
                     ((observation) ? `, observation = '${observation}' ` : ` `)+
-                `WHERE id = '${id}' `+
+                ` , updatedAt = '${now}' ` +
+                `WHERE id = '${id}' ` +
                 `AND deletedAt is null`
 
                 console.log(query)
@@ -161,10 +163,12 @@ class Scheduling {
 
     async cancelAcept(id){
         try {
+            const now = Moment().format("YYYY-MM-DD HH:mm:ss")
             const query = `` +
                 `UPDATE logali.scheduling ` +
                 `SET workerId = null, ` +
                 `statusSchedulingId = 1 ` +
+                `, updatedAt = '${now}' ` +
                 `where id = ${id} ` + 
                 `AND deletedAt is null`
           
@@ -366,11 +370,13 @@ class Scheduling {
 
     async updateWorkerId(WorkerId, id) {
         try {
+            const now = Moment().format("YYYY-MM-DD HH:mm:ss")
             const query =
                 `UPDATE logali.scheduling ` +
                 `SET ` +
                     `WorkerId = '${WorkerId}' ,` +
-                    `statusSchedulingId = '2' ` +
+                `statusSchedulingId = '2' ` +
+                `, updatedAt = '${now}' `+
                 `WHERE id = '${id}' ` + 
                 `AND deletedAt is null `        
 
