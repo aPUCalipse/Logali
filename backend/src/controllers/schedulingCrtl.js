@@ -337,6 +337,23 @@ class SchedulingCtrl {
         }
     }
 
+    async takeLocScheduling(params) {
+        const response = {
+            data: {},
+            message: null,
+            statusCode: 500,
+        }
+        try {
+            const selectedWorkerId = await this.scheduling.tekeLocScheduling(params)
+            response.data = selectedWorkerId
+            response.statusCode = 200
+        }
+        catch (err) {
+            response.message = `Erro desconhecido ao selecionar Usuário -> ${err.toString()}`
+        } finally {
+            return response;
+        }
+    }
 
     getPageParams(page, pageSize, idWorker) {
         const validatedParams = {
@@ -376,7 +393,7 @@ class SchedulingCtrl {
 
         if(_.isNaN(numberIdWorker) || numberIdWorker <= 0){
             validatedParams.isValid = false
-            validatedParams.message = "O parametro id do técnico deve ser enviado e deve ser amior que zero"
+            validatedParams.message = "O parametro id do técnico deve ser enviado e deve ser maior que zero"
             validatedParams.statusCode = 400
         } else {
             validatedParams.data.idWorker = numberIdWorker

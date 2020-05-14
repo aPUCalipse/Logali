@@ -364,6 +364,32 @@ class Scheduling {
         }
     }
 
+    async tekeLocScheduling(workerId) {
+        try {
+
+            var query =
+                `SELECT ` +
+                `geoLocX, geoLocY ` +
+                `FROM logali.address ` +
+                `join user ` +
+                `on user.addressId = address.id ` +
+                `join scheduling ` +
+                `on scheduling.userId = user.Id ` +
+                `WHERE ` +
+                `scheduling.workerId = ${workerId}`
+
+            console.log(query)
+
+            const resp = await this.dbPool.query(query);
+
+            return resp;
+     
+        } catch (err) {
+            console.log(err)
+            throw new Error(`Erro ao pesquisar Técnico -> ${err}`)
+        }
+    }
+
     async updateWorkerId(WorkerId, id) {
         try {
             const query =

@@ -17,7 +17,7 @@ import CardMedia from '@material-ui/core/CardMedia';
 import CardContent from '@material-ui/core/CardContent';
 import CardActionArea from '@material-ui/core/CardActionArea';
 import Button from '@material-ui/core/Button';
-import PropTypes from 'prop-types';
+import PropTypes, { func } from 'prop-types';
 import axios from 'axios';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Collapse from '@material-ui/core/Collapse';
@@ -111,11 +111,14 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function ListTable(props) {
-    const { item, week } = props;
+    const { workerLoc, data}
+    const { item, week } = props; 
     const classes = useStyles();
     const [expanded, setExpanded] = React.useState(false);
     const [end, setEnd] = useState('');
     const userData = JSON.parse(localStorage.getItem("userData"));
+    const { selected } = props;
+
     const userId = userData.idUser;
     const objectData = {
         userId: userId
@@ -186,6 +189,7 @@ function ListTable(props) {
 async function handleAcceptance() {
     const tec = JSON.parse(localStorage.getItem('userData'))
     if (tec.isLogged === true) {
+        
         const response = await axios.post(
             'http://localhost:8000/logali/app/scheduling/acept',
             {
@@ -244,7 +248,7 @@ useEffect(() => {
 return (
     <Card className={classes.card}>
         <CardHeader
-            title={item.nametypeSchedulig + ' - ' + item.clientName}
+            title={item.nametypeSchedulig + ' - ' + item.clientName + ' - ' + workerLoc.geoLocX + '/' + workerLoc.geoLocY}
             subheader='Distância: 3 Km'
         />
         <CardContent>
@@ -317,6 +321,7 @@ export default function Technical() {
     const classes = useStyles();
     const [week, setWeek] = React.useState([]);
     const [data, setData] = React.useState([]);
+    const [dataTec, setDataTec] = React.useState([]);
     const [value, setValue] = React.useState(0);
 
     const handleChange = (event, newValue) => {
@@ -330,7 +335,7 @@ export default function Technical() {
             "idWorker": tec.idUser,
         })
           .then(function(response) {
-            console.log(response);
+              console.log(response);
             if(response.data && response.data.data && response.data.data.length > 0){
               setData(response.data.data)
             }
@@ -339,7 +344,23 @@ export default function Technical() {
             console.log(error.response);
           });
           console.log(response);
-      }
+    }
+
+    async function getGeoLocXY(){
+        const tecId = JSON.parse(localStorage.getItem('userData'))
+        const response = await axios.post('http://localhost:8000/logali/app/scheduling/takeloc', {
+            "idWorker": tecId.idUser,
+        })
+        .then(function (response) {
+            if (response.data && response.data.data && response.data.data.length > 0) {
+                   setDataTec(response.data.data)
+            }
+        })
+        .catch(function (error) {
+            console.log(error.response);
+        });
+        console.log(response);
+    }
     
      
   function getWeekDays() {
@@ -380,8 +401,11 @@ export default function Technical() {
             if (week.length == 0)
                 setWeek(getWeekDays());
 
-            if (data == null || data.length == 0)
+            if (data == null || data.length == 0) 
                 getScheduling()
+
+            if (dataTec == null || dataTec.length == 0)
+                getGeoLocXY()
         })
 
         const settings = {

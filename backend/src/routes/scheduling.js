@@ -24,7 +24,8 @@ class SchedulingRouter {
         this.app.post(`${this.baseRoute}/acept`, this.acept.bind(this));
         this.app.post(`${this.baseRoute}/cancelAcept`, this.cancelAcept.bind(this));
         this.app.post(`${this.baseRoute}/view`, this.viewScheduling.bind(this));
-        this.app.post(`${this.baseRoute}/updateWorkerId`, this.updateWorkerId.bind(this))
+        this.app.post(`${this.baseRoute}/updateWorkerId`, this.updateWorkerId.bind(this));
+        this.app.post(`${this.baseRoute}/takeloc`, this.takeLoc.bind(this))
     }
 
     /**
@@ -352,6 +353,36 @@ class SchedulingRouter {
             console.log("resposta: " + response)
             res.send(response)
         }
+    }
+
+    async takeLoc(req, res) {
+        const response = _.clone(this.response)
+        try {
+
+           
+            const schedulingCtrl = new SchedulingCtrl(this.dbPool)
+
+            if (!_.isEmpty(req.body)) {
+                const resp = await schedulingCtrl.takeLocScheduling(req.body.idWorker)
+                res.send(resp);
+                    //response.message = "Seleção realizada com sucesso"
+                    //response.data = resp.data
+                    //res.status(200)
+            } else {
+                response.message = "Os parametros não foram enviados"
+                response.data = req.body
+                res.status(400)
+            }
+
+        } catch (err) {
+            console.log(err)
+            response.message = "Erro ao realizar seleção"
+            res.status(500)
+        } finally {
+            console.log("resposta: " + response)
+            res.send(response)
+        }
+
     }
 
 
