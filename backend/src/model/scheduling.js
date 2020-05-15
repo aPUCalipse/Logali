@@ -87,12 +87,14 @@ class Scheduling {
     
     async update(id, dateTime, observation) {
         try {
+            const now = Moment().format("YYYY-MM-DD HH:mm:ss")
             const query =
                 `UPDATE logali.scheduling ` +
                 `SET ` +
                     `dateTime = '${dateTime.format("YYYY-MM-DD HH:mm:ss")}' ` +
                     ((observation) ? `, observation = '${observation}' ` : ` `)+
-                `WHERE id = '${id}' `+
+                ` , updatedAt = '${now}' ` +
+                `WHERE id = '${id}' ` +
                 `AND deletedAt is null`
 
                 console.log(query)
@@ -161,10 +163,12 @@ class Scheduling {
 
     async cancelAcept(id){
         try {
+            const now = Moment().format("YYYY-MM-DD HH:mm:ss")
             const query = `` +
                 `UPDATE logali.scheduling ` +
                 `SET workerId = null, ` +
                 `statusSchedulingId = 1 ` +
+                `, updatedAt = '${now}' ` +
                 `where id = ${id} ` + 
                 `AND deletedAt is null`
           
@@ -366,11 +370,13 @@ class Scheduling {
 
     async updateWorkerId(WorkerId, id) {
         try {
+            const now = Moment().format("YYYY-MM-DD HH:mm:ss")
             const query =
                 `UPDATE logali.scheduling ` +
                 `SET ` +
                     `WorkerId = '${WorkerId}' ,` +
-                    `statusSchedulingId = '2' ` +
+                `statusSchedulingId = '2' ` +
+                `, updatedAt = '${now}' `+
                 `WHERE id = '${id}' ` + 
                 `AND deletedAt is null `        
 
@@ -385,6 +391,29 @@ class Scheduling {
             }
         } catch (err) {
             throw new Error(`Erro ao atualizar agendamento -> ${err}`)
+        }
+    }
+
+    async closeScheduling(WorkerId,idScheduling) {
+        try {
+            const now = Moment().format("YYYY-MM-DD HH:mm:ss")
+            const query =
+                `UPDATE logali.scheduling ` +
+                `SET ` +
+                `updatedAt = '${now}' ` +
+                `,statusSchedulingId = 5 ` +
+                `WHERE id = ${idScheduling} ` +
+                `AND workerId = ${WorkerId}`
+
+            const resp = await this.dbPool.query(query)
+            if (resp && resp.affectedRows >= 1) {
+                return resp
+            } else {
+                throw new Error(`O não foi encontrado um agendamento com esses parâmetros`)
+            }
+        } catch (err) {
+            console.log(err)
+            throw new Error(`Erro encerrar agendamento -> ${err}`)
         }
     }
 }

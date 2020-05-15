@@ -13,6 +13,7 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import IconButton from '@material-ui/core/IconButton';
+import StarBorderIcon from '@material-ui/icons/StarBorder';
 import CardMedia from '@material-ui/core/CardMedia';
 import CardContent from '@material-ui/core/CardContent';
 import CardActionArea from '@material-ui/core/CardActionArea';
@@ -30,6 +31,7 @@ import Box from '@material-ui/core/Box';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import MyVerticallyCenteredModal from '../SchedulePage/ModalRating';
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -117,6 +119,13 @@ function ListTable(props) {
     const [end, setEnd] = useState('');
     const userData = JSON.parse(localStorage.getItem("userData"));
     const userId = userData.idUser;
+    const [modalShow, setModalShow] = React.useState(false);
+    const [selected, setSelected] = React.useState([]);
+
+    function avaliacao(show, item) {
+        setSelected(item);
+        setModalShow(true)
+    };
     const objectData = {
         userId: userId
     }
@@ -205,6 +214,27 @@ async function handleAcceptance() {
 }
 }
 
+    async function handleFinish() {
+        const tec = JSON.parse(localStorage.getItem('userData'))
+        if (tec.isLogged === true) {
+            const response = await axios.post(
+                'http://localhost:8000/logali/app/scheduling/closeScheduling',
+                {
+                    idScheduling: item.schedulingId,
+                    idWorker: tec.idUser,
+                });
+            if (response.status != 200) {
+                throw Error(response.body.message);
+            }
+            else {
+                console.log("Finalizado com sucesso");
+                window.location.reload()
+            }
+        }
+        else {
+            alert('Você não está logado, entre no sistema para executar esta ação');
+        }
+    }
 
 function date(item) {
     let arrayData = item.dateTime.split(' ')
@@ -229,19 +259,26 @@ useEffect(() => {
     // if (end == null || end == '') {
     //     handleEndScheduling();
     // }
-    if (item.statusSchedulingId != 2) {
+    if (item.statusSchedulingId == 1) {
         document.getElementById("btnCancel" + item.schedulingId).setAttribute('style', 'display: none')
         document.getElementById("btnAccept" + item.schedulingId).removeAttribute('style', 'display: none')
+        document.getElementById("btnFinish" + item.schedulingId).setAttribute('style', 'display: none')
         // document.getElementById("btnRecuse" + item.schedulingId).removeAttribute('style', 'display: none')
     }
     else {
-        document.getElementById("btnCancel" + item.schedulingId).removeAttribute('style', 'display: none')
         document.getElementById("btnAccept" + item.schedulingId).setAttribute('style', 'display: none')
+        if (item.statusSchedulingId !== 4 && item.statusSchedulingId !== 5) {
+            document.getElementById("btnCancel" + item.schedulingId).removeAttribute('style', 'display: none')
+            document.getElementById("btnFinish" + item.schedulingId).removeAttribute('style', 'display: none')
+        }
+        else if (item.statusSchedulingId == 5)
+            document.getElementById("StarRating" + item.schedulingId).removeAttribute('style', 'display: none')
         // document.getElementById("btnRecuse" + item.schedulingId).setAttribute('style', 'display: none')
     }
 })
 
-return (
+    return (
+    <>
     <Card className={classes.card}>
         <CardHeader
             title={item.nametypeSchedulig + ' - ' + item.clientName}
@@ -278,6 +315,14 @@ return (
             <Button variant="contained" size="small" id={"btnCancel" + item.schedulingId} className={classes.recuse} style={{ display: "none" }} onClick={() => setDlgOpen(true)}>
                 Cancelar aceite
             </Button>
+            <Button variant="contained" size="small" id={"btnFinish" + item.schedulingId} className={classes.primary} style={{ display: "none" }} onClick={handleFinish}>
+                Finalizar atendimento
+            </Button>
+            <IconButton id={"StarRating" + item.schedulingId} style={{ display: "none" }}
+                onClick={() => avaliacao(true, item)}
+            >
+                <StarBorderIcon />
+            </IconButton>
         </CardActions>
         <Collapse in={expanded} timeout="auto" unmountOnExit>
             <CardContent>
@@ -309,7 +354,14 @@ return (
                     </Button>
             </DialogActions>
         </Dialog>
-    </Card>
+            </Card>
+
+            <MyVerticallyCenteredModal
+                show={modalShow}
+                onHide={() => setModalShow(false)}
+                selected={selected}
+            />
+            </>
 );
 }
 
@@ -318,7 +370,7 @@ export default function Technical() {
     const [week, setWeek] = React.useState([]);
     const [data, setData] = React.useState([]);
     const [value, setValue] = React.useState(0);
-
+    
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
