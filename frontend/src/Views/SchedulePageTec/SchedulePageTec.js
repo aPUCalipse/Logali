@@ -111,7 +111,6 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function ListTable(props) {
-    const { workerLoc, data}
     const { item, week } = props; 
     const classes = useStyles();
     const [expanded, setExpanded] = React.useState(false);
@@ -248,7 +247,7 @@ useEffect(() => {
 return (
     <Card className={classes.card}>
         <CardHeader
-            title={item.nametypeSchedulig + ' - ' + item.clientName + ' - ' + workerLoc.geoLocX + '/' + workerLoc.geoLocY}
+            title={item.nametypeSchedulig + ' - ' + item.clientName}
             subheader='Distância: 3 Km'
         />
         <CardContent>
