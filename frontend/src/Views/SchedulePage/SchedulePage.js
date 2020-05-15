@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import create from '../../Components/Routes/scheduling';
 import EnhancedTable from './ViewSchedulings';
+import MainLayout from '../MainLayout/MainLayout'
 import EditScheduling from './EditSchedulings';
 import Modal from "react-bootstrap/Modal";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -372,7 +373,7 @@ function App() {
     };
     
     return (
-        <>
+        <MainLayout>
             <EnhancedTable/>
             <Fab color="primary"  className={classes.icon} onClick={() => setModalShow(true)} aria-label="add">
                 <AddIcon />
@@ -382,7 +383,7 @@ function App() {
                 show={modalShow}
                 onHide={() => setModalShow(false)}
             />
-        </>
+        </MainLayout>
     );
 }
 

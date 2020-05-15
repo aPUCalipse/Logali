@@ -50,6 +50,7 @@ import SentimentVerySatisfiedIcon from '@material-ui/icons/SentimentVerySatisfie
 import Fab from '@material-ui/core/Fab';
 import SaveRoundedIcon from '@material-ui/icons/SaveRounded';
 
+
 const useStyles = makeStyles((theme) => ({
   root: {
     maxWidth: 265,
@@ -371,14 +372,15 @@ export default function RecipeReviewCard() {
         console.log(response);
       };
   return (   
+   
     <div className={classes.root4}>
-       <AppBar position="static" className={classes.tabTitle}>
+       {/* <AppBar position="static" className={classes.tabTitle}>
         <Toolbar variant="dense">
           <Typography variant="h6" >
             Agendamentos
           </Typography>
         </Toolbar>
-      </AppBar>
+      </AppBar> */}
 
       {data == null || data.length == 0?
         <>
@@ -459,6 +461,7 @@ export default function RecipeReviewCard() {
     </Row>
     </Container>
   </>
+ 
 }
 <>
    <MyVerticallyCenteredModal
