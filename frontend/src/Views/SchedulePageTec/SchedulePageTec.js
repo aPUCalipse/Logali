@@ -32,6 +32,9 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import MyVerticallyCenteredModal from '../SchedulePage/ModalRating';
+import style from './SchedulePageTec.module.css'
+import GoogleMapReact from 'google-map-react';
+
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -288,14 +291,23 @@ function ListTable(props) {
                     subheader='Distância: 3 Km'
                 />
                 <CardContent>
-                    <CardMedia
-                        className={classes.media}
-                    >
-                        <img
-                            alt="List Empty"
-                            src={map}
-                            className={classes.media}
-                        />
+                    <CardMedia className={classes.media}>
+                        <Row>
+                            <Col>
+                                <div className={style.map}>
+                                    <GoogleMapReact
+                                        bootstrapURLKeys={{ key: "AIzaSyCkIMj_uHe2IZkO0jtrx-tYGPbcJyvr2jo" }}
+                                        defaultCenter={{
+                                            lat: item.geoLocX,
+                                            lng: item.geoLocY
+                                        }}
+                                        defaultZoom={18}
+                                        yesIWantToUseGoogleMapApiInternals={true}
+                                    >
+                                    </GoogleMapReact>
+                                </div>
+                            </Col>
+                        </Row>
                     </CardMedia>
                 </CardContent>
                 <CardActions disableSpacing>
