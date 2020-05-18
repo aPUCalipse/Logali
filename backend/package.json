@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "amqplib": "^0.5.5",
+    "axios": "^0.19.2",
     "bluebird": "^3.7.2",
     "cep-promise": "^3.0.9",
     "chai": "^4.2.0",

@@ -4,6 +4,8 @@ const Scheduling = require("../model/scheduling");
 
 const UserCtrl = require("./userCtrl");
 
+const axios = require('axios').default
+
 var amqp = require("amqplib/callback_api");
 
 class SchedulingCtrl {
@@ -338,6 +340,26 @@ class SchedulingCtrl {
     }
   }
 
+  async orderByDistance(selectedSchedules, workerGeoLocalization, page, pageSize) {
+    for (let i = 0; i < selectedSchedules.length; i++) {
+      const url = `https://maps.googleapis.com/maps/api/distancematrix/json?` +
+        `origins=${workerGeoLocalization.geoLocX},${workerGeoLocalization.geoLocY}&` +
+        `destinations=${selectedSchedules[i].geoLocX},${selectedSchedules[i].geoLocY}&` +
+        `key=AIzaSyCkIMj_uHe2IZkO0jtrx-tYGPbcJyvr2jo&`
+      const response = await axios.get(url)
+
+      selectedSchedules[i].distance = response.data.rows.pop().elements.pop().distance.value
+    }
+
+    const sortedSchedules = _.sortBy(selectedSchedules, 'distance')
+    const result = []
+
+    const init = page * pageSize - pageSize;
+    const end = pageSize;
+
+    return _.slice(sortedSchedules, init, end)
+  }
+
   async viewScheduling(params) {
     const response = {
       data: {},
@@ -346,14 +368,20 @@ class SchedulingCtrl {
     };
 
     try {
-      const selectedSchedules = await this.scheduling.viewScheduling(
-        params.page,
-        params.pageSize,
-        params.idWorker
-      );
+      const getAddresOfWorker = await this.userCtrl.getUserById(params.idWorker);
 
-      response.data = selectedSchedules;
-      response.statusCode = 200;
+      if (getAddresOfWorker.statusCode === 200) {
+        const selectedSchedules = await this.scheduling.viewScheduling(
+          params.idWorker
+        );
+
+        response.data = await this.orderByDistance(selectedSchedules, getAddresOfWorker.data, params.page, params.pageSize)
+
+        response.statusCode = 200;
+      } else {
+        response.message = getAddresOfWorker.message
+        response.statusCode = getAddresOfWorker.statusCode
+      }
     } catch (err) {
       response.message = `Erro desconhecido ao selecionar agendamentos  -> ${err.toString()}`;
     } finally {
@@ -562,28 +590,28 @@ class SchedulingCtrl {
       return response;
     }
   }
-    
-    async closeScheduling(WorkerId, id) {
-        const response = {
-            message: null,
-            statusCode: 500
-        }
-        try {
-            const scheduling = await this.scheduling.closeScheduling(WorkerId, id)
-            if (scheduling) {
-                response.message = "Agendamento finalizado"
-                response.statusCode = 200
-            } else {
-                response.message = "Agendamento não finalizado"
-                response.statusCode = 400
-            }
-        } catch (err) {
-            console.log("Erro ao fechar agendamento -> " + err)
-        } finally {
-            return response;
-        }
+
+  async closeScheduling(WorkerId, id) {
+    const response = {
+      message: null,
+      statusCode: 500
     }
-    
+    try {
+      const scheduling = await this.scheduling.closeScheduling(WorkerId, id)
+      if (scheduling) {
+        response.message = "Agendamento finalizado"
+        response.statusCode = 200
+      } else {
+        response.message = "Agendamento não finalizado"
+        response.statusCode = 400
+      }
+    } catch (err) {
+      console.log("Erro ao fechar agendamento -> " + err)
+    } finally {
+      return response;
+    }
+  }
+
 }
 
 module.exports = SchedulingCtrl;

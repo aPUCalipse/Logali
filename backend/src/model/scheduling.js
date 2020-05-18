@@ -314,7 +314,7 @@ class Scheduling {
     return `${init},${end}`;
   }
 
-  async viewScheduling(page, pageSize, idWorker) {
+  async viewScheduling(idWorker) {
     try {
       var query =
         `` +
@@ -350,11 +350,7 @@ class Scheduling {
         `WHERE 1=1 ` +
         `AND s.workerId is null ` +
         `AND deletedAt is null ` +
-        `OR s.workerId = ${idWorker} ` +
-        `ORDER BY s.workerId DESC ` +
-        `LIMIT ${this.getPageByPaginatio(page, pageSize)} `;
-
-      console.log(query);
+        `OR s.workerId = ${idWorker} `
 
       const resp = await this.dbPool.query(query);
 
