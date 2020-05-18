@@ -336,7 +336,8 @@ class SchedulingRouter {
           req.body.page,
           req.body.pageSize,
           req.body.idWorker,
-          req.body.filter
+          req.body.filterType,
+          req.body.filterStatus,
         );
 
           if (params.isValid) {

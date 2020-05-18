@@ -350,7 +350,8 @@ class SchedulingCtrl {
         params.page,
         params.pageSize,
         params.idWorker,
-        params.filter
+        params.filterType,
+        params.filterStatus
       );
 
       response.data = selectedSchedules;
@@ -379,7 +380,7 @@ class SchedulingCtrl {
     }
   }
 
-    getPageParams(page, pageSize, idWorker, filter) {
+    getPageParams(page, pageSize, idWorker, filterType, filterStatus) {
     const validatedParams = {
       isValid: true,
       message: null,
@@ -388,7 +389,8 @@ class SchedulingCtrl {
         page: null,
         pageSize: null,
         idWorker: null,
-        filter: null,
+        filterType: null,
+        filterStatus: null,
       },
     };
 
@@ -425,14 +427,25 @@ class SchedulingCtrl {
       validatedParams.data.idWorker = numberIdWorker;
     }
 
-    if (!filter) {
-          validatedParams.data.filter = 0;
+    if (!filterType) {
+          validatedParams.data.filterType = 0;
     } else {
-        const schedulingFilter = parseInt(filter);
-        if (!_.isNaN(schedulingFilter)) {
-            validatedParams.data.filter = schedulingFilter;
+        const schedulingFilterType = parseInt(filterType);
+        if (!_.isNaN(schedulingFilterType)) {
+            validatedParams.data.filterType = schedulingFilterType;
         } else {
-            validatedParams.data.filter = 0;
+            validatedParams.data.filterType = 0;
+        }
+    }
+
+    if (!filterStatus) {
+            validatedParams.data.filterStatus = 0;
+    } else {
+        const schedulingFilterStatus = parseInt(filterStatus);
+        if (!_.isNaN(schedulingFilterStatus)) {
+            validatedParams.data.filterStatus = schedulingFilterStatus;
+        } else {
+            validatedParams.data.filterStatus = 0;
         }
     }
 

@@ -403,7 +403,8 @@ export default function Technical() {
     const [value, setValue] = React.useState(0);
     const [page, setPage] = React.useState(1);
     const [tam, setTam] = React.useState(0);
-    const [filter, setFilter] = React.useState('');
+    const [filterType, setFilterType] = React.useState(0);
+    const [filterStatus, setFilterStatus] = React.useState(0);
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
@@ -430,10 +431,20 @@ export default function Technical() {
         setData([]);
     };
 
-    const changeFilter = (value) => {
-        for (let i = 0; i < document.getElementsByName('filterScheduling').length; i++) {
-            if (document.getElementsByName('filterScheduling')[i].selected) {
-                setFilter(document.getElementsByName('filterScheduling')[i].value);
+    const changeFilterType = () => {
+        for (let i = 0; i < document.getElementsByName('filterSchedulingType').length; i++) {
+            if (document.getElementsByName('filterSchedulingType')[i].selected) {
+                setFilterType(document.getElementsByName('filterSchedulingType')[i].value);
+                break
+            }
+        }
+        setData([]);
+    };
+
+    const changeFilterStatus = () => {
+        for (let i = 0; i < document.getElementsByName('filterSchedulingStatus').length; i++) {
+            if (document.getElementsByName('filterSchedulingStatus')[i].selected) {
+                setFilterStatus(document.getElementsByName('filterSchedulingStatus')[i].value);
                 break
             }
         }
@@ -446,7 +457,8 @@ export default function Technical() {
             "page": page,
             "pageSize": 3,
             "idWorker": tec.idUser,
-            "filter": filter,
+            "filterType": filterType,
+            "filterStatus": filterStatus,
         })
             .then(function (response) {
                 console.log(response);
@@ -579,15 +591,28 @@ export default function Technical() {
                     <Tab label="Semana" {...a11yProps(2)} />
                 </Tabs>
             </AppBar>
+            <div className="row">
             <Form.Group as={Col} md={4} name="typeScheduling">
                 <Form.Label>Tipo de agendamento</Form.Label>
-                <Form.Control as="select" custom onChange={() => changeFilter(value)}>
-                    <option name="filterScheduling" value="0">Todos</option>
-                    <option name="filterScheduling" value="3" >Bug</option>
-                    <option name="filterScheduling" value="2">Instalação</option>
-                    <option name="filterScheduling" value="1">Manutenção</option>
+                <Form.Control as="select" custom onChange={() => changeFilterType()}>
+                    <option name="filterSchedulingType" value="0">Todos</option>
+                    <option name="filterSchedulingType" value="3" >Bug</option>
+                    <option name="filterSchedulingType" value="2">Instalação</option>
+                    <option name="filterSchedulingType" value="1">Manutenção</option>
                 </Form.Control>
             </Form.Group>
+            <Form.Group as={Col} md={4} name="statusScheduling">
+                <Form.Label>Status do agendamento</Form.Label>
+                <Form.Control as="select" custom onChange={() => changeFilterStatus()}>
+                    <option name="filterSchedulingStatus" value="0">Todos</option>
+                    <option name="filterSchedulingStatus" value="1">Aguardando Aceite</option>
+                    <option name="filterSchedulingStatus" value="2">Aceitado</option>
+                    <option name="filterSchedulingStatus" value="3">À Caminho</option>
+                    <option name="filterSchedulingStatus" value="4">Cancelado</option>
+                    <option name="filterSchedulingStatus" value="5">Finalizado</option>
+                </Form.Control>
+                </Form.Group>
+                </div>
             <TabPanel value={value} index={0}>
                 <Container>
                     <Row xs={1} sm={2} md={3} lg={3}>

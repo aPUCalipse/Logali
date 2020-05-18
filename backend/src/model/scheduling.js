@@ -314,7 +314,7 @@ class Scheduling {
     return `${init},${end}`;
   }
 
-  async viewScheduling(page, pageSize, idWorker, filter) {
+  async viewScheduling(page, pageSize, idWorker, filterType, filterStatus) {
     try {
       var query =
         `` +
@@ -351,7 +351,8 @@ class Scheduling {
         `AND (s.workerId is null ` +
         `AND deletedAt is null ` +
         `OR s.workerId = ${idWorker}) ` +
-        `AND (${filter} = 0 OR s.typeSchedulingId = ${filter}) ` +
+        `AND (${filterType} = 0 OR s.typeSchedulingId = ${filterType}) ` +
+        `AND (${filterStatus} = 0 OR s.statusSchedulingId = ${filterStatus}) ` +
         `ORDER BY s.workerId DESC ` +
         `LIMIT ${this.getPageByPaginatio(page, pageSize)} `;
 
