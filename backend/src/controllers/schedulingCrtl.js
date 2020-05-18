@@ -349,7 +349,8 @@ class SchedulingCtrl {
       const selectedSchedules = await this.scheduling.viewScheduling(
         params.page,
         params.pageSize,
-        params.idWorker
+        params.idWorker,
+        params.filter
       );
 
       response.data = selectedSchedules;
@@ -378,7 +379,7 @@ class SchedulingCtrl {
     }
   }
 
-  getPageParams(page, pageSize, idWorker) {
+    getPageParams(page, pageSize, idWorker, filter) {
     const validatedParams = {
       isValid: true,
       message: null,
@@ -387,6 +388,7 @@ class SchedulingCtrl {
         page: null,
         pageSize: null,
         idWorker: null,
+        filter: null,
       },
     };
 
@@ -421,6 +423,17 @@ class SchedulingCtrl {
       validatedParams.statusCode = 400;
     } else {
       validatedParams.data.idWorker = numberIdWorker;
+    }
+
+    if (!filter) {
+          validatedParams.data.filter = 0;
+    } else {
+        const schedulingFilter = parseInt(filter);
+        if (!_.isNaN(schedulingFilter)) {
+            validatedParams.data.filter = schedulingFilter;
+        } else {
+            validatedParams.data.filter = 0;
+        }
     }
 
     return validatedParams;

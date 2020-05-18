@@ -6,6 +6,7 @@ import CardHeader from '@material-ui/core/CardHeader';
 import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
+import Form from 'react-bootstrap/Form'
 import map from '../../Images/maps.jpg';
 import Toolbar from '@material-ui/core/Toolbar';
 import AppBar from '@material-ui/core/AppBar';
@@ -14,6 +15,7 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import IconButton from '@material-ui/core/IconButton';
 import StarBorderIcon from '@material-ui/icons/StarBorder';
+import { FcNext, FcPrevious, FcOk, FcCancel, FcInspection } from "react-icons/fc";
 import CardMedia from '@material-ui/core/CardMedia';
 import CardContent from '@material-ui/core/CardContent';
 import CardActionArea from '@material-ui/core/CardActionArea';
@@ -32,6 +34,7 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import MyVerticallyCenteredModal from '../SchedulePage/ModalRating';
+import Tooltip from '@material-ui/core/Tooltip';
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -71,7 +74,12 @@ const useStyles = makeStyles(theme => ({
         float: 'right'
     },
     recuse: {
-        backgroundColor: '#d50000',
+        backgroundColor: '#FF6347',
+        color: 'white'
+    },
+    finish:
+    {
+        backgroundColor: '#97FFFF',
         color: 'white'
     },
     expand: {
@@ -108,6 +116,25 @@ const useStyles = makeStyles(theme => ({
     media: {
         height: theme.spacing(25),
         width: theme.spacing(45)
+    },
+    navButton: {
+        border: 'solid',
+        width: theme.spacing(3),
+        height: theme.spacing(4),
+        margin: theme.spacing(1)
+    },
+    inputPage: {
+        width: theme.spacing(10),
+        height: theme.spacing(4),
+        marginTop: theme.spacing(1),
+        borderRadius: '5px',
+        borderColor: 'black',
+        textAlign: 'center'
+    },
+    divPage: {
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'center'
     },
 
 }));
@@ -312,16 +339,16 @@ function ListTable(props) {
                     {/* <Button variant="contained" size="small" id={"btnRecuse" + item.schedulingId} className={classes.recuse} onClick={handleCloseAcceptN}>
                 Recusar
                 </Button> */}
-                    <Button variant="contained" size="small" id={"btnAccept" + item.schedulingId} className={classes.accept} onClick={handleOpenAcceptS}>
-                        Aceitar
-            </Button>
-                    <Button variant="contained" size="small" id={"btnCancel" + item.schedulingId} className={classes.recuse} style={{ display: "none" }} onClick={() => setDlgOpen(true)}>
-                        Cancelar aceite
-            </Button>
-                    <Button variant="contained" size="small" id={"btnFinish" + item.schedulingId} className={classes.primary} style={{ display: "none" }} onClick={handleFinish}>
-                        Finalizar atendimento
-            </Button>
-                    <IconButton id={"StarRating" + item.schedulingId} style={{ display: "none" }}
+                    <Button title='Aceitar' variant="contained" size="lg" id={"btnAccept" + item.schedulingId} className={classes.accept} onClick={handleOpenAcceptS}>
+                        <FcOk/>
+                    </Button>
+                    <Button title="Cancelar Aceite" variant="contained" size="large" id={"btnCancel" + item.schedulingId} className={classes.recuse} style={{ display: "none" }} onClick={() => setDlgOpen(true)}>
+                        <FcCancel />
+                    </Button>
+                    <Button title="Finalizar Atendimento" variant="contained" size="large" id={"btnFinish" + item.schedulingId} className={classes.finish} style={{ display: "none" }} onClick={handleFinish} >
+                        <FcInspection />
+                    </Button>
+                    <IconButton title="Avaliar" id={"StarRating" + item.schedulingId} style={{ display: "none" }}
                         onClick={() => avaliacao(true, item)}
                     >
                         <StarBorderIcon />
@@ -374,22 +401,59 @@ export default function Technical() {
     const [data, setData] = React.useState([]);
     const [dataTec, setDataTec] = React.useState([]);
     const [value, setValue] = React.useState(0);
+    const [page, setPage] = React.useState(1);
+    const [tam, setTam] = React.useState(0);
+    const [filter, setFilter] = React.useState('');
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
+
+    const nextPage = () => {
+        setPage(page + 1);
+        setData([]);
+        if (page == 2) {
+            document.getElementById('btnPreviousPage').removeAttribute('style', 'readOnly');
+            document.getElementById('btnPreviousPage').removeAttribute('style', 'borderColor: gray');
+        }
+    };
+
+    const previousPage = () => {
+        if (page > 1) {
+            setPage(page - 1);
+            setData([]);
+        }
+    };
+
+    const goToPage = (value) => {
+        setPage(value);
+        setData([]);
+    };
+
+    const changeFilter = (value) => {
+        for (let i = 0; i < document.getElementsByName('filterScheduling').length; i++) {
+            if (document.getElementsByName('filterScheduling')[i].selected) {
+                setFilter(document.getElementsByName('filterScheduling')[i].value);
+                break
+            }
+        }
+        setData([]);
+    };
+
     async function getScheduling() {
         const tec = JSON.parse(localStorage.getItem('userData'))
         const response = await axios.post('http://localhost:8000/logali/app/scheduling/view', {
-            "page": 1,
-            "pageSize": 100,
+            "page": page,
+            "pageSize": 3,
             "idWorker": tec.idUser,
+            "filter": filter,
         })
             .then(function (response) {
                 console.log(response);
                 if (response.data && response.data.data && response.data.data.length > 0) {
                     setData(response.data.data)
                 }
+                setTam(response.data.data.length > 0);
             })
             .catch(function (error) {
                 console.log(error.response);
@@ -453,8 +517,13 @@ export default function Technical() {
             setWeek(getWeekDays());
 
         if (data == null || data.length == 0)
-            getScheduling()
+            getScheduling();
 
+        if (tam == 0 && page !== 1) {
+            setPage(1);
+            setData([])
+        }
+            
         if (dataTec == null || dataTec.length == 0)
             getGeoLocXY()
     })
@@ -510,6 +579,15 @@ export default function Technical() {
                     <Tab label="Semana" {...a11yProps(2)} />
                 </Tabs>
             </AppBar>
+            <Form.Group as={Col} md={4} name="typeScheduling">
+                <Form.Label>Tipo de agendamento</Form.Label>
+                <Form.Control as="select" custom onChange={() => changeFilter(value)}>
+                    <option name="filterScheduling" value="0">Todos</option>
+                    <option name="filterScheduling" value="3" >Bug</option>
+                    <option name="filterScheduling" value="2">Instalação</option>
+                    <option name="filterScheduling" value="1">Manutenção</option>
+                </Form.Control>
+            </Form.Group>
             <TabPanel value={value} index={0}>
                 <Container>
                     <Row xs={1} sm={2} md={3} lg={3}>
@@ -560,6 +638,15 @@ export default function Technical() {
                     ))}
                 </Slider>
             </TabPanel>
+            <div className={classes.divPage}>
+                <Button onClick={previousPage} className={classes.navButton} id='btnPreviousPage' title="Voltar">
+                    <FcPrevious />
+                </Button>
+                <input type='number' value={page} onExit={() => goToPage(value)} className={classes.inputPage} style={{ readOnly: false }} />
+                <Button onClick={nextPage} id='btnNextPage' className={classes.navButton} title="Avançar">
+                    <FcNext />
+                </Button>
+            </div>
         </div>
     );
 }
