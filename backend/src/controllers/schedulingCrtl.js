@@ -227,6 +227,11 @@ class SchedulingCtrl {
   async select(filter) {
     const response = {
       data: null,
+      pagination: {
+        page: filter.page,
+        pageSize: filter.pageSize,
+        maxPages: null
+      },
       message: null,
       statusCode: 500,
     };
@@ -239,7 +244,12 @@ class SchedulingCtrl {
         filter.idStatusScheduling,
         filter.idUser
       );
-      console.log(selectedSchedules);
+      response.pagination.maxPages = await this.scheduling.getMaxPages(
+        filter.pageSize,
+        filter.idTypeScheduling,
+        filter.idStatusScheduling,
+        filter.idUser
+      )
       response.data = selectedSchedules;
       response.statusCode = 200;
     } catch (err) {

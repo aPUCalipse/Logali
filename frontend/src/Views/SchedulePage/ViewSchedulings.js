@@ -157,8 +157,7 @@ export default function RecipeReviewCard() {
         })
             .then(function (response) {
                 setData(response.data.data)
-                // setMaxPages(response.data.pagination.maxPages)
-                setMaxPages(5)
+                setMaxPages(response.data.pagination.maxPages)
             })
             .catch(function (error) {
                 console.log(error.response);
