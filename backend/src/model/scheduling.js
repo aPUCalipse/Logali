@@ -444,8 +444,8 @@ class Scheduling {
             var query =
                 `UPDATE logali.user ` +
                 `SET addressId = ${insertedId} ` +
-                `WHERE user.id = ${workerId} ` +
-                `AND deletedAt is null`;
+                `WHERE user.id = ${workerId}`;
+                
 
             const resp = await this.dbPool.query(query);
             return resp;
