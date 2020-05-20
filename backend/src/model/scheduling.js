@@ -439,6 +439,22 @@ class Scheduling {
     //    }
     //}
 
+
+    async updateGeoLoc(insertedId, geoLocX, geoLocY) {
+        try {
+            var query =
+                `UPDATE logali.address ` +
+                `SET geoLocX = ${geoLocX} ,` +
+                `geoLocY = ${geoLocY} ` +
+                `WHERE address.id = ${insertedId}`;
+
+            const resp = await this.dbPool.query(query);
+            return resp;
+        } catch(err){
+            throw new Error(`Erro ao atualizar localização do Usuário -> ${err}`);
+        }
+    }
+
     async insertUpdating(insertedId, workerId) {
         try {
             var query =
