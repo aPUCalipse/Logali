@@ -109,6 +109,7 @@ export default function RecipeReviewCard() {
   if(!hasCalled){
     setHasCalled(true)
     getScheduling()
+    getTecLoc(4)
   }
 
   const handleExpandClick = () => {
@@ -118,6 +119,7 @@ export default function RecipeReviewCard() {
   function avaliacao(show, item){
     setSelected(item);
     setModalShow(true)
+  
   };
  
   function splitDateTime(item){
@@ -133,11 +135,12 @@ export default function RecipeReviewCard() {
         
   }
 
-  async function getTecLoc(){
+  async function getTecLoc(idworker){
+    console.log(data)
     const response = await axios.post('http://localhost:8000/logali/app/scheduling/saveTecLoc', {
-      "idworker" : data.idWorker,
-      "geolocX": '',
-      "geolocY": '',
+      "workerId" : idworker,
+      "geoLocX": '50',
+      "geoLocY": '50',
     
   })
     .then(function(response) {

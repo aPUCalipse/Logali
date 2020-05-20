@@ -3,10 +3,13 @@
     "",
     "\\backend",
     "\\backend\\src",
-    "\\backend\\src\\controllers",
-    "\\backend\\src\\model",
-    "\\backend\\src\\routes"
+    "\\backend\\src\\dataBase",
+    "\\frontend",
+    "\\frontend\\public",
+    "\\frontend\\src",
+    "\\frontend\\src\\Views",
+    "\\frontend\\src\\Views\\SchedulePage"
   ],
-  "SelectedNode": "\\backend\\src\\model\\scheduling.js",
+  "SelectedNode": "\\frontend\\src\\Views\\SchedulePage\\ViewSchedulings.js",
   "PreviewInSolutionExplorer": false
 }
