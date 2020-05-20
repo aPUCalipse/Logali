@@ -390,13 +390,16 @@ class SchedulingCtrl {
             
 
             if (getAddressIdByUserID.length >= 1 && getAddressIdByUserID[0].addressId != null) {
+                const updateRealGeoLoc = await this.scheduling.updateGeoLoc(getAddressIdByUserID[0].addressId, params.data.geoLocX, params.data.geoLocY);
                 const updateRealLoc = await this.scheduling.insertUpdating(getAddressIdByUserID[0].addressId, params.data.workerId);
-                response.data = updateRealLoc;
+                response.data = updateRealGeoLoc;
+                response.message = "Localização inserida com sucesso";
                 response.statusCode = 200;
             } else {
                 const insertLocation = await this.scheduling.insertGeoLoc(params.data.geoLocX, params.data.geoLocY);
                 const updateRealLoc = await this.scheduling.insertUpdating(getAddressIdByUserID[0].addressId, params.data.workerId);
                 response.data = insertLocation;
+                response.message = "Localização inserida com sucesso";
                 response.statusCode = 200;
             }
         } catch (err) {
