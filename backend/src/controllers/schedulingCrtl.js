@@ -382,7 +382,11 @@ class SchedulingCtrl {
 
       if (getAddresOfWorker.statusCode === 200) {
         const selectedSchedules = await this.scheduling.viewScheduling(
-          params.idWorker
+          params.page,
+          params.pageSize,
+          params.idWorker,
+          params.filterType,
+          params.filterStatus
         );
 
         response.data = await this.orderByDistance(selectedSchedules, getAddresOfWorker.data, params.page, params.pageSize)
@@ -416,7 +420,7 @@ class SchedulingCtrl {
     }
   }
 
-  getPageParams(page, pageSize, idWorker) {
+  getPageParams(page, pageSize, idWorker, filterType, filterStatus) {
     const validatedParams = {
       isValid: true,
       message: null,
@@ -425,6 +429,8 @@ class SchedulingCtrl {
         page: null,
         pageSize: null,
         idWorker: null,
+        filterType: null,
+        filterStatus: null,
       },
     };
 
@@ -459,6 +465,28 @@ class SchedulingCtrl {
       validatedParams.statusCode = 400;
     } else {
       validatedParams.data.idWorker = numberIdWorker;
+    }
+
+    if (!filterType) {
+      validatedParams.data.filterType = 0;
+    } else {
+      const schedulingFilterType = parseInt(filterType);
+      if (!_.isNaN(schedulingFilterType)) {
+        validatedParams.data.filterType = schedulingFilterType;
+      } else {
+        validatedParams.data.filterType = 0;
+      }
+    }
+
+    if (!filterStatus) {
+      validatedParams.data.filterStatus = 0;
+    } else {
+      const schedulingFilterStatus = parseInt(filterStatus);
+      if (!_.isNaN(schedulingFilterStatus)) {
+        validatedParams.data.filterStatus = schedulingFilterStatus;
+      } else {
+        validatedParams.data.filterStatus = 0;
+      }
     }
 
     return validatedParams;
