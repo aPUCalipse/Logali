@@ -386,21 +386,18 @@ class SchedulingCtrl {
         };
         try {
 
-            const getAddressIdByUserID = await this.scheduling.getAddressIdByUserId(params);
-            //response.data = params;
-            //response.message = "Valor data dentro do Controller";
-
-            return response;
+            const getAddressIdByUserID = await this.scheduling.getAddressIdByUserId(params.data.workerId);
             
-            if (getAddressIdByUserID == null) {
-                const insertLocation = await this.scheduling.insertGeoLoc(params);
-                const updateRealLoc = await this.scheduling.insertUpdating(getAddressIdByUserID, params);
-                response.data = insertLocation;
-                reponse.statusCode = 200;
-            } else {
-                const updateRealLoc = await this.scheduling.insertUpdating(getAddressIdByUserID.data, params.data);
+
+            if (getAddressIdByUserID.length >= 1 && getAddressIdByUserID[0].addressId != null) {
+                const updateRealLoc = await this.scheduling.insertUpdating(getAddressIdByUserID[0].addressId, params.data.workerId);
                 response.data = updateRealLoc;
-                reponse.statusCode = 200;
+                response.statusCode = 200;
+            } else {
+                const insertLocation = await this.scheduling.insertGeoLoc(params.data.geoLocX, params.data.geoLocY);
+                const updateRealLoc = await this.scheduling.insertUpdating(getAddressIdByUserID[0].addressId, params.data.workerId);
+                response.data = insertLocation;
+                response.statusCode = 200;
             }
         } catch (err) {
             response.message = `Erro desconhecido ao Selecionar Usuário -> ${err.toString()}`;

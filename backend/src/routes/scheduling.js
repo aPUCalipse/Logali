@@ -407,16 +407,18 @@ class SchedulingRouter {
 
                   const resp = await schedulingCtrl.insertLoc(validatedParams)
 
-                  //response.data = resp;
+                  response.data = resp.data;
+                  response.message = resp.message;
+
                   
 
-                  if (resp && resp.workerId) {
+                  if (resp && resp.data) {
                       response.message = "localização geográfica inserida com sucesso";
-                      response.data = validatedParams.data;
+                      response.data = resp.data;
                       res.status(200);
                   } else {
                       response.message = `erro ao inserir localização geográfica -> ${resp.message}`;
-                      response.data = validatedParams.data;
+                      response.data = resp.data;
                       res.status(400);
                   }
               } else {
