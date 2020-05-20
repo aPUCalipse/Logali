@@ -109,7 +109,7 @@ export default function RecipeReviewCard() {
   if(!hasCalled){
     setHasCalled(true)
     getScheduling()
-    getTecLoc(4)
+     getTecLoc(4)
   }
 
   const handleExpandClick = () => {
@@ -145,7 +145,7 @@ export default function RecipeReviewCard() {
   })
     .then(function(response) {
       console.log(response);
-      setData(response.data.data)
+     // setData(response.data.data)
     })
     .catch(function (error) {
       console.log(error.response);
