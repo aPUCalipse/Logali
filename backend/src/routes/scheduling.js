@@ -336,10 +336,12 @@ class SchedulingRouter {
         const params = schedulingCtrl.getPageParams(
           req.body.page,
           req.body.pageSize,
-          req.body.idWorker
+          req.body.idWorker,
+          req.body.filterType,
+          req.body.filterStatus,
         );
 
-        if (params.isValid) {
+          if (params.isValid) {
           const resp = await schedulingCtrl.viewScheduling(params.data);
           response.message = "Seleção realizada com sucesso";
           response.data = resp.data;

@@ -352,7 +352,7 @@ class Scheduling {
     return `${init},${end}`;
   }
 
-  async viewScheduling(idWorker) {
+  async viewScheduling(page, pageSize, idWorker, filterType, filterStatus) {
     try {
       var query =
         `` +
@@ -386,9 +386,13 @@ class Scheduling {
         `join logali.address ad ` +
         `on ad.id = uc.addressId ` +
         `WHERE 1=1 ` +
-        `AND s.workerId is null ` +
+        `AND (s.workerId is null ` +
         `AND deletedAt is null ` +
-        `OR s.workerId = ${idWorker} `
+        `OR s.workerId = ${idWorker}) ` +
+        `AND (${filterType} = 0 OR s.typeSchedulingId = ${filterType}) ` +
+        `AND (${filterStatus} = 0 OR s.statusSchedulingId = ${filterStatus}) ` +
+        `ORDER BY s.workerId DESC ` +
+        `LIMIT ${this.getPageByPaginatio(page, pageSize)} `;
 
       const resp = await this.dbPool.query(query);
 
