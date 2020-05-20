@@ -318,7 +318,23 @@ export default function RecipeReviewCard() {
         
   }
 
-    async function getScheduling() {
+  async function getTecLoc(){
+    const response = await axios.post('http://localhost:8000/logali/app/scheduling/saveTecLoc', {
+      "idworker" : data.idWorker,
+      "geolocX": '',
+      "geolocY": '',
+    
+  })
+    .then(function(response) {
+      console.log(response);
+      setData(response.data.data)
+    })
+    .catch(function (error) {
+      console.log(error.response);
+    });
+    console.log(response);
+  }  
+  async function getScheduling() {
         const user = JSON.parse(localStorage.getItem('userData'))
         
     const response = await axios.post('http://localhost:8000/logali/app/scheduling/select', {
