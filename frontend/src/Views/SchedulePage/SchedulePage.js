@@ -26,6 +26,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
 import axios from 'axios';
 
+
 const useStyles = makeStyles(theme => ({
     paper: {
         position: 'absolute',
@@ -88,7 +89,7 @@ function MyVerticallyCenteredModal(props,mode) {
 
     async function handleAddScheduling(e) {
         e.preventDefault();
-
+        
         const dateArray = date.split("-");
         console.log(dateArray)
         const dateTime=(dateArray[2] + "-" + dateArray[1] + "-" +  dateArray[0] + " " + time + ":00" );
@@ -139,15 +140,15 @@ function MyVerticallyCenteredModal(props,mode) {
       }
       
       async function handleEndScheduling() {
-        console.log("BATATA " + userId)
-        const response = await axios.post('http://localhost:8000/logali/app/scheduling/searchEnd', objectData)
+          console.log("BATATA " + userId)     
+          const response = await axios.post('http://localhost:8000/logali/app/scheduling/searchEnd', objectData)
           .then(function (response) {
-              setEnd(response.data.data)
+            setEnd(response.data.data)
             console.log(response.data);
           })
           .catch(function (error) {
             console.log(error.response);
-          });
+              });
 
           console.log(response);
           return response
@@ -390,40 +391,38 @@ function App() {
 export default App;
 
 
-
-
 /*
+ * async function handleRating() {
+    const response = await axios.post(
+      'http://localhost:8000/logali/app/rotadela/metododela',
+      {
+        "worker": selected.idClient,
+        "ratedId": selected.idWorker,
+        "schedulingId": selected.schedulingId ,
+        "rate":value,
+        "observation": observation
+      }
+    )
+      .then(function (response) {
+        alert(response.data.message)
+        console.log(response.data);
+      })
+      .catch(function (error) {
+        console.log(error.response);
+      });
 
+      console.log(response);
+      return response
+    };
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ *
+ *
+ */
 
-
-
-
-const [look, setLook] = useState('');
-
-
-useEffect(() =>{
-    if(look == null || look == ''){
-        handleViewScheduling();
-    }
-})
-
-async function handleViewScheduling(){
-    console.log(estou aqui)
-    const resp = await axious.get('http://localhost/8000/logali/app/scheduling/view' {
-        "page": 1,
-        "pageSize": 10,
-    })
-      .then(function(resp) {
-        setLook(resp.data.data)
-    })
-       .catch(function(error){
-        console.log(error.resp)
-    });
-
-    console.log(resp)
-    return resp
-};
-
-
-
-*/
