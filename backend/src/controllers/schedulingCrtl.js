@@ -378,6 +378,65 @@ class SchedulingCtrl {
     }
   }
 
+    async insertLoc(params) {
+        const response = {
+            data: {},
+            message: null,
+            statusCode: 500,
+        };
+        try {
+            //var addressId = await this.scheduling.getAddressIdByUserId(params);
+
+            const insertLocation = await this.scheduling.insertGeoLoc(params);
+            const getAddressId = await this.scheduling.getAddressJustBeInserted();
+            const updateRealLoc = await this.scheduling.insertUpdating(getAddressId, params);
+
+            response.data = insertLocation;
+            reponse.statusCode = 200;
+        } catch (err) {
+            response.message = `Erro desconhecido ao Selecionar Usuário -> ${err.toString()}`;
+        }finally {
+            return response;
+        }
+    }
+
+    validatedParamsInsert(workerId, geoLocX, geoLocY) {
+
+        const validatedParams = {
+            isValid: null,
+            message: null,
+            statusCode: null,
+            data: {
+                workerId: workerId,
+                geoLocX: geoLocX,
+                geoLocY: geoLocY
+            },
+        };
+
+        validatedParams.message = "estou aqui dentro do validated";
+       
+
+        return validatedParams;
+
+        //if (!workerId) {
+        //    validatedParams.isValid = false;
+        //    validatedParams.message = "O parametro usuario está incorreto";
+        //    validatedParams.statusCode = 400;
+        //} else if (!geoLocX) {
+        //    validatedParams.isValid = false;
+        //    validatedParams.message = "O parametro localização ponto X está incorreto";
+        //    validatedParams.statusCode = 400;
+        //} else if (!geoLocY) {
+        //    validatedParams.isValid = false;
+        //    validatedParams.message = "O parametro localização ponto Y está incorreto";
+        //    validatedParams.statusCode = 400;
+        //} else {
+        //    validatedParams.isValid = true;
+        //    validatedParams.statusCode = 200;
+        //}
+        //return validatedParams;
+    }
+
   getPageParams(page, pageSize, idWorker) {
     const validatedParams = {
       isValid: true,

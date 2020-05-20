@@ -4,13 +4,8 @@
     "\\backend",
     "\\backend\\src",
     "\\backend\\src\\controllers",
-    "\\backend\\src\\dataBase",
     "\\backend\\src\\model",
-    "\\backend\\src\\routes",
-    "\\frontend",
-    "\\frontend\\src",
-    "\\frontend\\src\\Views",
-    "\\frontend\\src\\Views\\SchedulePageTec"
+    "\\backend\\src\\routes"
   ],
   "SelectedNode": "\\backend\\src\\model\\scheduling.js",
   "PreviewInSolutionExplorer": false
