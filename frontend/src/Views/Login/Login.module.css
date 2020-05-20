@@ -156,7 +156,7 @@
     }
 }
 
-@media only screen and (max-device-width: 320px) {
+@media only screen and (max-device-width: 360px) {
     .boxLogin{
         background-color: #FFF;
         padding: 6%;   
@@ -166,7 +166,7 @@
         background-color: #5bd1cb;
         padding: 4%;
         width: 100%;
-        margin: 30% auto;
+        margin: 25% auto;
         font-size: 13px;
     }
     
@@ -183,7 +183,7 @@
     }
 }
 
-@media only screen and (max-device-width: 360px) {
+@media only screen and (max-device-width: 320px) {
     .boxLogin{
         background-color: #FFF;
         padding: 6%;   
@@ -193,7 +193,7 @@
         background-color: #5bd1cb;
         padding: 4%;
         width: 100%;
-        margin: 25% auto;
+        margin: 30% auto;
         font-size: 13px;
     }
     
