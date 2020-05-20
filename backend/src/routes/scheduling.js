@@ -390,56 +390,52 @@ class SchedulingRouter {
 
   async insertTecLoc(req, res) {
       const response = _.clone(this.response);
-      try {
-
+      try{ 
           const schedulingCtrl = new SchedulingCtrl(this.dbPool);
 
-          //geoLocY aparece
-
-
-          //response.data = req.body;
-          //response.message = "estou aqui nas routes ";
-          //res.send(response);
-
           if (!_.isEmpty(req.body)) {
-              const validatedParams = await schedulingCtrl.validatedParamsInsert(
+              const validatedParams = schedulingCtrl.validatedParamsInsert(
                   req.body.workerId,
                   req.body.geoLocX,
                   req.body.geoLocY,
               );
 
-              //geoLocY nao aparece
+              if (validatedParams && validatedParams.isValid) {
 
-              //response.data = validatedParams;
-              //response.message = "estou aqui nas routes ";
-              //res.send(response);
+                  //response.data = validatedParams;
+                  //response.message = "Routes apos chamar a função Controller";
 
-              if (validatedParams && validatedParams.isvalid) {
-                  const resp = await schedulingcrtl.insertloc(validatedparams.data)
+                  const resp = await schedulingCtrl.insertLoc(validatedParams)
 
-                  if (resp && resp.workerid) {
+                  //response.data = resp;
+                  
+
+                  if (resp && resp.workerId) {
                       response.message = "localização geográfica inserida com sucesso";
-                      response.data = validatedparams.data;
-                      response.data.idscheduling = resp.workerid;
+                      response.data = validatedParams.data;
                       res.status(200);
                   } else {
                       response.message = `erro ao inserir localização geográfica -> ${resp.message}`;
-                      response.data = validatedparams.data;
-                      res.status(resp.statuscode);
+                      response.data = validatedParams.data;
+                      res.status(400);
                   }
+              } else {
+                  response.message = validatedParams.message;
+                  response.data = validatedParams.data;
+                  res.status(400);
               }
           } else {
               response.message = "Os parametros não foram enviados";
               response.data = req.body;
               res.status(400);
           }
-      }catch (err) {
-              console.log(err);
-              response.message = "Erro ao realizar inserção";
-              res.status(500);
+      }catch(err) {
+          console.log(err);
+          response.message = "Erro ao realizar inserção";
+          res.status(500);
       } finally {
-              console.log("resposta: " + response);
-              res.send(response);
+          //console.log("resposta: " + response);
+          res.send(response);
       }
   }
 

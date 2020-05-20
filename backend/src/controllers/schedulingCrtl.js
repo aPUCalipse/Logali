@@ -385,14 +385,23 @@ class SchedulingCtrl {
             statusCode: 500,
         };
         try {
-            //var addressId = await this.scheduling.getAddressIdByUserId(params);
 
-            const insertLocation = await this.scheduling.insertGeoLoc(params);
-            const getAddressId = await this.scheduling.getAddressJustBeInserted();
-            const updateRealLoc = await this.scheduling.insertUpdating(getAddressId, params);
+            const getAddressIdByUserID = await this.scheduling.getAddressIdByUserId(params);
+            //response.data = params;
+            //response.message = "Valor data dentro do Controller";
 
-            response.data = insertLocation;
-            reponse.statusCode = 200;
+            return response;
+            
+            if (getAddressIdByUserID == null) {
+                const insertLocation = await this.scheduling.insertGeoLoc(params);
+                const updateRealLoc = await this.scheduling.insertUpdating(getAddressIdByUserID, params);
+                response.data = insertLocation;
+                reponse.statusCode = 200;
+            } else {
+                const updateRealLoc = await this.scheduling.insertUpdating(getAddressIdByUserID.data, params.data);
+                response.data = updateRealLoc;
+                reponse.statusCode = 200;
+            }
         } catch (err) {
             response.message = `Erro desconhecido ao Selecionar Usuário -> ${err.toString()}`;
         }finally {
@@ -413,28 +422,23 @@ class SchedulingCtrl {
             },
         };
 
-        validatedParams.message = "estou aqui dentro do validated";
-       
-
+        if (!workerId) {
+            validatedParams.isValid = false;
+            validatedParams.message = "O parametro usuario está incorreto";
+            validatedParams.statusCode = 400;
+        } else if (!geoLocX) {
+            validatedParams.isValid = false;
+            validatedParams.message = "O parametro localização ponto X está incorreto";
+            validatedParams.statusCode = 400;
+        } else if (!geoLocY) {
+            validatedParams.isValid = false;
+            validatedParams.message = "O parametro localização ponto Y está incorreto";
+            validatedParams.statusCode = 400;
+        } else {
+            validatedParams.isValid = true;
+            validatedParams.statusCode = 200;
+        }
         return validatedParams;
-
-        //if (!workerId) {
-        //    validatedParams.isValid = false;
-        //    validatedParams.message = "O parametro usuario está incorreto";
-        //    validatedParams.statusCode = 400;
-        //} else if (!geoLocX) {
-        //    validatedParams.isValid = false;
-        //    validatedParams.message = "O parametro localização ponto X está incorreto";
-        //    validatedParams.statusCode = 400;
-        //} else if (!geoLocY) {
-        //    validatedParams.isValid = false;
-        //    validatedParams.message = "O parametro localização ponto Y está incorreto";
-        //    validatedParams.statusCode = 400;
-        //} else {
-        //    validatedParams.isValid = true;
-        //    validatedParams.statusCode = 200;
-        //}
-        //return validatedParams;
     }
 
   getPageParams(page, pageSize, idWorker) {
