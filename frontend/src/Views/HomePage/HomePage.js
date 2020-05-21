@@ -21,7 +21,8 @@ import {isLoggedIn} from "../../Functions/verifySession"
 import {getLocation} from "../../Functions/geolocation"
 
 isLoggedIn()
-getLocation()
+setInterval(function() { getLocation() }, 10000);
+
 
 cep('05010000')
   .then(console.log)

@@ -22,6 +22,7 @@ import Typography from '@material-ui/core/Typography';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import listEmpty from  '../../Images/listEmpty.svg';
 import MyVerticallyCenteredModal from '../SchedulePage/ModalRating';
+import {getLocation} from "../../Functions/geolocation"
 
 
 const useStyles = makeStyles((theme) => ({
@@ -109,7 +110,6 @@ export default function RecipeReviewCard() {
   if(!hasCalled){
     setHasCalled(true)
     getScheduling()
-     getTecLoc(4)
   }
 
   const handleExpandClick = () => {
@@ -135,23 +135,6 @@ export default function RecipeReviewCard() {
         
   }
 
-  async function getTecLoc(idworker){
-    console.log(data)
-    const response = await axios.post('http://localhost:8000/logali/app/scheduling/saveTecLoc', {
-      "workerId" : idworker,
-      "geoLocX": '50',
-      "geoLocY": '50',
-    
-  })
-    .then(function(response) {
-      console.log(response);
-     // setData(response.data.data)
-    })
-    .catch(function (error) {
-      console.log(error.response);
-    });
-    console.log(response);
-  }  
   async function getScheduling() {
         const user = JSON.parse(localStorage.getItem('userData'))
         

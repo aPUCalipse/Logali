@@ -32,6 +32,7 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import MyVerticallyCenteredModal from '../SchedulePage/ModalRating';
+import {getLocation} from "../../Functions/geolocation"
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -374,10 +375,12 @@ export default function Technical() {
     const [data, setData] = React.useState([]);
     const [dataTec, setDataTec] = React.useState([]);
     const [value, setValue] = React.useState(0);
-
+   // const [location, setLocation] = React.useState([]);
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
+
+
     async function getScheduling() {
         const tec = JSON.parse(localStorage.getItem('userData'))
         const response = await axios.post('http://localhost:8000/logali/app/scheduling/view', {
