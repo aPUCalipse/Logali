@@ -24,7 +24,7 @@ export async function getLocation() {
       function(){
         console.log("callback de erro")
       },
-      {interval:10000}
+      {timeout:10000}
       );
       return coordinates;
     } else {
