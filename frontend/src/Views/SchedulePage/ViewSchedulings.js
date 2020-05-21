@@ -311,6 +311,7 @@ export default function RecipeReviewCard() {
                                             <Typography variant="body2" color="textSecondary" component="p">
                                                 {item.observation}
                                             </Typography>
+                                            <Typography hidden={item.idWorker !== null ? false : true}> {item.workerName} - Nota: {item.rateAVG} </Typography>
                                         </CardContent>
                                         <CardActions disableSpacing>
                                             <Tooltip title="Editar">
@@ -319,6 +320,13 @@ export default function RecipeReviewCard() {
                                             <Tooltip title="Deletar">
                                                 <IconButton aria-label="share">
                                                     <DeleteForeverIcon onClick={() => handleClickValidate(item.schedulingId)} />
+                                                </IconButton>
+                                            </Tooltip>
+                                            <Tooltip title='Avaliar'>
+                                                <IconButton title="Avaliar" id={"StarRating" + item.schedulingId} hidden={item.statusSchedulingId == 5 ? false : true }
+                                                    onClick={() => avaliacao(true, item)}
+                                                >
+                                                    <StarBorderIcon />
                                                 </IconButton>
                                             </Tooltip>
                                         </CardActions>
