@@ -104,6 +104,10 @@ function MyVerticallyCenteredModal(props, mode) {
         })
             .then(function (response) {
                 console.log(response);
+                if (response.status == 200) {
+                    alert("Cadastrado com sucesso");
+                    setModalShow(false);
+                }
             })
             .catch(function (error) {
                 console.log(error);
@@ -128,7 +132,10 @@ function MyVerticallyCenteredModal(props, mode) {
             else
                 setValidateTime(false)
         } else {
-            handleAddScheduling(e);
+            if (typeScheduling == 4 && observation == '')
+                alert('Quando o tipo de atendimento está definido como Outros é necessário preencher as observações')
+            else
+                handleAddScheduling(e);
             setValidateType(false);
             setValidateDate(false)
             setValidateTime(false)
@@ -317,7 +324,7 @@ function MyVerticallyCenteredModal(props, mode) {
 
                             <Grid item xs={12} sm={12}>
                                 <InputLabel id="demo-simple-select-label" className={classes.body} >Observa&ccedil;&atilde;o</InputLabel>
-                                <TextareaAutosize id="standard-basic" name="observation" onChange={e => setObservation(e.target.value)} className={classes.body} label="Observação" validate={typeScheduling == 4 ? required : ''} color="#45B39D" />
+                                <TextareaAutosize id="standard-basic-obs" name="observation" onChange={e => setObservation(e.target.value)} className={classes.body} label="Observação" color="#45B39D" />
                             </Grid>
                             <Grid item xs={12} sm={12}>
                                 <FormControlLabel

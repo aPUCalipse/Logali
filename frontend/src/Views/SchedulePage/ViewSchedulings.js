@@ -222,6 +222,7 @@ export default function RecipeReviewCard() {
                                         <MenuItem value={2}>Instalação</MenuItem>
                                         <MenuItem value={1}>Manutenção em rede</MenuItem>
                                         <MenuItem value={3}>BUG</MenuItem>
+                                        <MenuItem value={4}>Outros</MenuItem>
                                     </Select>
                                 </FormControl>
                             </Grid>

@@ -99,14 +99,21 @@ function MyVerticallyCenteredModal(props,mode) {
             idUser: props.data.idClient
         };
         e.preventDefault();
-        const response = await axios.put(`http://localhost:8000/logali/app/scheduling/update/${id}`, postData)
-          .then(function (response) {
+        if (props.data.typeSchedulingId == 4 && observation == '')
+            alert('Quando o tipo de atendimento está definido como Outros é necessário preencher as observações')
+        else {
+            const response = await axios.put(`http://localhost:8000/logali/app/scheduling/update/${id}`, postData)
+                .then(function (response) {
+                    console.log(response);
+                    if (response.status == 200) {
+                        alert("Alterado com sucesso!");
+                    }
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
             console.log(response);
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
-          console.log(response);
+        }
     };
 
     return (
