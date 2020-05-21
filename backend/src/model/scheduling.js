@@ -432,6 +432,102 @@ class Scheduling {
     }
   }
 
+
+    async getAddressIdByUserId(workerId) {
+        try {
+            var query =
+                `SELECT ` +
+                `addressId ` +
+                `FROM logali.user ` +
+                `JOIN logali.address on ` +
+                `address.id = user.addressId ` +
+                `WHERE user.id = ${workerId}`;
+                       
+            const resp = await this.dbPool.query(query);
+            return resp;
+        } catch (err) {
+            throw new Error(`Erro ao selecionar endereço -> ${err}`);
+        }
+    }
+
+
+
+    async insertGeoLoc(geoLocX, geoLocY) {
+        try {
+            var query =
+                `INSERT INTO logali.address ` +
+                `(geoLocX, geoLocY, createdAt) VALUES ` +
+                `(
+                    '${geoLocX}',
+                    '${geoLocY}',
+                    '${Moment().format("YYYY-MM-DD HH:mm:ss")}'
+                )`;
+
+            const resp = await this.dbPool.query(query);
+            return resp;
+        } catch (err) {
+            throw new Error(`Erro ao inserir Localização -> ${err}`);
+        }
+    }
+
+    //async getAddressJustBeInserted() {
+    //    try {
+    //        var query =
+    //            `SELECT ` +
+    //            `MAX(id) ` +
+    //            `FROM logali.address`;
+
+    //        const resp = await this.dbPool.query(query);
+    //        return resp;
+    //    } catch (err) {
+    //        throw new Error(`Erro ao selecionar endereço -> ${err}`);
+    //    }
+    //}
+
+
+    async updateGeoLoc(insertedId, geoLocX, geoLocY) {
+        try {
+            var query =
+                `UPDATE logali.address ` +
+                `SET geoLocX = ${geoLocX} ,` +
+                `geoLocY = ${geoLocY} ` +
+                `WHERE address.id = ${insertedId}`;
+
+            const resp = await this.dbPool.query(query);
+            return resp;
+        } catch(err){
+            throw new Error(`Erro ao atualizar localização do Usuário -> ${err}`);
+        }
+    }
+
+    async insertUpdating(insertedId, workerId) {
+        try {
+            var query =
+                `UPDATE logali.user ` +
+                `SET addressId = ${insertedId} ` +
+                `WHERE user.id = ${workerId}`;
+                
+
+            const resp = await this.dbPool.query(query);
+            return resp;
+        } catch(err){
+            throw new Error(`Erro ao atualizar localização do Usuário -> ${err}`);
+        }
+    }
+
+
+    
+
+    
+
+
+
+
+
+
+
+
+  
   async updateWorkerId(WorkerId, id) {
     try {
       const now = Moment().format("YYYY-MM-DD HH:mm:ss")

@@ -18,7 +18,11 @@ import cep from 'cep-promise'
 //verificação de sessão
 import {isLoggedIn} from "../../Functions/verifySession"
 
+import {getLocation} from "../../Functions/geolocation"
+
 isLoggedIn()
+setInterval(function() { getLocation() }, 10000);
+
 
 cep('05010000')
   .then(console.log)
