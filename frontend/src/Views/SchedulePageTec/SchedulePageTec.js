@@ -626,6 +626,7 @@ export default function Technical() {
                                 <option name="filterSchedulingType" value="3" >Bug</option>
                                 <option name="filterSchedulingType" value="2">Instalação</option>
                                 <option name="filterSchedulingType" value="1">Manutenção</option>
+                                <option name="filterSchedulingType" value="4">Outros</option>
                             </Form.Control>
                         </Form.Group>
                         <Form.Group as={Col} md={4} name="statusScheduling">

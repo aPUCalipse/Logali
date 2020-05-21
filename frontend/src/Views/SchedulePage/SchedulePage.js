@@ -200,6 +200,7 @@ function MyVerticallyCenteredModal(props, mode) {
                                         <MenuItem value={1}>Instalação</MenuItem>
                                         <MenuItem value={2}>Manutenção em rede</MenuItem>
                                         <MenuItem value={3}>BUG</MenuItem>
+                                        <MenuItem value={4}>Outros</MenuItem>
                                     </Select>
                                 </FormControl>
                                 <FormControl style={validateType ? { display: 'block' } : { display: 'none' }} error>
@@ -217,6 +218,7 @@ function MyVerticallyCenteredModal(props, mode) {
                                         <MenuItem value={1}>Instalação</MenuItem>
                                         <MenuItem value={2}>Manutenção em rede</MenuItem>
                                         <MenuItem value={3}>BUG</MenuItem>
+                                        <MenuItem value={4}>Outros</MenuItem>
                                     </Select>
                                     <FormHelperText>Campo obrigatório</FormHelperText>
                                 </FormControl>
@@ -315,7 +317,7 @@ function MyVerticallyCenteredModal(props, mode) {
 
                             <Grid item xs={12} sm={12}>
                                 <InputLabel id="demo-simple-select-label" className={classes.body} >Observa&ccedil;&atilde;o</InputLabel>
-                                <TextareaAutosize id="standard-basic" name="observation" onChange={e => setObservation(e.target.value)} className={classes.body} label="Observação" color="#45B39D" />
+                                <TextareaAutosize id="standard-basic" name="observation" onChange={e => setObservation(e.target.value)} className={classes.body} label="Observação" validate={typeScheduling == 4 ? required : ''} color="#45B39D" />
                             </Grid>
                             <Grid item xs={12} sm={12}>
                                 <FormControlLabel

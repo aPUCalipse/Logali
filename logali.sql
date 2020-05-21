@@ -56,7 +56,8 @@ ENGINE = InnoDB;
 INSERT INTO `logali`.`typescheduling` (`name`) VALUES 
 ('Manutenção'),
 ('Instalação'),
-('Bug');
+('Bug'),
+('Outros');
 
 -- -----------------------------------------------------
 -- Table `logali`.`statusScheduling`
