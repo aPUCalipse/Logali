@@ -18,7 +18,10 @@ import cep from 'cep-promise'
 //verificação de sessão
 import {isLoggedIn} from "../../Functions/verifySession"
 
+import {getLocation} from "../../Functions/geolocation"
+
 isLoggedIn()
+getLocation()
 
 cep('05010000')
   .then(console.log)
