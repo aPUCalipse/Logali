@@ -351,7 +351,18 @@ class SchedulingCtrl {
   }
 
   async orderByDistance(selectedSchedules, workerGeoLocalization, page, pageSize) {
+    console.log("Worker geocode")
+    console.log(workerGeoLocalization.geoLocX)
+    console.log(workerGeoLocalization.geoLocY)
+    console.log()
+
+
     for (let i = 0; i < selectedSchedules.length; i++) {
+      console.log(`User name: ${selectedSchedules[i].clientName} GeoCode`)
+      console.log(selectedSchedules[i].geoLocX)
+      console.log(selectedSchedules[i].geoLocY)
+      console.log()
+      console.log()
       const url = `https://maps.googleapis.com/maps/api/distancematrix/json?` +
         `origins=${workerGeoLocalization.geoLocX},${workerGeoLocalization.geoLocY}&` +
         `destinations=${selectedSchedules[i].geoLocX},${selectedSchedules[i].geoLocY}&` +

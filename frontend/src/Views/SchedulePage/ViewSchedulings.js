@@ -218,7 +218,7 @@ export default function RecipeReviewCard() {
                                         onChange={e => setTypeScheduling(e.target.value)}
                                         value={idTypeScheduling}
                                     >
-                                        <MenuItem value={0}>Selecione um Serviço</MenuItem>
+                                        <MenuItem value={0}>Todos os serviços</MenuItem>
                                         <MenuItem value={2}>Instalação</MenuItem>
                                         <MenuItem value={1}>Manutenção em rede</MenuItem>
                                         <MenuItem value={3}>BUG</MenuItem>

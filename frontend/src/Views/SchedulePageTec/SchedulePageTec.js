@@ -11,6 +11,7 @@ import map from '../../Images/maps.jpg';
 import Toolbar from '@material-ui/core/Toolbar';
 import AppBar from '@material-ui/core/AppBar';
 import Slider from "react-slick";
+import { Grid } from '@material-ui/core';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import IconButton from '@material-ui/core/IconButton';
@@ -37,6 +38,7 @@ import MyVerticallyCenteredModal from '../SchedulePage/ModalRating';
 import Tooltip from '@material-ui/core/Tooltip';
 import style from './SchedulePageTec.module.css'
 import GoogleMapReact from 'google-map-react';
+import MainLayout from '../MainLayout/MainLayout'
 
 
 function TabPanel(props) {
@@ -288,6 +290,14 @@ function ListTable(props) {
 
     }
 
+    function getDistance(distance) {
+        if (distance < 1000) {
+            return `${distance} M`
+        } else {
+            return `${(distance / 1000).toFixed(0)} KM`
+        }
+    }
+
     useEffect(() => {
         // if (end == null || end == '') {
         //     handleEndScheduling();
@@ -315,7 +325,7 @@ function ListTable(props) {
             <Card className={classes.card}>
                 <CardHeader
                     title={item.nametypeSchedulig + ' - ' + item.clientName}
-                    subheader='Distância: 3 Km'
+                    subheader={`Distância: ${getDistance(item.distance)}`}
                 />
                 <CardContent>
                     <CardMedia className={classes.media}>
@@ -352,7 +362,7 @@ function ListTable(props) {
                 Recusar
                 </Button> */}
                     <Button title='Aceitar' variant="contained" size="lg" id={"btnAccept" + item.schedulingId} className={classes.accept} onClick={handleOpenAcceptS}>
-                        <FcOk/>
+                        <FcOk />
                     </Button>
                     <Button title="Cancelar Aceite" variant="contained" size="large" id={"btnCancel" + item.schedulingId} className={classes.recuse} style={{ display: "none" }} onClick={() => setDlgOpen(true)}>
                         <FcCancel />
@@ -467,7 +477,7 @@ export default function Technical() {
         const tec = JSON.parse(localStorage.getItem('userData'))
         const response = await axios.post('http://localhost:8000/logali/app/scheduling/view', {
             "page": page,
-            "pageSize": 3,
+            "pageSize": 10,
             "idWorker": tec.idUser,
             "filterType": filterType,
             "filterStatus": filterStatus,
@@ -547,7 +557,7 @@ export default function Technical() {
             setPage(1);
             setData([])
         }
-            
+
         if (dataTec == null || dataTec.length == 0)
             getGeoLocXY()
     })
@@ -589,101 +599,108 @@ export default function Technical() {
 
     return (
         <div className={classes.root}>
-            <AppBar position="static" className={classes.tabTitle}>
-                <Toolbar variant="dense">
-                    <Typography variant="h6" >
-                        Agenda
+            <MainLayout>
+                {/* <AppBar position="static" className={classes.tabTitle}>
+                    <Toolbar variant="dense">
+                        <Typography variant="h6" >
+                            Agenda
                     </Typography>
-                </Toolbar>
-            </AppBar>
-            <AppBar position="static" className={classes.tabs}>
-                <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
-                    <Tab label="Tudo" {...a11yProps(0)} />
-                    <Tab label="Hoje" {...a11yProps(1)} />
-                    <Tab label="Semana" {...a11yProps(2)} />
-                </Tabs>
-            </AppBar>
-            <div className="row">
-            <Form.Group as={Col} md={4} name="typeScheduling">
-                <Form.Label>Tipo de agendamento</Form.Label>
-                <Form.Control as="select" custom onChange={() => changeFilterType()}>
-                    <option name="filterSchedulingType" value="0">Todos</option>
-                    <option name="filterSchedulingType" value="3" >Bug</option>
-                    <option name="filterSchedulingType" value="2">Instalação</option>
-                    <option name="filterSchedulingType" value="1">Manutenção</option>
-                </Form.Control>
-            </Form.Group>
-            <Form.Group as={Col} md={4} name="statusScheduling">
-                <Form.Label>Status do agendamento</Form.Label>
-                <Form.Control as="select" custom onChange={() => changeFilterStatus()}>
-                    <option name="filterSchedulingStatus" value="0">Todos</option>
-                    <option name="filterSchedulingStatus" value="1">Aguardando Aceite</option>
-                    <option name="filterSchedulingStatus" value="2">Aceitado</option>
-                    <option name="filterSchedulingStatus" value="3">À Caminho</option>
-                    <option name="filterSchedulingStatus" value="4">Cancelado</option>
-                    <option name="filterSchedulingStatus" value="5">Finalizado</option>
-                </Form.Control>
-                </Form.Group>
-                </div>
-            <TabPanel value={value} index={0}>
-                <Container>
-                    <Row xs={1} sm={2} md={3} lg={3}>
-                        {data.map((item) => (
-                            <Col>
-                                <ListTable item={item} week={week} />
-                            </Col>
-                        ))}
-                    </Row>
-                </Container>
-            </TabPanel>
-            <TabPanel value={value} index={1}>
-                <Container>
-                    <Row xs={1} sm={2} md={3} lg={3}>
-                        {data.map((item) => (
-                            dateSplit(item) == (week[0].getDate() + '/0' + (week[0].getMonth() + 1) + '/' + week[0].getFullYear()) ?
-                                <Col>
-                                    <ListTable item={item} week={week} />
-                                </Col> : ''
-                        ))}
-                    </Row>
-                </Container>
-            </TabPanel>
-            <TabPanel value={value} index={2}>
-                <Slider {...settings} >
-                    {week.map((date) => (
+                    </Toolbar>
+                </AppBar> */}
+                <Card className={classes.root}>
+                    <AppBar position="static" className={classes.tabs}>
+                        <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
+                            <Tab label="Tudo" {...a11yProps(0)} />
+                            <Tab label="Hoje" {...a11yProps(1)} />
+                            <Tab label="Semana" {...a11yProps(2)} />
+                        </Tabs>
+                    </AppBar>
+                    <Grid container
+                        spacing={0.5}
+                        justify="left"
+                        alignItems="left">
+                        <Form.Group as={Col} md={4} name="typeScheduling">
+                            <Form.Label>Tipo de agendamento</Form.Label>
+                            <Form.Control as="select" custom onChange={() => changeFilterType()}>
+                                <option name="filterSchedulingType" value="0">Todos</option>
+                                <option name="filterSchedulingType" value="3" >Bug</option>
+                                <option name="filterSchedulingType" value="2">Instalação</option>
+                                <option name="filterSchedulingType" value="1">Manutenção</option>
+                            </Form.Control>
+                        </Form.Group>
+                        <Form.Group as={Col} md={4} name="statusScheduling">
+                            <Form.Label>Status do agendamento</Form.Label>
+                            <Form.Control as="select" custom onChange={() => changeFilterStatus()}>
+                                <option name="filterSchedulingStatus" value="0">Todos</option>
+                                <option name="filterSchedulingStatus" value="1">Aguardando Aceite</option>
+                                <option name="filterSchedulingStatus" value="2">Aceitado</option>
+                                <option name="filterSchedulingStatus" value="3">À Caminho</option>
+                                <option name="filterSchedulingStatus" value="4">Cancelado</option>
+                                <option name="filterSchedulingStatus" value="5">Finalizado</option>
+                            </Form.Control>
+                        </Form.Group>
+                    </Grid>
+                    <TabPanel value={value} index={0}>
                         <Container>
-                            <Row xs={12} lg={12}>
-                                <Col>
-                                    <Card className={classes.rootCard}>
-                                        <CardActionArea>
-                                            <CardContent>
-                                                <Typography gutterBottom variant="h5" component="h2">
-                                                    {date.getDate()} / 0{date.getMonth() + 1}
-                                                </Typography>
-                                                {data.map((item) => (
-                                                    dateSplit(item) == (date.getDate() + '/0' + (date.getMonth() + 1) + '/' + date.getFullYear()) ?
-                                                        <Col>
-                                                            <ListTable item={item} week={week} />
-                                                        </Col> : ''
-                                                ))}
-                                            </CardContent>
-                                        </CardActionArea>
-                                    </Card>
-                                </Col>
+                            <Row xs={1} sm={2} md={3} lg={3}>
+                                {data.map((item) => (
+                                    <Col>
+                                        <ListTable item={item} week={week} />
+                                    </Col>
+                                ))}
                             </Row>
                         </Container>
-                    ))}
-                </Slider>
-            </TabPanel>
-            <div className={classes.divPage}>
-                <Button onClick={previousPage} className={classes.navButton} id='btnPreviousPage' title="Voltar">
-                    <FcPrevious />
-                </Button>
-                <input type='number' value={page} onExit={() => goToPage(value)} className={classes.inputPage} style={{ readOnly: false }} />
-                <Button onClick={nextPage} id='btnNextPage' className={classes.navButton} title="Avançar">
-                    <FcNext />
-                </Button>
-            </div>
+                    </TabPanel>
+                    <TabPanel value={value} index={1}>
+                        <Container>
+                            <Row xs={1} sm={2} md={3} lg={3}>
+                                {data.map((item) => (
+                                    dateSplit(item) == (week[0].getDate() + '/0' + (week[0].getMonth() + 1) + '/' + week[0].getFullYear()) ?
+                                        <Col>
+                                            <ListTable item={item} week={week} />
+                                        </Col> : ''
+                                ))}
+                            </Row>
+                        </Container>
+                    </TabPanel>
+                    <TabPanel value={value} index={2}>
+                        <Slider {...settings} >
+                            {week.map((date) => (
+                                <Container>
+                                    <Row xs={12} lg={12}>
+                                        <Col>
+                                            <Card className={classes.rootCard}>
+                                                <CardActionArea>
+                                                    <CardContent>
+                                                        <Typography gutterBottom variant="h5" component="h2">
+                                                            {date.getDate()} / 0{date.getMonth() + 1}
+                                                        </Typography>
+                                                        {data.map((item) => (
+                                                            dateSplit(item) == (date.getDate() + '/0' + (date.getMonth() + 1) + '/' + date.getFullYear()) ?
+                                                                <Col>
+                                                                    <ListTable item={item} week={week} />
+                                                                </Col> : ''
+                                                        ))}
+                                                    </CardContent>
+                                                </CardActionArea>
+                                            </Card>
+                                        </Col>
+                                    </Row>
+                                </Container>
+                            ))}
+                        </Slider>
+                    </TabPanel>
+                    <div className={classes.divPage}>
+                        <Button onClick={previousPage} className={classes.navButton} id='btnPreviousPage' title="Voltar">
+                            <FcPrevious />
+                        </Button>
+                        <input type='number' value={page} onExit={() => goToPage(value)} className={classes.inputPage} style={{ readOnly: false }} />
+                        <Button onClick={nextPage} id='btnNextPage' className={classes.navButton} title="Avançar">
+                            <FcNext />
+                        </Button>
+                    </div>
+                </Card>
+            </MainLayout>
         </div>
     );
 }

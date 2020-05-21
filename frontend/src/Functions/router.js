@@ -11,6 +11,5 @@ const router = {
   "/register": () => <Cadastro />,
   "/login": () => <Login />,
   "/agenda": () => <Technical />
-  //"/about": () => <About />,
 };
 export default router;

@@ -341,7 +341,7 @@ class SchedulingRouter {
           req.body.filterStatus,
         );
 
-          if (params.isValid) {
+        if (params.isValid) {
           const resp = await schedulingCtrl.viewScheduling(params.data);
           response.message = "Seleção realizada com sucesso";
           response.data = resp.data;

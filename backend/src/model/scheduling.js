@@ -388,11 +388,18 @@ class Scheduling {
         `WHERE 1=1 ` +
         `AND (s.workerId is null ` +
         `AND deletedAt is null ` +
-        `OR s.workerId = ${idWorker}) ` +
-        `AND (${filterType} = 0 OR s.typeSchedulingId = ${filterType}) ` +
-        `AND (${filterStatus} = 0 OR s.statusSchedulingId = ${filterStatus}) ` +
-        `ORDER BY s.workerId DESC ` +
-        `LIMIT ${this.getPageByPaginatio(page, pageSize)} `;
+        `OR s.workerId = ${idWorker}) `
+
+      if (filterType) {
+        query += `and s.typeSchedulingId = ${filterType} `;
+      }
+
+      if (filterStatus) {
+        query += `and s.statusSchedulingId = ${filterStatus} `;
+      }
+
+      // `AND (${filterType} = 0 OR s.typeSchedulingId = ${filterType}) ` +
+      // `AND (${filterStatus} = 0 OR s.statusSchedulingId = ${filterStatus}) `s
 
       const resp = await this.dbPool.query(query);
 
