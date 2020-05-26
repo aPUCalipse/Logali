@@ -4,6 +4,8 @@ const Scheduling = require("../model/scheduling");
 
 const UserCtrl = require("./userCtrl");
 
+const axios = require('axios').default
+
 var amqp = require("amqplib/callback_api");
 
 class SchedulingCtrl {
@@ -225,6 +227,11 @@ class SchedulingCtrl {
   async select(filter) {
     const response = {
       data: null,
+      pagination: {
+        page: filter.page,
+        pageSize: filter.pageSize,
+        maxPages: null
+      },
       message: null,
       statusCode: 500,
     };
@@ -237,7 +244,12 @@ class SchedulingCtrl {
         filter.idStatusScheduling,
         filter.idUser
       );
-      console.log(selectedSchedules);
+      response.pagination.maxPages = await this.scheduling.getMaxPages(
+        filter.pageSize,
+        filter.idTypeScheduling,
+        filter.idStatusScheduling,
+        filter.idUser
+      )
       response.data = selectedSchedules;
       response.statusCode = 200;
     } catch (err) {
@@ -338,6 +350,37 @@ class SchedulingCtrl {
     }
   }
 
+  async orderByDistance(selectedSchedules, workerGeoLocalization, page, pageSize) {
+    console.log("Worker geocode")
+    console.log(workerGeoLocalization.geoLocX)
+    console.log(workerGeoLocalization.geoLocY)
+    console.log()
+
+
+    for (let i = 0; i < selectedSchedules.length; i++) {
+      console.log(`User name: ${selectedSchedules[i].clientName} GeoCode`)
+      console.log(selectedSchedules[i].geoLocX)
+      console.log(selectedSchedules[i].geoLocY)
+      console.log()
+      console.log()
+      const url = `https://maps.googleapis.com/maps/api/distancematrix/json?` +
+        `origins=${workerGeoLocalization.geoLocX},${workerGeoLocalization.geoLocY}&` +
+        `destinations=${selectedSchedules[i].geoLocX},${selectedSchedules[i].geoLocY}&` +
+        `key=AIzaSyCkIMj_uHe2IZkO0jtrx-tYGPbcJyvr2jo&`
+      const response = await axios.get(url)
+
+      selectedSchedules[i].distance = response.data.rows.pop().elements.pop().distance.value
+    }
+
+    const sortedSchedules = _.sortBy(selectedSchedules, 'distance')
+    const result = []
+
+    const init = page * pageSize - pageSize;
+    const end = pageSize;
+
+    return _.slice(sortedSchedules, init, end)
+  }
+
   async viewScheduling(params) {
     const response = {
       data: {},
@@ -346,14 +389,24 @@ class SchedulingCtrl {
     };
 
     try {
-      const selectedSchedules = await this.scheduling.viewScheduling(
-        params.page,
-        params.pageSize,
-        params.idWorker
-      );
+      const getAddresOfWorker = await this.userCtrl.getUserById(params.idWorker);
 
-      response.data = selectedSchedules;
-      response.statusCode = 200;
+      if (getAddresOfWorker.statusCode === 200) {
+        const selectedSchedules = await this.scheduling.viewScheduling(
+          params.page,
+          params.pageSize,
+          params.idWorker,
+          params.filterType,
+          params.filterStatus
+        );
+
+        response.data = await this.orderByDistance(selectedSchedules, getAddresOfWorker.data, params.page, params.pageSize)
+
+        response.statusCode = 200;
+      } else {
+        response.message = getAddresOfWorker.message
+        response.statusCode = getAddresOfWorker.statusCode
+      }
     } catch (err) {
       response.message = `Erro desconhecido ao selecionar agendamentos  -> ${err.toString()}`;
     } finally {
@@ -378,70 +431,7 @@ class SchedulingCtrl {
     }
   }
 
-    async insertLoc(params) {
-        const response = {
-            data: {},
-            message: null,
-            statusCode: 500,
-        };
-        try {
-
-            const getAddressIdByUserID = await this.scheduling.getAddressIdByUserId(params.data.workerId);
-            
-
-            if (getAddressIdByUserID.length >= 1 && getAddressIdByUserID[0].addressId != null) {
-                const updateRealGeoLoc = await this.scheduling.updateGeoLoc(getAddressIdByUserID[0].addressId, params.data.geoLocX, params.data.geoLocY);
-                const updateRealLoc = await this.scheduling.insertUpdating(getAddressIdByUserID[0].addressId, params.data.workerId);
-                response.data = updateRealGeoLoc;
-                response.message = "Localização inserida com sucesso";
-                response.statusCode = 200;
-            } else {
-                const insertLocation = await this.scheduling.insertGeoLoc(params.data.geoLocX, params.data.geoLocY);
-                const updateRealLoc = await this.scheduling.insertUpdating(getAddressIdByUserID[0].addressId, params.data.workerId);
-                response.data = insertLocation;
-                response.message = "Localização inserida com sucesso";
-                response.statusCode = 200;
-            }
-        } catch (err) {
-            response.message = `Erro desconhecido ao Selecionar Usuário -> ${err.toString()}`;
-        }finally {
-            return response;
-        }
-    }
-
-    validatedParamsInsert(workerId, geoLocX, geoLocY) {
-
-        const validatedParams = {
-            isValid: null,
-            message: null,
-            statusCode: null,
-            data: {
-                workerId: workerId,
-                geoLocX: geoLocX,
-                geoLocY: geoLocY
-            },
-        };
-
-        if (!workerId) {
-            validatedParams.isValid = false;
-            validatedParams.message = "O parametro usuario está incorreto";
-            validatedParams.statusCode = 400;
-        } else if (!geoLocX) {
-            validatedParams.isValid = false;
-            validatedParams.message = "O parametro localização ponto X está incorreto";
-            validatedParams.statusCode = 400;
-        } else if (!geoLocY) {
-            validatedParams.isValid = false;
-            validatedParams.message = "O parametro localização ponto Y está incorreto";
-            validatedParams.statusCode = 400;
-        } else {
-            validatedParams.isValid = true;
-            validatedParams.statusCode = 200;
-        }
-        return validatedParams;
-    }
-
-  getPageParams(page, pageSize, idWorker) {
+  getPageParams(page, pageSize, idWorker, filterType, filterStatus) {
     const validatedParams = {
       isValid: true,
       message: null,
@@ -450,6 +440,8 @@ class SchedulingCtrl {
         page: null,
         pageSize: null,
         idWorker: null,
+        filterType: null,
+        filterStatus: null,
       },
     };
 
@@ -484,6 +476,28 @@ class SchedulingCtrl {
       validatedParams.statusCode = 400;
     } else {
       validatedParams.data.idWorker = numberIdWorker;
+    }
+
+    if (!filterType) {
+      validatedParams.data.filterType = 0;
+    } else {
+      const schedulingFilterType = parseInt(filterType);
+      if (!_.isNaN(schedulingFilterType)) {
+        validatedParams.data.filterType = schedulingFilterType;
+      } else {
+        validatedParams.data.filterType = 0;
+      }
+    }
+
+    if (!filterStatus) {
+      validatedParams.data.filterStatus = 0;
+    } else {
+      const schedulingFilterStatus = parseInt(filterStatus);
+      if (!_.isNaN(schedulingFilterStatus)) {
+        validatedParams.data.filterStatus = schedulingFilterStatus;
+      } else {
+        validatedParams.data.filterStatus = 0;
+      }
     }
 
     return validatedParams;
@@ -625,28 +639,28 @@ class SchedulingCtrl {
       return response;
     }
   }
-    
-    async closeScheduling(WorkerId, id) {
-        const response = {
-            message: null,
-            statusCode: 500
-        }
-        try {
-            const scheduling = await this.scheduling.closeScheduling(WorkerId, id)
-            if (scheduling) {
-                response.message = "Agendamento finalizado"
-                response.statusCode = 200
-            } else {
-                response.message = "Agendamento não finalizado"
-                response.statusCode = 400
-            }
-        } catch (err) {
-            console.log("Erro ao fechar agendamento -> " + err)
-        } finally {
-            return response;
-        }
+
+  async closeScheduling(WorkerId, id) {
+    const response = {
+      message: null,
+      statusCode: 500
     }
-    
+    try {
+      const scheduling = await this.scheduling.closeScheduling(WorkerId, id)
+      if (scheduling) {
+        response.message = "Agendamento finalizado"
+        response.statusCode = 200
+      } else {
+        response.message = "Agendamento não finalizado"
+        response.statusCode = 400
+      }
+    } catch (err) {
+      console.log("Erro ao fechar agendamento -> " + err)
+    } finally {
+      return response;
+    }
+  }
+
 }
 
 module.exports = SchedulingCtrl;

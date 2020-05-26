@@ -14,20 +14,19 @@ class SchedulingRouter {
     };
   }
 
-    init() {
-        this.app.post(`${this.baseRoute}/create`, this.create.bind(this));
-        this.app.put(`${this.baseRoute}/update/:idScheduling`, this.update.bind(this));
-        this.app.get(`${this.baseRoute}/getId`, this.getId.bind(this));
-        this.app.post(`${this.baseRoute}/searchEnd`, this.searchEnd.bind(this));
-        this.app.delete(`${this.baseRoute}/delete/:idScheduling`, this.delete.bind(this));
-        this.app.post(`${this.baseRoute}/select`, this.select.bind(this));
-        this.app.post(`${this.baseRoute}/acept`, this.acept.bind(this));
-        this.app.post(`${this.baseRoute}/cancelAcept`, this.cancelAcept.bind(this));
-        this.app.post(`${this.baseRoute}/view`, this.viewScheduling.bind(this));
-        this.app.post(`${this.baseRoute}/updateWorkerId`, this.updateWorkerId.bind(this))
-        this.app.post(`${this.baseRoute}/closeScheduling`, this.closeScheduling.bind(this))
-        this.app.post(`${this.baseRoute}/takeloc`, this.takeLoc.bind(this));
-        this.app.post(`${this.baseRoute}/saveTecLoc`, this.insertTecLoc.bind(this));
+  init() {
+    this.app.post(`${this.baseRoute}/create`, this.create.bind(this));
+    this.app.put(`${this.baseRoute}/update/:idScheduling`, this.update.bind(this));
+    this.app.get(`${this.baseRoute}/getId`, this.getId.bind(this));
+    this.app.post(`${this.baseRoute}/searchEnd`, this.searchEnd.bind(this));
+    this.app.delete(`${this.baseRoute}/delete/:idScheduling`, this.delete.bind(this));
+    this.app.post(`${this.baseRoute}/select`, this.select.bind(this));
+    this.app.post(`${this.baseRoute}/acept`, this.acept.bind(this));
+    this.app.post(`${this.baseRoute}/cancelAcept`, this.cancelAcept.bind(this));
+    this.app.post(`${this.baseRoute}/view`, this.viewScheduling.bind(this));
+    this.app.post(`${this.baseRoute}/updateWorkerId`, this.updateWorkerId.bind(this))
+    this.app.post(`${this.baseRoute}/closeScheduling`, this.closeScheduling.bind(this))
+    this.app.post(`${this.baseRoute}/takeloc`, this.takeLoc.bind(this));
   }
 
   /**
@@ -184,6 +183,7 @@ class SchedulingRouter {
           const resp = await schedulingCtrl.select(params.data);
           response.message = "Seleção realizada com sucesso";
           response.data = resp.data;
+          response.pagination = resp.pagination;
           res.status(200);
         } else {
           response.message = params.message;
@@ -336,7 +336,9 @@ class SchedulingRouter {
         const params = schedulingCtrl.getPageParams(
           req.body.page,
           req.body.pageSize,
-          req.body.idWorker
+          req.body.idWorker,
+          req.body.filterType,
+          req.body.filterStatus,
         );
 
         if (params.isValid) {
@@ -386,61 +388,7 @@ class SchedulingRouter {
       console.log("resposta: " + response);
       res.send(response);
     }
-    }
-
-  async insertTecLoc(req, res) {
-      const response = _.clone(this.response);
-      try{ 
-          const schedulingCtrl = new SchedulingCtrl(this.dbPool);
-
-          if (!_.isEmpty(req.body)) {
-              const validatedParams = schedulingCtrl.validatedParamsInsert(
-                  req.body.workerId,
-                  req.body.geoLocX,
-                  req.body.geoLocY,
-              );
-
-              if (validatedParams && validatedParams.isValid) {
-
-                  //response.data = validatedParams;
-                  //response.message = "Routes apos chamar a função Controller";
-
-                  const resp = await schedulingCtrl.insertLoc(validatedParams)
-
-                  response.data = resp.data;
-                  response.message = resp.message;
-
-                  
-
-                  if (resp && resp.data) {
-                      response.message = "localização geográfica inserida com sucesso";
-                      response.data = resp.data;
-                      res.status(200);
-                  } else {
-                      response.message = `erro ao inserir localização geográfica -> ${resp.message}`;
-                      response.data = resp.data;
-                      res.status(400);
-                  }
-              } else {
-                  response.message = validatedParams.message;
-                  response.data = validatedParams.data;
-                  res.status(400);
-              }
-          } else {
-              response.message = "Os parametros não foram enviados";
-              response.data = req.body;
-              res.status(400);
-          }
-      }catch(err) {
-          console.log(err);
-          response.message = "Erro ao realizar inserção";
-          res.status(500);
-      } finally {
-          //console.log("resposta: " + response);
-          res.send(response);
-      }
   }
-
 
   async updateWorkerId(req, res) {
     const response = _.clone(this.response);
@@ -480,42 +428,42 @@ class SchedulingRouter {
     }
   }
 
-    async closeScheduling(req, res) {
-        const response = _.clone(this.response)
-        try {
-            const schedulingCtrl = new SchedulingCtrl(this.dbPool)
+  async closeScheduling(req, res) {
+    const response = _.clone(this.response)
+    try {
+      const schedulingCtrl = new SchedulingCtrl(this.dbPool)
 
-            if (!_.isEmpty(req.body)) {
-                const numberIdScheduling = parseInt(req.body.idScheduling)
-                const numberIdWorker = parseInt(req.body.idWorker)
+      if (!_.isEmpty(req.body)) {
+        const numberIdScheduling = parseInt(req.body.idScheduling)
+        const numberIdWorker = parseInt(req.body.idWorker)
 
-                if (
-                    (!_.isNaN(numberIdScheduling) && numberIdScheduling > 0) &&
-                    (!_.isNaN(numberIdWorker) && numberIdWorker > 0)
-                ) {
-                    const resp = await schedulingCtrl.closeScheduling(numberIdWorker, numberIdScheduling)
-                    
-                    response.message = resp.message
-                    response.data = resp
-                    res.status(resp.statusCode)
-                } else {
-                    response.message = 'O id do agendamento e do técnico devem ser números maiores que zero'
-                    response.data = req.body
-                    res.status(400)
-                }                  
-            } else {
-                response.message = "Os parametros não foram enviados"
-                response.data = req.body
-                res.status(400)
-            }
-        } catch (err) {
-            console.log(err)
-            response.message = "Erro ao realizar edição"
-            res.status(500)
-        } finally {
-            res.send(response)
+        if (
+          (!_.isNaN(numberIdScheduling) && numberIdScheduling > 0) &&
+          (!_.isNaN(numberIdWorker) && numberIdWorker > 0)
+        ) {
+          const resp = await schedulingCtrl.closeScheduling(numberIdWorker, numberIdScheduling)
+
+          response.message = resp.message
+          response.data = resp
+          res.status(resp.statusCode)
+        } else {
+          response.message = 'O id do agendamento e do técnico devem ser números maiores que zero'
+          response.data = req.body
+          res.status(400)
         }
+      } else {
+        response.message = "Os parametros não foram enviados"
+        response.data = req.body
+        res.status(400)
+      }
+    } catch (err) {
+      console.log(err)
+      response.message = "Erro ao realizar edição"
+      res.status(500)
+    } finally {
+      res.send(response)
     }
+  }
 }
 
 module.exports = SchedulingRouter;

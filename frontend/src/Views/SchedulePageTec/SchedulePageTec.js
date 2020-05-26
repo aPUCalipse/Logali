@@ -6,14 +6,17 @@ import CardHeader from '@material-ui/core/CardHeader';
 import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
+import Form from 'react-bootstrap/Form'
 import map from '../../Images/maps.jpg';
 import Toolbar from '@material-ui/core/Toolbar';
 import AppBar from '@material-ui/core/AppBar';
 import Slider from "react-slick";
+import { Grid } from '@material-ui/core';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import IconButton from '@material-ui/core/IconButton';
 import StarBorderIcon from '@material-ui/icons/StarBorder';
+import { FcNext, FcPrevious, FcOk, FcCancel, FcInspection } from "react-icons/fc";
 import CardMedia from '@material-ui/core/CardMedia';
 import CardContent from '@material-ui/core/CardContent';
 import CardActionArea from '@material-ui/core/CardActionArea';
@@ -32,7 +35,11 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import MyVerticallyCenteredModal from '../SchedulePage/ModalRating';
-import {getLocation} from "../../Functions/geolocation"
+import Tooltip from '@material-ui/core/Tooltip';
+import style from './SchedulePageTec.module.css'
+import GoogleMapReact from 'google-map-react';
+import MainLayout from '../MainLayout/MainLayout'
+
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -72,7 +79,12 @@ const useStyles = makeStyles(theme => ({
         float: 'right'
     },
     recuse: {
-        backgroundColor: '#d50000',
+        backgroundColor: '#FF6347',
+        color: 'white'
+    },
+    finish:
+    {
+        backgroundColor: '#97FFFF',
         color: 'white'
     },
     expand: {
@@ -109,6 +121,25 @@ const useStyles = makeStyles(theme => ({
     media: {
         height: theme.spacing(25),
         width: theme.spacing(45)
+    },
+    navButton: {
+        border: 'solid',
+        width: theme.spacing(3),
+        height: theme.spacing(4),
+        margin: theme.spacing(1)
+    },
+    inputPage: {
+        width: theme.spacing(10),
+        height: theme.spacing(4),
+        marginTop: theme.spacing(1),
+        borderRadius: '5px',
+        borderColor: 'black',
+        textAlign: 'center'
+    },
+    divPage: {
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'center'
     },
 
 }));
@@ -259,6 +290,14 @@ function ListTable(props) {
 
     }
 
+    function getDistance(distance) {
+        if (distance < 1000) {
+            return `${distance} M`
+        } else {
+            return `${(distance / 1000).toFixed(0)} KM`
+        }
+    }
+
     useEffect(() => {
         // if (end == null || end == '') {
         //     handleEndScheduling();
@@ -286,17 +325,26 @@ function ListTable(props) {
             <Card className={classes.card}>
                 <CardHeader
                     title={item.nametypeSchedulig + ' - ' + item.clientName}
-                    subheader='Distância: 3 Km'
+                    subheader={`Distância: ${getDistance(item.distance)}`}
                 />
                 <CardContent>
-                    <CardMedia
-                        className={classes.media}
-                    >
-                        <img
-                            alt="List Empty"
-                            src={map}
-                            className={classes.media}
-                        />
+                    <CardMedia className={classes.media}>
+                        <Row>
+                            <Col>
+                                <div className={style.map}>
+                                    <GoogleMapReact
+                                        bootstrapURLKeys={{ key: "AIzaSyCkIMj_uHe2IZkO0jtrx-tYGPbcJyvr2jo" }}
+                                        defaultCenter={{
+                                            lat: item.geoLocX,
+                                            lng: item.geoLocY
+                                        }}
+                                        defaultZoom={18}
+                                        yesIWantToUseGoogleMapApiInternals={true}
+                                    >
+                                    </GoogleMapReact>
+                                </div>
+                            </Col>
+                        </Row>
                     </CardMedia>
                 </CardContent>
                 <CardActions disableSpacing>
@@ -313,16 +361,16 @@ function ListTable(props) {
                     {/* <Button variant="contained" size="small" id={"btnRecuse" + item.schedulingId} className={classes.recuse} onClick={handleCloseAcceptN}>
                 Recusar
                 </Button> */}
-                    <Button variant="contained" size="small" id={"btnAccept" + item.schedulingId} className={classes.accept} onClick={handleOpenAcceptS}>
-                        Aceitar
-            </Button>
-                    <Button variant="contained" size="small" id={"btnCancel" + item.schedulingId} className={classes.recuse} style={{ display: "none" }} onClick={() => setDlgOpen(true)}>
-                        Cancelar aceite
-            </Button>
-                    <Button variant="contained" size="small" id={"btnFinish" + item.schedulingId} className={classes.primary} style={{ display: "none" }} onClick={handleFinish}>
-                        Finalizar atendimento
-            </Button>
-                    <IconButton id={"StarRating" + item.schedulingId} style={{ display: "none" }}
+                    <Button title='Aceitar' variant="contained" size="lg" id={"btnAccept" + item.schedulingId} className={classes.accept} onClick={handleOpenAcceptS}>
+                        <FcOk />
+                    </Button>
+                    <Button title="Cancelar Aceite" variant="contained" size="large" id={"btnCancel" + item.schedulingId} className={classes.recuse} style={{ display: "none" }} onClick={() => setDlgOpen(true)}>
+                        <FcCancel />
+                    </Button>
+                    <Button title="Finalizar Atendimento" variant="contained" size="large" id={"btnFinish" + item.schedulingId} className={classes.finish} style={{ display: "none" }} onClick={handleFinish} >
+                        <FcInspection />
+                    </Button>
+                    <IconButton title="Avaliar" id={"StarRating" + item.schedulingId} style={{ display: "none" }}
                         onClick={() => avaliacao(true, item)}
                     >
                         <StarBorderIcon />
@@ -375,24 +423,71 @@ export default function Technical() {
     const [data, setData] = React.useState([]);
     const [dataTec, setDataTec] = React.useState([]);
     const [value, setValue] = React.useState(0);
-   // const [location, setLocation] = React.useState([]);
+    const [page, setPage] = React.useState(1);
+    const [tam, setTam] = React.useState(0);
+    const [filterType, setFilterType] = React.useState(0);
+    const [filterStatus, setFilterStatus] = React.useState(0);
+
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
 
+    const nextPage = () => {
+        setPage(page + 1);
+        setData([]);
+        if (page == 2) {
+            document.getElementById('btnPreviousPage').removeAttribute('style', 'readOnly');
+            document.getElementById('btnPreviousPage').removeAttribute('style', 'borderColor: gray');
+        }
+    };
+
+    const previousPage = () => {
+        if (page > 1) {
+            setPage(page - 1);
+            setData([]);
+        }
+    };
+
+    const goToPage = (value) => {
+        setPage(value);
+        setData([]);
+    };
+
+    const changeFilterType = () => {
+        for (let i = 0; i < document.getElementsByName('filterSchedulingType').length; i++) {
+            if (document.getElementsByName('filterSchedulingType')[i].selected) {
+                setFilterType(document.getElementsByName('filterSchedulingType')[i].value);
+                break
+            }
+        }
+        setData([]);
+    };
+
+    const changeFilterStatus = () => {
+        for (let i = 0; i < document.getElementsByName('filterSchedulingStatus').length; i++) {
+            if (document.getElementsByName('filterSchedulingStatus')[i].selected) {
+                setFilterStatus(document.getElementsByName('filterSchedulingStatus')[i].value);
+                break
+            }
+        }
+        setData([]);
+    };
 
     async function getScheduling() {
         const tec = JSON.parse(localStorage.getItem('userData'))
         const response = await axios.post('http://localhost:8000/logali/app/scheduling/view', {
-            "page": 1,
-            "pageSize": 100,
+            "page": page,
+            "pageSize": 10,
             "idWorker": tec.idUser,
+            "filterType": filterType,
+            "filterStatus": filterStatus,
         })
             .then(function (response) {
                 console.log(response);
                 if (response.data && response.data.data && response.data.data.length > 0) {
                     setData(response.data.data)
                 }
+                setTam(response.data.data.length > 0);
             })
             .catch(function (error) {
                 console.log(error.response);
@@ -456,7 +551,12 @@ export default function Technical() {
             setWeek(getWeekDays());
 
         if (data == null || data.length == 0)
-            getScheduling()
+            getScheduling();
+
+        if (tam == 0 && page !== 1) {
+            setPage(1);
+            setData([])
+        }
 
         if (dataTec == null || dataTec.length == 0)
             getGeoLocXY()
@@ -499,70 +599,108 @@ export default function Technical() {
 
     return (
         <div className={classes.root}>
-            <AppBar position="static" className={classes.tabTitle}>
-                <Toolbar variant="dense">
-                    <Typography variant="h6" >
-                        Agenda
+            <MainLayout>
+                {/* <AppBar position="static" className={classes.tabTitle}>
+                    <Toolbar variant="dense">
+                        <Typography variant="h6" >
+                            Agenda
                     </Typography>
-                </Toolbar>
-            </AppBar>
-            <AppBar position="static" className={classes.tabs}>
-                <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
-                    <Tab label="Tudo" {...a11yProps(0)} />
-                    <Tab label="Hoje" {...a11yProps(1)} />
-                    <Tab label="Semana" {...a11yProps(2)} />
-                </Tabs>
-            </AppBar>
-            <TabPanel value={value} index={0}>
-                <Container>
-                    <Row xs={1} sm={2} md={3} lg={3}>
-                        {data.map((item) => (
-                            <Col>
-                                <ListTable item={item} week={week} />
-                            </Col>
-                        ))}
-                    </Row>
-                </Container>
-            </TabPanel>
-            <TabPanel value={value} index={1}>
-                <Container>
-                    <Row xs={1} sm={2} md={3} lg={3}>
-                        {data.map((item) => (
-                            dateSplit(item) == (week[0].getDate() + '/0' + (week[0].getMonth() + 1) + '/' + week[0].getFullYear()) ?
-                                <Col>
-                                    <ListTable item={item} week={week} />
-                                </Col> : ''
-                        ))}
-                    </Row>
-                </Container>
-            </TabPanel>
-            <TabPanel value={value} index={2}>
-                <Slider {...settings} >
-                    {week.map((date) => (
+                    </Toolbar>
+                </AppBar> */}
+                <Card className={classes.root}>
+                    <AppBar position="static" className={classes.tabs}>
+                        <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
+                            <Tab label="Tudo" {...a11yProps(0)} />
+                            <Tab label="Hoje" {...a11yProps(1)} />
+                            <Tab label="Semana" {...a11yProps(2)} />
+                        </Tabs>
+                    </AppBar>
+                    <Grid container
+                        spacing={0.5}
+                        justify="left"
+                        alignItems="left">
+                        <Form.Group as={Col} md={4} name="typeScheduling">
+                            <Form.Label>Tipo de agendamento</Form.Label>
+                            <Form.Control as="select" custom onChange={() => changeFilterType()}>
+                                <option name="filterSchedulingType" value="0">Todos</option>
+                                <option name="filterSchedulingType" value="3" >Bug</option>
+                                <option name="filterSchedulingType" value="2">Instalação</option>
+                                <option name="filterSchedulingType" value="1">Manutenção</option>
+                            </Form.Control>
+                        </Form.Group>
+                        <Form.Group as={Col} md={4} name="statusScheduling">
+                            <Form.Label>Status do agendamento</Form.Label>
+                            <Form.Control as="select" custom onChange={() => changeFilterStatus()}>
+                                <option name="filterSchedulingStatus" value="0">Todos</option>
+                                <option name="filterSchedulingStatus" value="1">Aguardando Aceite</option>
+                                <option name="filterSchedulingStatus" value="2">Aceitado</option>
+                                <option name="filterSchedulingStatus" value="3">À Caminho</option>
+                                <option name="filterSchedulingStatus" value="4">Cancelado</option>
+                                <option name="filterSchedulingStatus" value="5">Finalizado</option>
+                            </Form.Control>
+                        </Form.Group>
+                    </Grid>
+                    <TabPanel value={value} index={0}>
                         <Container>
-                            <Row xs={12} lg={12}>
-                                <Col>
-                                    <Card className={classes.rootCard}>
-                                        <CardActionArea>
-                                            <CardContent>
-                                                <Typography gutterBottom variant="h5" component="h2">
-                                                    {date.getDate()} / 0{date.getMonth() + 1}
-                                                </Typography>
-                                                {data.map((item) => (
-                                                    dateSplit(item) == (date.getDate() + '/0' + (date.getMonth() + 1) + '/' + date.getFullYear()) ?
-                                                        <Col>
-                                                            <ListTable item={item} week={week} />
-                                                        </Col> : ''
-                                                ))}
-                                            </CardContent>
-                                        </CardActionArea>
-                                    </Card>
-                                </Col>
+                            <Row xs={1} sm={2} md={3} lg={3}>
+                                {data.map((item) => (
+                                    <Col>
+                                        <ListTable item={item} week={week} />
+                                    </Col>
+                                ))}
                             </Row>
                         </Container>
-                    ))}
-                </Slider>
-            </TabPanel>
+                    </TabPanel>
+                    <TabPanel value={value} index={1}>
+                        <Container>
+                            <Row xs={1} sm={2} md={3} lg={3}>
+                                {data.map((item) => (
+                                    dateSplit(item) == (week[0].getDate() + '/0' + (week[0].getMonth() + 1) + '/' + week[0].getFullYear()) ?
+                                        <Col>
+                                            <ListTable item={item} week={week} />
+                                        </Col> : ''
+                                ))}
+                            </Row>
+                        </Container>
+                    </TabPanel>
+                    <TabPanel value={value} index={2}>
+                        <Slider {...settings} >
+                            {week.map((date) => (
+                                <Container>
+                                    <Row xs={12} lg={12}>
+                                        <Col>
+                                            <Card className={classes.rootCard}>
+                                                <CardActionArea>
+                                                    <CardContent>
+                                                        <Typography gutterBottom variant="h5" component="h2">
+                                                            {date.getDate()} / 0{date.getMonth() + 1}
+                                                        </Typography>
+                                                        {data.map((item) => (
+                                                            dateSplit(item) == (date.getDate() + '/0' + (date.getMonth() + 1) + '/' + date.getFullYear()) ?
+                                                                <Col>
+                                                                    <ListTable item={item} week={week} />
+                                                                </Col> : ''
+                                                        ))}
+                                                    </CardContent>
+                                                </CardActionArea>
+                                            </Card>
+                                        </Col>
+                                    </Row>
+                                </Container>
+                            ))}
+                        </Slider>
+                    </TabPanel>
+                    <div className={classes.divPage}>
+                        <Button onClick={previousPage} className={classes.navButton} id='btnPreviousPage' title="Voltar">
+                            <FcPrevious />
+                        </Button>
+                        <input type='number' value={page} onExit={() => goToPage(value)} className={classes.inputPage} style={{ readOnly: false }} />
+                        <Button onClick={nextPage} id='btnNextPage' className={classes.navButton} title="Avançar">
+                            <FcNext />
+                        </Button>
+                    </div>
+                </Card>
+            </MainLayout>
         </div>
     );
 }

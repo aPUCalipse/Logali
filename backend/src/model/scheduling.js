@@ -307,6 +307,44 @@ class Scheduling {
     }
   }
 
+  async getMaxPages(pageSize, idTypeScheduling, idStatusScheduling, idUser) {
+    try {
+      let query =
+        `` +
+        `SELECT ` +
+        `count(*) as 'totalLines' ` +
+        `FROM logali.scheduling s ` +
+        `join logali.user uc ` +
+        `on uc.id = s.userId ` +
+        `left join logali.user uw ` +
+        `on uw.id = s.workerId ` +
+        `join logali.statusscheduling ss ` +
+        `on ss.id = s.statusSchedulingId ` +
+        `join logali.typescheduling ts ` +
+        `on ts.id = s.typeSchedulingId ` +
+        `join logali.address ad ` +
+        `on ad.id = uc.addressId ` +
+        `where 1=1 ` +
+        `and uc.id = ${idUser} ` +
+        `AND deletedAt is null `;
+
+      if (idTypeScheduling) {
+        query += `and s.typeSchedulingId = ${idTypeScheduling} `;
+      }
+
+      if (idStatusScheduling) {
+        query += `and s.statusSchedulingId = ${idStatusScheduling} `;
+      }
+
+      const resp = await this.dbPool.query(query);
+
+      return Math.ceil(resp.pop().totalLines / pageSize);
+    } catch (err) {
+      console.log(err);
+      throw new Error(`Erro ao pesquisar Técnico -> ${err}`);
+    }
+  }
+
   getPageByPaginatio(page, pageSize) {
     const init = page * pageSize - pageSize;
     const end = pageSize;
@@ -314,7 +352,7 @@ class Scheduling {
     return `${init},${end}`;
   }
 
-  async viewScheduling(page, pageSize, idWorker) {
+  async viewScheduling(page, pageSize, idWorker, filterType, filterStatus) {
     try {
       var query =
         `` +
@@ -348,13 +386,20 @@ class Scheduling {
         `join logali.address ad ` +
         `on ad.id = uc.addressId ` +
         `WHERE 1=1 ` +
-        `AND s.workerId is null ` +
+        `AND (s.workerId is null ` +
         `AND deletedAt is null ` +
-        `OR s.workerId = ${idWorker} ` +
-        `ORDER BY s.workerId DESC ` +
-        `LIMIT ${this.getPageByPaginatio(page, pageSize)} `;
+        `OR s.workerId = ${idWorker}) `
 
-      console.log(query);
+      if (filterType) {
+        query += `and s.typeSchedulingId = ${filterType} `;
+      }
+
+      if (filterStatus) {
+        query += `and s.statusSchedulingId = ${filterStatus} `;
+      }
+
+      // `AND (${filterType} = 0 OR s.typeSchedulingId = ${filterType}) ` +
+      // `AND (${filterStatus} = 0 OR s.statusSchedulingId = ${filterStatus}) `s
 
       const resp = await this.dbPool.query(query);
 
