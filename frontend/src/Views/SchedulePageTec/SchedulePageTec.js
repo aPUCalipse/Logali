@@ -6,7 +6,7 @@ import CardHeader from '@material-ui/core/CardHeader';
 import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
-// import Form from 'react-bootstrap/Form'
+import TextField from '@material-ui/core/TextField';
 import map from '../../Images/maps.jpg';
 import Toolbar from '@material-ui/core/Toolbar';
 import AppBar from '@material-ui/core/AppBar';
@@ -416,6 +416,8 @@ export default function Technical() {
 
     let [page, setPage] = React.useState(1);
     let [idTypeScheduling, setTypeScheduling] = React.useState(0);
+    let [initDistance, setInitDistance] = React.useState('');
+    let [endDistance, setEndDistance] = React.useState('');
     let [idStatusScheduling, setStatusScheduling] = React.useState(1);
     let [maxPages, setMaxPages] = React.useState(null);
 
@@ -449,12 +451,22 @@ export default function Technical() {
         const tec = JSON.parse(localStorage.getItem('userData'))
         page = (eventPage) ? eventPage : 1
 
+        if (initDistance === '') {
+            initDistance = -1
+        }
+
+        if (endDistance === '') {
+            endDistance = -1
+        }
+
         const response = await axios.post('http://localhost:8000/logali/app/scheduling/view', {
             "page": page,
-            "pageSize": 3,
+            "pageSize": 10,
             "idWorker": tec.idUser,
             "filterType": idTypeScheduling,
             "filterStatus": idStatusScheduling,
+            "initDistance": initDistance,
+            "endDistance": endDistance,
         })
             .then(function (response) {
                 console.log(response);
@@ -584,7 +596,7 @@ export default function Technical() {
                                     spacing={0.5}
                                     justify="left"
                                     alignItems="left">
-                                    <Grid item xs={5} >
+                                    <Grid item xs={3} >
                                         <FormControl className={style.input}>
                                             <InputLabel className={style.labell} id="demo-simple-select-label">Serviço</InputLabel>
                                             <Select
@@ -601,7 +613,7 @@ export default function Technical() {
                                             </Select>
                                         </FormControl>
                                     </Grid>
-                                    <Grid item xs={5} >
+                                    <Grid item xs={3} >
                                         <FormControl className={style.input}>
                                             <InputLabel className={style.labell} id="statusAgendamento">Status do Agendamento</InputLabel>
                                             <Select
@@ -617,6 +629,33 @@ export default function Technical() {
                                                 <MenuItem value={4}>Cancelado</MenuItem>
                                                 <MenuItem value={5}>Terminado</MenuItem>
                                             </Select>
+                                        </FormControl>
+                                    </Grid>
+                                    <Grid item xs={2} >
+                                        <FormControl>
+                                            <InputLabel className={style.labellInput} id="statusAgendamento">Distancia inicial</InputLabel>
+                                            <TextField
+                                                id="initDistance"
+                                                name="initDistance"
+                                                type="number"
+                                                onChange={e => setInitDistance(e.target.value)}
+                                                className={style.inputText}
+                                                value={initDistance}
+                                            />
+                                        </FormControl>
+                                    </Grid>
+
+                                    <Grid item xs={2} >
+                                        <FormControl>
+                                            <InputLabel className={style.labellInput} id="statusAgendamento">Distancia Final</InputLabel>
+                                            <TextField
+                                                id="endDIstance"
+                                                name="endDIstance"
+                                                type="number"
+                                                onChange={e => setEndDistance(e.target.value)}
+                                                className={style.inputText}
+                                                value={endDistance}
+                                            />
                                         </FormControl>
                                     </Grid>
                                     <Grid item xs={1} className={style.but}>

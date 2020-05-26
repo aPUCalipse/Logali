@@ -93,3 +93,11 @@
 .labell{
     margin-top: 1%;
 }
+
+.labellInput{
+    margin-top: -10% !important;
+}
+
+.inputText{
+    margin-top: 10% !important;
+}

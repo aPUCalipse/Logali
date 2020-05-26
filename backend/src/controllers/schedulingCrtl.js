@@ -350,7 +350,37 @@ class SchedulingCtrl {
     }
   }
 
-  async orderByDistance(selectedSchedules, workerGeoLocalization, page, pageSize) {
+  getIsInRangeDistance(initDistance, endDistance, distance) {
+    let isInRangeDistance = null
+    if (initDistance !== -1 || endDistance !== -1) {
+      if (initDistance === -1) {
+        if (distance >= initDistance) {
+          isInRangeDistance = true
+        } else {
+          isInRangeDistance = false
+        }
+      } else if (endDistance === -1) {
+        if (distance <= endDistance) {
+          isInRangeDistance = true
+        } else {
+          isInRangeDistance = false
+        }
+      } else if (distance >= initDistance && distance <= endDistance) {
+        isInRangeDistance = true
+      } else {
+        isInRangeDistance = false
+      }
+    } else {
+      isInRangeDistance = true
+    }
+
+    console.log(isInRangeDistance)
+    console.log("\n\n")
+
+    return isInRangeDistance;
+  }
+
+  async orderByDistance(selectedSchedules, workerGeoLocalization, page, pageSize, initDistance, endDistance) {
     for (let i = 0; i < selectedSchedules.length; i++) {
       const url = `https://maps.googleapis.com/maps/api/distancematrix/json?` +
         `origins=${workerGeoLocalization.geoLocX},${workerGeoLocalization.geoLocY}&` +
@@ -359,9 +389,11 @@ class SchedulingCtrl {
       const response = await axios.get(url)
 
       selectedSchedules[i].distance = response.data.rows.pop().elements.pop().distance.value
+      selectedSchedules[i].isInRangeDistance = this.getIsInRangeDistance(initDistance, endDistance, selectedSchedules[i].distance)
     }
 
-    const sortedSchedules = _.sortBy(selectedSchedules, 'distance')
+    const filteresSchedules = _.filter(selectedSchedules, 'isInRangeDistance')
+    const sortedSchedules = _.sortBy(filteresSchedules, 'distance')
 
     const init = page * pageSize - pageSize;
     const end = page * pageSize;
@@ -398,7 +430,7 @@ class SchedulingCtrl {
           params.idWorker
         )
 
-        response.data = await this.orderByDistance(selectedSchedules, getAddresOfWorker.data, params.page, params.pageSize)
+        response.data = await this.orderByDistance(selectedSchedules, getAddresOfWorker.data, params.page, params.pageSize, params.initDistance, params.endDistance)
 
         response.statusCode = 200;
       } else {
@@ -406,6 +438,7 @@ class SchedulingCtrl {
         response.statusCode = getAddresOfWorker.statusCode
       }
     } catch (err) {
+      console.log(err)
       response.message = `Erro desconhecido ao selecionar agendamentos  -> ${err.toString()}`;
     } finally {
       return response;
@@ -492,7 +525,7 @@ class SchedulingCtrl {
     return validatedParams;
   }
 
-  getPageParams(page, pageSize, idWorker, filterType, filterStatus) {
+  getPageParams(page, pageSize, idWorker, filterType, filterStatus, initDistance, endDistance) {
     const validatedParams = {
       isValid: true,
       message: null,
@@ -503,6 +536,8 @@ class SchedulingCtrl {
         idWorker: null,
         filterType: null,
         filterStatus: null,
+        initDistance: null,
+        endDistance: null,
       },
     };
 
@@ -558,6 +593,27 @@ class SchedulingCtrl {
         validatedParams.data.filterStatus = schedulingFilterStatus;
       } else {
         validatedParams.data.filterStatus = 0;
+      }
+    }
+
+    if (!initDistance && initDistance < 0) {
+      validatedParams.data.initDistance = -1;
+    } else {
+      validatedParams.data.initDistance = initDistance;
+    }
+
+    if (!endDistance && endDistance < 0) {
+      validatedParams.data.endDistance = -1;
+    } else {
+      validatedParams.data.endDistance = endDistance;
+    }
+
+    if (validatedParams.data.initDistance !== -1 && validatedParams.data.endDistance !== -1) {
+      if (validatedParams.data.initDistance > validatedParams.data.endDistance) {
+        validatedParams.isValid = false;
+        validatedParams.message =
+          "O inicio da distancia não pode ser maior que o fim da distancia e vice-versa ;)";
+        validatedParams.statusCode = 400;
       }
     }
 

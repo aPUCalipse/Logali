@@ -340,6 +340,8 @@ class SchedulingRouter {
           req.body.idWorker,
           req.body.filterType,
           req.body.filterStatus,
+          req.body.initDistance,
+          req.body.endDistance,
         );
 
         if (params.isValid) {
