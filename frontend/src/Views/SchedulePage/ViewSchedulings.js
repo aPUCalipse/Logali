@@ -26,7 +26,7 @@ import Typography from '@material-ui/core/Typography';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import listEmpty from '../../Images/listEmpty.svg';
 import MyVerticallyCenteredModal from '../SchedulePage/ModalRating';
-import {getLocation} from "../../Functions/geolocation"
+import { getLocation } from "../../Functions/geolocation"
 import Pagination from '@material-ui/lab/Pagination';
 import style from './SchedulePage.module.css';
 import Fab from '@material-ui/core/Fab';
@@ -127,14 +127,14 @@ export default function RecipeReviewCard() {
         setExpanded(!expanded);
     };
 
-  function avaliacao(show, item){
-    setSelected(item);
-    setModalShow(true)
-  
-  };
- 
-  function splitDateTime(item){
-  
+    function avaliacao(show, item) {
+        setSelected(item);
+        setModalShow(true)
+
+    };
+
+    function splitDateTime(item) {
+
         let arrayData = item.dateTime.split(' ')
         let dateSplit = arrayData[0].split('-')
         let dataCopy = dateSplit[2] + '/' + dateSplit[1] + '/' + dateSplit[0];

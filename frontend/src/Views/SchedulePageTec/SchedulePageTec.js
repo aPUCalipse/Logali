@@ -6,7 +6,7 @@ import CardHeader from '@material-ui/core/CardHeader';
 import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
-import Form from 'react-bootstrap/Form'
+// import Form from 'react-bootstrap/Form'
 import map from '../../Images/maps.jpg';
 import Toolbar from '@material-ui/core/Toolbar';
 import AppBar from '@material-ui/core/AppBar';
@@ -35,11 +35,18 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import MyVerticallyCenteredModal from '../SchedulePage/ModalRating';
-import {getLocation} from "../../Functions/geolocation"
+import { getLocation } from "../../Functions/geolocation"
 import Tooltip from '@material-ui/core/Tooltip';
 import style from './SchedulePageTec.module.css'
 import GoogleMapReact from 'google-map-react';
-import MainLayout from '../MainLayout/MainLayout'
+import MainLayout from '../MainLayout/MainLayout';
+import { Formik, Form } from "formik";
+import Pagination from '@material-ui/lab/Pagination';
+import Fab from '@material-ui/core/Fab';
+import SearchIcon from '@material-ui/icons/Search';
+import FormControl from '@material-ui/core/FormControl';
+import { InputLabel, MenuItem } from '@material-ui/core';
+import Select from '@material-ui/core/Select';
 
 
 function TabPanel(props) {
@@ -185,21 +192,6 @@ function ListTable(props) {
     const handleCloseAcceptN = () => {
         setDlgOpen(false)
     }
-
-    // async function handleEndScheduling() {
-    //     console.log("BATATA", userId)
-    //     const response = await axios.post('http://localhost:8000/logali/app/scheduling/searchEnd', objectData)
-    //         .then(function (response) {
-    //             setEnd(response.data.data)
-    //             console.log(response.data);
-    //         })
-    //         .catch(function (error) {
-    //             console.log(error.response);
-    //         });
-
-    //     console.log(response);
-    //     return response
-    // };
 
     const handleExpandClick = () => {
         setExpanded(!expanded);
@@ -359,9 +351,6 @@ function ListTable(props) {
                     >
                         <ExpandMoreIcon />
                     </IconButton>
-                    {/* <Button variant="contained" size="small" id={"btnRecuse" + item.schedulingId} className={classes.recuse} onClick={handleCloseAcceptN}>
-                Recusar
-                </Button> */}
                     <Button title='Aceitar' variant="contained" size="lg" id={"btnAccept" + item.schedulingId} className={classes.accept} onClick={handleOpenAcceptS}>
                         <FcOk />
                     </Button>
@@ -424,10 +413,12 @@ export default function Technical() {
     const [data, setData] = React.useState([]);
     const [dataTec, setDataTec] = React.useState([]);
     const [value, setValue] = React.useState(0);
-    const [page, setPage] = React.useState(1);
-    const [tam, setTam] = React.useState(0);
-    const [filterType, setFilterType] = React.useState(0);
-    const [filterStatus, setFilterStatus] = React.useState(0);
+
+    let [page, setPage] = React.useState(1);
+    let [idTypeScheduling, setTypeScheduling] = React.useState(0);
+    let [idStatusScheduling, setStatusScheduling] = React.useState(1);
+    let [maxPages, setMaxPages] = React.useState(null);
+
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
@@ -454,41 +445,23 @@ export default function Technical() {
         setData([]);
     };
 
-    const changeFilterType = () => {
-        for (let i = 0; i < document.getElementsByName('filterSchedulingType').length; i++) {
-            if (document.getElementsByName('filterSchedulingType')[i].selected) {
-                setFilterType(document.getElementsByName('filterSchedulingType')[i].value);
-                break
-            }
-        }
-        setData([]);
-    };
-
-    const changeFilterStatus = () => {
-        for (let i = 0; i < document.getElementsByName('filterSchedulingStatus').length; i++) {
-            if (document.getElementsByName('filterSchedulingStatus')[i].selected) {
-                setFilterStatus(document.getElementsByName('filterSchedulingStatus')[i].value);
-                break
-            }
-        }
-        setData([]);
-    };
-
-    async function getScheduling() {
+    async function getScheduling(event, eventPage) {
         const tec = JSON.parse(localStorage.getItem('userData'))
+        page = (eventPage) ? eventPage : 1
+
         const response = await axios.post('http://localhost:8000/logali/app/scheduling/view', {
             "page": page,
-            "pageSize": 10,
+            "pageSize": 3,
             "idWorker": tec.idUser,
-            "filterType": filterType,
-            "filterStatus": filterStatus,
+            "filterType": idTypeScheduling,
+            "filterStatus": idStatusScheduling,
         })
             .then(function (response) {
                 console.log(response);
                 if (response.data && response.data.data && response.data.data.length > 0) {
                     setData(response.data.data)
+                    setMaxPages(response.data.pagination.maxPages)
                 }
-                setTam(response.data.data.length > 0);
             })
             .catch(function (error) {
                 console.log(error.response);
@@ -554,11 +527,6 @@ export default function Technical() {
         if (data == null || data.length == 0)
             getScheduling();
 
-        if (tam == 0 && page !== 1) {
-            setPage(1);
-            setData([])
-        }
-
         if (dataTec == null || dataTec.length == 0)
             getGeoLocXY()
     })
@@ -601,13 +569,6 @@ export default function Technical() {
     return (
         <div className={classes.root}>
             <MainLayout>
-                {/* <AppBar position="static" className={classes.tabTitle}>
-                    <Toolbar variant="dense">
-                        <Typography variant="h6" >
-                            Agenda
-                    </Typography>
-                    </Toolbar>
-                </AppBar> */}
                 <Card className={classes.root}>
                     <AppBar position="static" className={classes.tabs}>
                         <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
@@ -616,31 +577,57 @@ export default function Technical() {
                             <Tab label="Semana" {...a11yProps(2)} />
                         </Tabs>
                     </AppBar>
-                    <Grid container
-                        spacing={0.5}
-                        justify="left"
-                        alignItems="left">
-                        <Form.Group as={Col} md={4} name="typeScheduling">
-                            <Form.Label>Tipo de agendamento</Form.Label>
-                            <Form.Control as="select" custom onChange={() => changeFilterType()}>
-                                <option name="filterSchedulingType" value="0">Todos</option>
-                                <option name="filterSchedulingType" value="3" >Bug</option>
-                                <option name="filterSchedulingType" value="2">Instalação</option>
-                                <option name="filterSchedulingType" value="1">Manutenção</option>
-                            </Form.Control>
-                        </Form.Group>
-                        <Form.Group as={Col} md={4} name="statusScheduling">
-                            <Form.Label>Status do agendamento</Form.Label>
-                            <Form.Control as="select" custom onChange={() => changeFilterStatus()}>
-                                <option name="filterSchedulingStatus" value="0">Todos</option>
-                                <option name="filterSchedulingStatus" value="1">Aguardando Aceite</option>
-                                <option name="filterSchedulingStatus" value="2">Aceitado</option>
-                                <option name="filterSchedulingStatus" value="3">À Caminho</option>
-                                <option name="filterSchedulingStatus" value="4">Cancelado</option>
-                                <option name="filterSchedulingStatus" value="5">Finalizado</option>
-                            </Form.Control>
-                        </Form.Group>
-                    </Grid>
+                    <Container>
+                        <Formik>
+                            <Form>
+                                <Grid container
+                                    spacing={0.5}
+                                    justify="left"
+                                    alignItems="left">
+                                    <Grid item xs={5} >
+                                        <FormControl className={style.input}>
+                                            <InputLabel className={style.labell} id="demo-simple-select-label">Serviço</InputLabel>
+                                            <Select
+                                                labelId="demo-simple-select-label"
+                                                id="demo-simple-select"
+                                                className={classes.body}
+                                                onChange={e => setTypeScheduling(e.target.value)}
+                                                value={idTypeScheduling}
+                                            >
+                                                <MenuItem value={0}>Todos os serviços</MenuItem>
+                                                <MenuItem value={2}>Instalação</MenuItem>
+                                                <MenuItem value={1}>Manutenção em rede</MenuItem>
+                                                <MenuItem value={3}>BUG</MenuItem>
+                                            </Select>
+                                        </FormControl>
+                                    </Grid>
+                                    <Grid item xs={5} >
+                                        <FormControl className={style.input}>
+                                            <InputLabel className={style.labell} id="statusAgendamento">Status do Agendamento</InputLabel>
+                                            <Select
+                                                labelId="statusAgendamento"
+                                                id="statusScheduling"
+                                                className={classes.body}
+                                                onChange={e => setStatusScheduling(e.target.value)}
+                                                value={idStatusScheduling}
+                                            >
+                                                <MenuItem value={1}>Aguardando Aceite</MenuItem>
+                                                <MenuItem value={2}>Aceitado</MenuItem>
+                                                <MenuItem value={3}>À Caminho</MenuItem>
+                                                <MenuItem value={4}>Cancelado</MenuItem>
+                                                <MenuItem value={5}>Terminado</MenuItem>
+                                            </Select>
+                                        </FormControl>
+                                    </Grid>
+                                    <Grid item xs={1} className={style.but}>
+                                        <Fab variant="round" className={style.searchButton} size="small" onClick={getScheduling}>
+                                            <SearchIcon className={classes.icon} />
+                                        </Fab>
+                                    </Grid>
+                                </Grid>
+                            </Form>
+                        </Formik>
+                    </Container>
                     <TabPanel value={value} index={0}>
                         <Container>
                             <Row xs={1} sm={2} md={3} lg={3}>
@@ -691,15 +678,13 @@ export default function Technical() {
                             ))}
                         </Slider>
                     </TabPanel>
-                    <div className={classes.divPage}>
-                        <Button onClick={previousPage} className={classes.navButton} id='btnPreviousPage' title="Voltar">
-                            <FcPrevious />
-                        </Button>
-                        <input type='number' value={page} onExit={() => goToPage(value)} className={classes.inputPage} style={{ readOnly: false }} />
-                        <Button onClick={nextPage} id='btnNextPage' className={classes.navButton} title="Avançar">
-                            <FcNext />
-                        </Button>
-                    </div>
+                    <Container>
+                        <Row>
+                            <div className={classes.root, style.paginatioin}>
+                                <Pagination count={maxPages} page={page} onChange={getScheduling} />
+                            </div>
+                        </Row>
+                    </Container>
                 </Card>
             </MainLayout>
         </div>

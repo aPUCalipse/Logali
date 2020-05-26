@@ -351,18 +351,7 @@ class SchedulingCtrl {
   }
 
   async orderByDistance(selectedSchedules, workerGeoLocalization, page, pageSize) {
-    console.log("Worker geocode")
-    console.log(workerGeoLocalization.geoLocX)
-    console.log(workerGeoLocalization.geoLocY)
-    console.log()
-
-
     for (let i = 0; i < selectedSchedules.length; i++) {
-      console.log(`User name: ${selectedSchedules[i].clientName} GeoCode`)
-      console.log(selectedSchedules[i].geoLocX)
-      console.log(selectedSchedules[i].geoLocY)
-      console.log()
-      console.log()
       const url = `https://maps.googleapis.com/maps/api/distancematrix/json?` +
         `origins=${workerGeoLocalization.geoLocX},${workerGeoLocalization.geoLocY}&` +
         `destinations=${selectedSchedules[i].geoLocX},${selectedSchedules[i].geoLocY}&` +
@@ -373,10 +362,9 @@ class SchedulingCtrl {
     }
 
     const sortedSchedules = _.sortBy(selectedSchedules, 'distance')
-    const result = []
 
     const init = page * pageSize - pageSize;
-    const end = pageSize;
+    const end = page * pageSize;
 
     return _.slice(sortedSchedules, init, end)
   }
@@ -384,6 +372,11 @@ class SchedulingCtrl {
   async viewScheduling(params) {
     const response = {
       data: {},
+      pagination: {
+        page: params.page,
+        pageSize: params.pageSize,
+        maxPages: null
+      },
       message: null,
       statusCode: 500,
     };
@@ -393,12 +386,17 @@ class SchedulingCtrl {
 
       if (getAddresOfWorker.statusCode === 200) {
         const selectedSchedules = await this.scheduling.viewScheduling(
-          params.page,
-          params.pageSize,
           params.idWorker,
           params.filterType,
           params.filterStatus
         );
+
+        response.pagination.maxPages = await this.scheduling.getMaxPageOfView(
+          params.pageSize,
+          params.filterType,
+          params.filterStatus,
+          params.idWorker
+        )
 
         response.data = await this.orderByDistance(selectedSchedules, getAddresOfWorker.data, params.page, params.pageSize)
 
@@ -431,68 +429,68 @@ class SchedulingCtrl {
     }
   }
 
-    async insertLoc(params) {
-        const response = {
-            data: {},
-            message: null,
-            statusCode: 500,
-        };
-        try {
+  async insertLoc(params) {
+    const response = {
+      data: {},
+      message: null,
+      statusCode: 500,
+    };
+    try {
 
-            const getAddressIdByUserID = await this.scheduling.getAddressIdByUserId(params.data.workerId);
-            
+      const getAddressIdByUserID = await this.scheduling.getAddressIdByUserId(params.data.workerId);
 
-            if (getAddressIdByUserID.length >= 1 && getAddressIdByUserID[0].addressId != null) {
-                const updateRealGeoLoc = await this.scheduling.updateGeoLoc(getAddressIdByUserID[0].addressId, params.data.geoLocX, params.data.geoLocY);
-                const updateRealLoc = await this.scheduling.insertUpdating(getAddressIdByUserID[0].addressId, params.data.workerId);
-                response.data = updateRealGeoLoc;
-                response.message = "Localização inserida com sucesso";
-                response.statusCode = 200;
-            } else {
-                const insertLocation = await this.scheduling.insertGeoLoc(params.data.geoLocX, params.data.geoLocY);
-                const updateRealLoc = await this.scheduling.insertUpdating(getAddressIdByUserID[0].addressId, params.data.workerId);
-                response.data = insertLocation;
-                response.message = "Localização inserida com sucesso";
-                response.statusCode = 200;
-            }
-        } catch (err) {
-            response.message = `Erro desconhecido ao Selecionar Usuário -> ${err.toString()}`;
-        }finally {
-            return response;
-        }
+
+      if (getAddressIdByUserID.length >= 1 && getAddressIdByUserID[0].addressId != null) {
+        const updateRealGeoLoc = await this.scheduling.updateGeoLoc(getAddressIdByUserID[0].addressId, params.data.geoLocX, params.data.geoLocY);
+        const updateRealLoc = await this.scheduling.insertUpdating(getAddressIdByUserID[0].addressId, params.data.workerId);
+        response.data = updateRealGeoLoc;
+        response.message = "Localização inserida com sucesso";
+        response.statusCode = 200;
+      } else {
+        const insertLocation = await this.scheduling.insertGeoLoc(params.data.geoLocX, params.data.geoLocY);
+        const updateRealLoc = await this.scheduling.insertUpdating(getAddressIdByUserID[0].addressId, params.data.workerId);
+        response.data = insertLocation;
+        response.message = "Localização inserida com sucesso";
+        response.statusCode = 200;
+      }
+    } catch (err) {
+      response.message = `Erro desconhecido ao Selecionar Usuário -> ${err.toString()}`;
+    } finally {
+      return response;
     }
+  }
 
-    validatedParamsInsert(workerId, geoLocX, geoLocY) {
+  validatedParamsInsert(workerId, geoLocX, geoLocY) {
 
-        const validatedParams = {
-            isValid: null,
-            message: null,
-            statusCode: null,
-            data: {
-                workerId: workerId,
-                geoLocX: geoLocX,
-                geoLocY: geoLocY
-            },
-        };
+    const validatedParams = {
+      isValid: null,
+      message: null,
+      statusCode: null,
+      data: {
+        workerId: workerId,
+        geoLocX: geoLocX,
+        geoLocY: geoLocY
+      },
+    };
 
-        if (!workerId) {
-            validatedParams.isValid = false;
-            validatedParams.message = "O parametro usuario está incorreto";
-            validatedParams.statusCode = 400;
-        } else if (!geoLocX) {
-            validatedParams.isValid = false;
-            validatedParams.message = "O parametro localização ponto X está incorreto";
-            validatedParams.statusCode = 400;
-        } else if (!geoLocY) {
-            validatedParams.isValid = false;
-            validatedParams.message = "O parametro localização ponto Y está incorreto";
-            validatedParams.statusCode = 400;
-        } else {
-            validatedParams.isValid = true;
-            validatedParams.statusCode = 200;
-        }
-        return validatedParams;
+    if (!workerId) {
+      validatedParams.isValid = false;
+      validatedParams.message = "O parametro usuario está incorreto";
+      validatedParams.statusCode = 400;
+    } else if (!geoLocX) {
+      validatedParams.isValid = false;
+      validatedParams.message = "O parametro localização ponto X está incorreto";
+      validatedParams.statusCode = 400;
+    } else if (!geoLocY) {
+      validatedParams.isValid = false;
+      validatedParams.message = "O parametro localização ponto Y está incorreto";
+      validatedParams.statusCode = 400;
+    } else {
+      validatedParams.isValid = true;
+      validatedParams.statusCode = 200;
     }
+    return validatedParams;
+  }
 
   getPageParams(page, pageSize, idWorker, filterType, filterStatus) {
     const validatedParams = {

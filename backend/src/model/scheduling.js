@@ -352,7 +352,7 @@ class Scheduling {
     return `${init},${end}`;
   }
 
-  async viewScheduling(page, pageSize, idWorker, filterType, filterStatus) {
+  async viewScheduling(idWorker, filterType, filterStatus) {
     try {
       var query =
         `` +
@@ -398,12 +398,46 @@ class Scheduling {
         query += `and s.statusSchedulingId = ${filterStatus} `;
       }
 
-      // `AND (${filterType} = 0 OR s.typeSchedulingId = ${filterType}) ` +
-      // `AND (${filterStatus} = 0 OR s.statusSchedulingId = ${filterStatus}) `s
-
       const resp = await this.dbPool.query(query);
 
       return resp;
+    } catch (err) {
+      console.log(err);
+      throw new Error(`Erro ao pesquisar agendamento -> ${err}`);
+    }
+  }
+
+  async getMaxPageOfView(pageSize, filterType, filterStatus, idWorker) {
+    try {
+      var query =
+        `` +
+        `SELECT ` +
+        `count(*) as 'totalLines' ` +
+        `FROM logali.scheduling s ` +
+        `join logali.user uc ` +
+        `on uc.id = s.userId ` +
+        `join logali.statusscheduling ss ` +
+        `on ss.id = s.statusSchedulingId ` +
+        `join logali.typescheduling ts ` +
+        `on ts.id = s.typeSchedulingId ` +
+        `join logali.address ad ` +
+        `on ad.id = uc.addressId ` +
+        `WHERE 1=1 ` +
+        `AND (s.workerId is null ` +
+        `AND deletedAt is null ` +
+        `OR s.workerId = ${idWorker}) `
+
+      if (filterType) {
+        query += `and s.typeSchedulingId = ${filterType} `;
+      }
+
+      if (filterStatus) {
+        query += `and s.statusSchedulingId = ${filterStatus} `;
+      }
+
+      const resp = await this.dbPool.query(query);
+
+      return Math.ceil(resp.pop().totalLines / pageSize);
     } catch (err) {
       console.log(err);
       throw new Error(`Erro ao pesquisar agendamento -> ${err}`);
@@ -433,92 +467,87 @@ class Scheduling {
   }
 
 
-    async getAddressIdByUserId(workerId) {
-        try {
-            var query =
-                `SELECT ` +
-                `addressId ` +
-                `FROM logali.user ` +
-                `JOIN logali.address on ` +
-                `address.id = user.addressId ` +
-                `WHERE user.id = ${workerId}`;
-                       
-            const resp = await this.dbPool.query(query);
-            return resp;
-        } catch (err) {
-            throw new Error(`Erro ao selecionar endereço -> ${err}`);
-        }
+  async getAddressIdByUserId(workerId) {
+    try {
+      var query =
+        `SELECT ` +
+        `addressId ` +
+        `FROM logali.user ` +
+        `JOIN logali.address on ` +
+        `address.id = user.addressId ` +
+        `WHERE user.id = ${workerId}`;
+
+      const resp = await this.dbPool.query(query);
+      return resp;
+    } catch (err) {
+      throw new Error(`Erro ao selecionar endereço -> ${err}`);
     }
+  }
 
 
 
-    async insertGeoLoc(geoLocX, geoLocY) {
-        try {
-            var query =
-                `INSERT INTO logali.address ` +
-                `(geoLocX, geoLocY, createdAt) VALUES ` +
-                `(
+  async insertGeoLoc(geoLocX, geoLocY) {
+    try {
+      var query =
+        `INSERT INTO logali.address ` +
+        `(geoLocX, geoLocY, createdAt) VALUES ` +
+        `(
                     '${geoLocX}',
                     '${geoLocY}',
                     '${Moment().format("YYYY-MM-DD HH:mm:ss")}'
                 )`;
 
-            const resp = await this.dbPool.query(query);
-            return resp;
-        } catch (err) {
-            throw new Error(`Erro ao inserir Localização -> ${err}`);
-        }
+      const resp = await this.dbPool.query(query);
+      return resp;
+    } catch (err) {
+      throw new Error(`Erro ao inserir Localização -> ${err}`);
     }
+  }
 
-    //async getAddressJustBeInserted() {
-    //    try {
-    //        var query =
-    //            `SELECT ` +
-    //            `MAX(id) ` +
-    //            `FROM logali.address`;
+  //async getAddressJustBeInserted() {
+  //    try {
+  //        var query =
+  //            `SELECT ` +
+  //            `MAX(id) ` +
+  //            `FROM logali.address`;
 
-    //        const resp = await this.dbPool.query(query);
-    //        return resp;
-    //    } catch (err) {
-    //        throw new Error(`Erro ao selecionar endereço -> ${err}`);
-    //    }
-    //}
+  //        const resp = await this.dbPool.query(query);
+  //        return resp;
+  //    } catch (err) {
+  //        throw new Error(`Erro ao selecionar endereço -> ${err}`);
+  //    }
+  //}
 
 
-    async updateGeoLoc(insertedId, geoLocX, geoLocY) {
-        try {
-            var query =
-                `UPDATE logali.address ` +
-                `SET geoLocX = ${geoLocX} ,` +
-                `geoLocY = ${geoLocY} ` +
-                `WHERE address.id = ${insertedId}`;
+  async updateGeoLoc(insertedId, geoLocX, geoLocY) {
+    try {
+      var query =
+        `UPDATE logali.address ` +
+        `SET geoLocX = ${geoLocX} ,` +
+        `geoLocY = ${geoLocY} ` +
+        `WHERE address.id = ${insertedId}`;
 
-            const resp = await this.dbPool.query(query);
-            return resp;
-        } catch(err){
-            throw new Error(`Erro ao atualizar localização do Usuário -> ${err}`);
-        }
+      const resp = await this.dbPool.query(query);
+      return resp;
+    } catch (err) {
+      throw new Error(`Erro ao atualizar localização do Usuário -> ${err}`);
     }
+  }
 
-    async insertUpdating(insertedId, workerId) {
-        try {
-            var query =
-                `UPDATE logali.user ` +
-                `SET addressId = ${insertedId} ` +
-                `WHERE user.id = ${workerId}`;
-                
+  async insertUpdating(insertedId, workerId) {
+    try {
+      var query =
+        `UPDATE logali.user ` +
+        `SET addressId = ${insertedId} ` +
+        `WHERE user.id = ${workerId}`;
 
-            const resp = await this.dbPool.query(query);
-            return resp;
-        } catch(err){
-            throw new Error(`Erro ao atualizar localização do Usuário -> ${err}`);
-        }
+
+      const resp = await this.dbPool.query(query);
+      return resp;
+    } catch (err) {
+      throw new Error(`Erro ao atualizar localização do Usuário -> ${err}`);
     }
-
-
-    
-
-    
+  }
 
 
 
@@ -527,7 +556,12 @@ class Scheduling {
 
 
 
-  
+
+
+
+
+
+
   async updateWorkerId(WorkerId, id) {
     try {
       const now = Moment().format("YYYY-MM-DD HH:mm:ss")
