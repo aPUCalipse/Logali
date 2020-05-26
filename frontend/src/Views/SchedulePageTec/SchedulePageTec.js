@@ -35,6 +35,7 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import MyVerticallyCenteredModal from '../SchedulePage/ModalRating';
+import {getLocation} from "../../Functions/geolocation"
 import Tooltip from '@material-ui/core/Tooltip';
 import style from './SchedulePageTec.module.css'
 import GoogleMapReact from 'google-map-react';
