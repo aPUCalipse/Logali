@@ -15,7 +15,7 @@ import TextField from '@material-ui/core/TextField';
 import SaveRoundedIcon from '@material-ui/icons/SaveRounded';
 import { Formik, Form, Field } from "formik";
 import Select from '@material-ui/core/Select';
-import { InputLabel, MenuItem } from '@material-ui/core';
+import {InputLabel, MenuItem} from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import Grid from '@material-ui/core/Grid';
 import TextareaAutosize from '@material-ui/core/TextareaAutosize';
@@ -45,7 +45,7 @@ const useStyles = makeStyles(theme => ({
         margin: theme.spacing(1)
 
     },
-    bodyError: {
+    bodyError:{
         width: '80%',
         color: 'red',
     },
@@ -68,7 +68,7 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-function MyVerticallyCenteredModal(props, mode) {
+function MyVerticallyCenteredModal(props,mode) {
     const classes = useStyles();
     const [typeScheduling, setTypeScheduling] = useState('');
     const [date, setDate] = useState('');
@@ -83,17 +83,17 @@ function MyVerticallyCenteredModal(props, mode) {
     const [validateType, setValidateType] = React.useState(false);
     const [validateDate, setValidateDate] = React.useState(false);
     const [validateTime, setValidateTime] = React.useState(false);
-
+ 
 
 
 
     async function handleAddScheduling(e) {
         e.preventDefault();
-
+        
         const dateArray = date.split("-");
         console.log(dateArray)
-        const dateTime = (dateArray[2] + "-" + dateArray[1] + "-" + dateArray[0] + " " + time + ":00");
-
+        const dateTime=(dateArray[2] + "-" + dateArray[1] + "-" +  dateArray[0] + " " + time + ":00" );
+       
         console.log(dateTime)
         const response = await create.post('/create', {
             userId,
@@ -102,75 +102,75 @@ function MyVerticallyCenteredModal(props, mode) {
             observation
 
         })
-            .then(function (response) {
-                console.log(response);
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
+          .then(function (response) {
+            console.log(response);
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
 
-        console.log(response);
+          console.log(response);
     };
+    
 
-
-    function validate(e) {
-        if (typeScheduling == "" || date == "" || time == "") {
-            if (typeScheduling == "")
+    function validate(e){
+        if(typeScheduling == "" || date =="" || time == ""){
+            if(typeScheduling == "")
                 setValidateType(true)
             else
                 setValidateType(false)
-            if (date == "")
+            if(date =="" )
                 setValidateDate(true)
             else
                 setValidateDate(false)
-            if (time == "")
+            if(time =="" )
                 setValidateTime(true)
             else
-                setValidateTime(false)
-        } else {
+                setValidateTime(false)    
+        }else{
             handleAddScheduling(e);
             setValidateType(false);
             setValidateDate(false)
             setValidateTime(false)
         }
     }
+   
+      const objectData = {
+          userId: userId
+      }
+      
+      async function handleEndScheduling() {
+          console.log("BATATA " + userId)     
+          const response = await axios.post('http://localhost:8000/logali/app/scheduling/searchEnd', objectData)
+          .then(function (response) {
+            setEnd(response.data.data)
+            console.log(response.data);
+          })
+          .catch(function (error) {
+            console.log(error.response);
+              });
 
-    const objectData = {
-        userId: userId
-    }
-
-    async function handleEndScheduling() {
-        console.log("BATATA " + userId)
-        const response = await axios.post('http://localhost:8000/logali/app/scheduling/searchEnd', objectData)
-            .then(function (response) {
-                setEnd(response.data.data)
-                console.log(response.data);
-            })
-            .catch(function (error) {
-                console.log(error.response);
-            });
-
-        console.log(response);
-        return response
-    };
-
+          console.log(response);
+          return response
+        };
+  
     useEffect(() => {
-        if (end == null || end == '') {
+        if(end == null || end==''){
             handleEndScheduling();
         }
     })
-
+ 
 
 
     return (
-
+       
         <Modal
             {...props}
             size="lg"
             aria-labelledby="contained-modal-title-vcenter"
             centered
         >
-            <MyVerticallyCenteredModal
+             <MyVerticallyCenteredModal
                 show={modalShow}
                 onHide={() => setModalShow(false)}
             />
@@ -187,43 +187,43 @@ function MyVerticallyCenteredModal(props, mode) {
                             justify="center"
                             alignItems="center">
                             <Grid item xs={12} >
-                                <FormControl style={!validateType ? { display: 'block' } : { display: 'none' }}>
-                                    <InputLabel id="demo-simple-select-label" required>Servi&ccedil;o</InputLabel>
-                                    <Select
-                                        labelId="demo-simple-select-label"
-                                        id="demo-simple-select"
-                                        className={classes.body}
-                                        required
-                                        onChange={e => setTypeScheduling(e.target.value)}
-                                        hide={validateType}
-                                    >
-                                        <MenuItem value={1}>Instalação</MenuItem>
-                                        <MenuItem value={2}>Manutenção em rede</MenuItem>
-                                        <MenuItem value={3}>BUG</MenuItem>
-                                    </Select>
+                                <FormControl style={!validateType ? {display:'block'} : { display: 'none' }}>
+                            <InputLabel id="demo-simple-select-label" required>Servi&ccedil;o</InputLabel>
+                                <Select
+                                labelId="demo-simple-select-label"
+                                id="demo-simple-select"
+                                className={classes.body}
+                                required
+                                onChange={e => setTypeScheduling(e.target.value)}
+                                hide = {validateType}
+                                >
+                                <MenuItem value={1}>Instalação</MenuItem>
+                                <MenuItem value={2}>Manutenção em rede</MenuItem>
+                                <MenuItem value={3}>BUG</MenuItem>
+                                </Select>
                                 </FormControl>
-                                <FormControl style={validateType ? { display: 'block' } : { display: 'none' }} error>
+                                <FormControl  style={validateType ? {display:'block'} : { display: 'none' }}error>
                                     <InputLabel required id="demo-simple-select-error-label">Servi&ccedil;o</InputLabel>
                                     <Select
-                                        labelId="demo-simple-select-error-label"
-                                        id="demo-simple-select-error"
-                                        className={classes.body}
-                                        required
-                                        onChange={e => setTypeScheduling(e.target.value)}
+                                    labelId="demo-simple-select-error-label"
+                                    id="demo-simple-select-error"
+                                    className={classes.body}
+                                    required
+                                    onChange={e => setTypeScheduling(e.target.value)}
                                     >
-                                        <MenuItem value="">
-                                            <em></em>
-                                        </MenuItem>
-                                        <MenuItem value={1}>Instalação</MenuItem>
-                                        <MenuItem value={2}>Manutenção em rede</MenuItem>
-                                        <MenuItem value={3}>BUG</MenuItem>
+                                    <MenuItem value="">
+                                        <em></em>
+                                    </MenuItem>
+                                    <MenuItem value={1}>Instalação</MenuItem>
+                                    <MenuItem value={2}>Manutenção em rede</MenuItem>
+                                    <MenuItem value={3}>BUG</MenuItem>
                                     </Select>
                                     <FormHelperText>Campo obrigatório</FormHelperText>
                                 </FormControl>
                             </Grid>
                             <Grid item xs={12} sm={6}>
-                                <div style={!validateDate ? { display: 'block' } : { display: 'none' }}>
-                                    <InputLabel id="demo-simple-select-error-label" required color="red" className={classes.body}>Data</InputLabel>
+                                <div style={!validateDate ? {display:'block'} : { display: 'none' }}>
+                                <InputLabel id="demo-simple-select-error-label" required color="red" className={classes.body}>Data</InputLabel>
                                     <TextField
                                         id="standard-basic"
                                         name="data"
@@ -236,24 +236,24 @@ function MyVerticallyCenteredModal(props, mode) {
                                         }}
                                     />
                                 </div>
-                                <div style={validateDate ? { display: 'block' } : { display: 'none' }} className={classes.body} error>
+                                <div style={validateDate ? {display:'block'} : { display: 'none' }} className={classes.body} error>
                                     <InputLabel id="demo-simple-select-error-label" color="red" required className={classes.bodyError}>Data</InputLabel>
                                     <TextField
-                                        id="standard-basic"
+                                         id="standard-basic"
                                         type="Data"
                                         name="Data"
                                         onChange={e => setDate(e.target.value)}
                                         className={classes.bodyError}
                                         InputLabelProps={{
-                                            shrink: true,
+                                        shrink: true,
                                         }}
                                     />
                                     <FormHelperText className={classes.bodyError}>Campo obrigatório</FormHelperText>
                                 </div>
                             </Grid>
                             <Grid item xs={12} sm={6}>
-                                <div style={!validateTime ? { display: 'block' } : { display: 'none' }}>
-                                    <InputLabel id="demo-simple-select-error-label" color="red" required className={classes.body}>Hora</InputLabel>
+                                <div style={!validateTime ? {display:'block'} : { display: 'none' }}>
+                                <InputLabel id="demo-simple-select-error-label" color="red" required className={classes.body}>Hora</InputLabel>
                                     <TextField
                                         id="time"
                                         name="time"
@@ -269,7 +269,7 @@ function MyVerticallyCenteredModal(props, mode) {
                                         }}
                                     />
                                 </div>
-                                <div style={validateType ? { display: 'block' } : { display: 'none' }} className={classes.body} error>
+                                <div style={validateType ? {display:'block'} : { display: 'none' }} className={classes.body} error>
                                     <InputLabel id="demo-simple-select-error-label" color="red" required className={classes.bodyError}>Hora</InputLabel>
                                     <TextField
                                         id="time"
@@ -278,7 +278,7 @@ function MyVerticallyCenteredModal(props, mode) {
                                         onChange={e => setTime(e.target.value)}
                                         className={classes.bodyError}
                                         InputLabelProps={{
-                                            shrink: true,
+                                        shrink: true,
                                         }}
                                     />
                                     <FormHelperText className={classes.bodyError}>Campo obrigatório</FormHelperText>
@@ -311,30 +311,30 @@ function MyVerticallyCenteredModal(props, mode) {
                                     <FormHelperText className={classes.bodyError}>Campo obrigatório</FormHelperText>
                                 </div>
                             </Grid> */}
-
-
+                           
+                           
                             <Grid item xs={12} sm={12}>
                                 <InputLabel id="demo-simple-select-label" className={classes.body} >Observa&ccedil;&atilde;o</InputLabel>
                                 <TextareaAutosize id="standard-basic" name="observation" onChange={e => setObservation(e.target.value)} className={classes.body} label="Observação" color="#45B39D" />
                             </Grid>
                             <Grid item xs={12} sm={12}>
                                 <FormControlLabel
-                                    control={<Checkbox name="checkedG" checked={true} color="primary" />}
-
+                                    control={<Checkbox   name="checkedG" checked={true} color="primary"/>}
+                                   
                                     label="Continuar com este endereço"
                                 />
-
-                                <TextareaAutosize
-                                    id="standard-basic"
-                                    name="observation"
-                                    disabled
-                                    defaultValue={end}
+                                   
+                                   <TextareaAutosize 
+                                    id="standard-basic" 
+                                    name="observation" 
+                                    disabled  
+                                    defaultValue={end} 
                                     value={
-                                        'Rua ' + end.street + ', ' + end.number + ', bairro ' + end.neighborhood + '. ' + end.city + ' - ' + end.state
-                                    }
-                                    className={classes.body}
-                                    color="#45B39D" />
-                            </Grid>
+                                        'Rua '+ end.street + ', ' + end.number + ', bairro ' + end.neighborhood + '. ' + end.city + ' - ' + end.state
+                                    } 
+                                    className={classes.body} 
+                                    color="#45B39D"/>
+                            </Grid> 
                         </Grid>
                     </Form>
                 </Formik>
@@ -372,14 +372,14 @@ function App() {
     const handleDateChange = date => {
         setSelectedDate(date);
     };
-
+    
     return (
         <MainLayout>
-            <EnhancedTable />
-            <Fab color="primary" className={classes.icon} onClick={() => setModalShow(true)} aria-label="add">
+            <EnhancedTable/>
+            <Fab color="primary"  className={classes.icon} onClick={() => setModalShow(true)} aria-label="add">
                 <AddIcon />
             </Fab>
-
+         
             <MyVerticallyCenteredModal
                 show={modalShow}
                 onHide={() => setModalShow(false)}
@@ -414,14 +414,14 @@ export default App;
       console.log(response);
       return response
     };
- *
- *
- *
- *
- *
- *
- *
- *
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
  *
  *
  */

@@ -125,7 +125,7 @@ export default function MyVerticallyCenteredModal(props) {
         >
             <Modal.Header closeButton>
                 <Modal.Title id="contained-modal-title-vcenter">
-                    Avalia√ß√£o
+                    AvaliaÁ„o
         </Modal.Title>
             </Modal.Header>
             <Modal.Body>
@@ -141,7 +141,7 @@ export default function MyVerticallyCenteredModal(props) {
                         justify="center"
                     >
                         <Typography variant="body2" color="textSecondary" component="p" className={classes.textAva}>
-                            Qual seu n√≠vel de satisfa√ß√£o com {selected.nametypeSchedulig}?
+                            Qual seu nÌvel de satisfaÁ„o com {selected.nametypeSchedulig}?
                         </Typography>
                     </Grid>
                     <Grid item>
@@ -169,13 +169,13 @@ export default function MyVerticallyCenteredModal(props) {
                         justify="center"
                     >
                         <Grid item xs={10}>
-                            <InputLabel id="demo-simple-select-label" className={classes.inputRate} >Observa√ß√£o</InputLabel>
+                            <InputLabel id="demo-simple-select-label" className={classes.inputRate} >Observa&ccedil;&atilde;o</InputLabel>
                             <TextareaAutosize
                                 id="standard-basic"
                                 name="observation"
                                 onChange={e => setObservation(e.target.value)}
                                 className={classes.inputRate}
-                                label="Observa√ß√£o"
+                                label="ObservaÁ„o"
                                 color="#45B39D" />
                         </Grid>
                     </Grid>
