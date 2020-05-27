@@ -6,13 +6,11 @@ class Register {
     }
 
     async create(nome,login, senha, tipoUsuario, estado, cidade ,bairro, rua, cep, numero, complemento , geolocX, geolocY ,InseridoEm) {
-        try {
-            var address_id = 1;
-            if(tipoUsuario === 1){
+        try {            
                 const qryAddress =
-                `INSERT INTO logali.address ` +
-                `(geoLocX, geoLocY, state, city, neighborhood, street, zipCode, number, complement ,createdAt) VALUES ` +
-                `(
+                    `INSERT INTO logali.address ` +
+                    `(geoLocX, geoLocY, state, city, neighborhood, street, zipCode, number, complement ,createdAt) VALUES ` +
+                    `(
                 ${geolocX},
                 ${geolocY},
                 '${estado}', 
@@ -23,11 +21,12 @@ class Register {
                 ${numero},
                 '${complemento}',
                 '${InseridoEm}'
-            )`
-                const addressResp = await this.dbPool.query(qryAddress)
+                    )`
+                var addressResp = await this.dbPool.query(qryAddress)
+            //adiciona o endereço tanto de cliente ou tecnico
             
                 address_id = addressResp.insertId;
-            }
+        //insere na tabela user especificando o tipo de usuario e passando o último adicionado 
             const query =
                 `INSERT INTO logali.user ` +
                 `(name, login, typeUserId,password, createdAt, addressId) VALUES ` +
