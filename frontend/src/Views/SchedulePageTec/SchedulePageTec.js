@@ -17,6 +17,7 @@ import "slick-carousel/slick/slick-theme.css";
 import IconButton from '@material-ui/core/IconButton';
 import StarBorderIcon from '@material-ui/icons/StarBorder';
 import { FcNext, FcPrevious, FcOk, FcCancel, FcInspection } from "react-icons/fc";
+import { FaWalking } from "react-icons/fa";
 import CardMedia from '@material-ui/core/CardMedia';
 import CardContent from '@material-ui/core/CardContent';
 import CardActionArea from '@material-ui/core/CardActionArea';
@@ -86,7 +87,13 @@ const useStyles = makeStyles(theme => ({
     finish:
     {
         backgroundColor: '#97FFFF',
-        color: 'white'
+        color: 'white',
+        marginLeft: theme.spacing(1)
+    },
+    start: {
+        backgroundColor: 'rgb(77, 203, 77)',
+        color: 'white',
+        marginLeft: theme.spacing(1)
     },
     expand: {
         transform: 'rotate(0deg)',
@@ -272,6 +279,28 @@ function ListTable(props) {
         }
     }
 
+    async function handleStart() {
+        const tec = JSON.parse(localStorage.getItem('userData'))
+        if (tec.isLogged === true) {
+            const response = await axios.post(
+                'http://localhost:8000/logali/app/scheduling/startScheduling',
+                {
+                    idScheduling: item.schedulingId,
+                    idWorker: tec.idUser,
+                });
+            if (response.status != 200) {
+                throw Error(response.body.message);
+            }
+            else {
+                console.log("Finalizado com sucesso");
+                window.location.reload()
+            }
+        }
+        else {
+            alert('Você não está logado, entre no sistema para executar esta ação');
+        }
+    }
+
     function date(item) {
         let arrayData = item.dateTime.split(' ')
         let dateSplit = arrayData[0].split('-')
@@ -311,9 +340,19 @@ function ListTable(props) {
         }
         else {
             document.getElementById("btnAccept" + item.schedulingId).setAttribute('style', 'display: none')
-            if (item.statusSchedulingId !== 4 && item.statusSchedulingId !== 5) {
+            if(item.statusSchedulingId == 3){
                 document.getElementById("btnCancel" + item.schedulingId).removeAttribute('style', 'display: none')
                 document.getElementById("btnFinish" + item.schedulingId).removeAttribute('style', 'display: none')
+                document.getElementById("btnStart" + item.schedulingId).setAttribute('style', 'display: none')
+            }
+            if(item.statusSchedulingId == 2){
+                document.getElementById("btnCancel" + item.schedulingId).removeAttribute('style', 'display: none')
+                document.getElementById("btnFinish" + item.schedulingId).setAttribute('style', 'display: none')
+                document.getElementById("btnStart" + item.schedulingId).removeAttribute('style', 'display: none')
+            }
+            if (item.statusSchedulingId !== 2 && item.statusSchedulingId !== 4 && item.statusSchedulingId !== 5) {
+                document.getElementById("btnCancel" + item.schedulingId).removeAttribute('style', 'display: none')
+                // document.getElementById("btnStart" + item.schedulingId).removeAttribute('style', 'display: none')
             }
             else if (item.statusSchedulingId == 5)
                 document.getElementById("StarRating" + item.schedulingId).removeAttribute('style', 'display: none')
@@ -362,11 +401,14 @@ function ListTable(props) {
                     {/* <Button variant="contained" size="small" id={"btnRecuse" + item.schedulingId} className={classes.recuse} onClick={handleCloseAcceptN}>
                 Recusar
                 </Button> */}
-                    <Button title='Aceitar' variant="contained" size="lg" id={"btnAccept" + item.schedulingId} className={classes.accept} onClick={handleOpenAcceptS}>
+                    <Button title='Aceitar' variant="contained" size="large" id={"btnAccept" + item.schedulingId} className={classes.accept} onClick={handleOpenAcceptS}>
                         <FcOk />
                     </Button>
                     <Button title="Cancelar Aceite" variant="contained" size="large" id={"btnCancel" + item.schedulingId} className={classes.recuse} style={{ display: "none" }} onClick={() => setDlgOpen(true)}>
                         <FcCancel />
+                    </Button>
+                    <Button title="À Caminho" variant="contained" size="large" id={"btnStart" + item.schedulingId} className={classes.start} style={{ display: "none" }} onClick={handleStart} >
+                        <FaWalking />
                     </Button>
                     <Button title="Finalizar Atendimento" variant="contained" size="large" id={"btnFinish" + item.schedulingId} className={classes.finish} style={{ display: "none" }} onClick={handleFinish} >
                         <FcInspection />

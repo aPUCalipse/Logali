@@ -31,6 +31,9 @@ import Pagination from '@material-ui/lab/Pagination';
 import style from './SchedulePage.module.css';
 import Fab from '@material-ui/core/Fab';
 import SearchIcon from '@material-ui/icons/Search';
+import DirectionsWalkIcon from '@material-ui/icons/DirectionsWalk';
+import MoodBadIcon from '@material-ui/icons/MoodBad';
+import CheckIcon from '@material-ui/icons/Check';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -62,6 +65,10 @@ const useStyles = makeStyles((theme) => ({
     },
     avatar2: {
         backgroundColor: "#d32f2f",
+        color: 'white'
+    },
+    avatar3: {
+        backgroundColor: 'rgb(77, 203, 77)',
         color: 'white'
     },
     root4: {
@@ -126,6 +133,44 @@ export default function RecipeReviewCard() {
     const handleExpandClick = () => {
         setExpanded(!expanded);
     };
+    const Status = props => {
+        const {item} = props
+        if(item.statusSchedulingId == 1){
+            return (
+                <Avatar aria-label="recipe" color='warning.main' className={classes.avatar}>
+                    <ScheduleIcon />
+                </Avatar> 
+            )
+        }
+        if(item.statusSchedulingId == 2){
+            return (
+                <Avatar aria-label="recipe" className={classes.avatar2}>
+                    <TimelapseIcon />
+                </Avatar>
+            )
+        }
+        if(item.statusSchedulingId == 3){
+            return (
+                <Avatar aria-label="recipe" className={classes.avatar3}>
+                    <DirectionsWalkIcon />
+                </Avatar>
+            )
+        }
+        if(item.statusSchedulingId == 4){
+            return (
+                <Avatar aria-label="recipe" className={classes.avatar2}>
+                    <MoodBadIcon />
+                </Avatar>
+            )
+        }
+        if(item.statusSchedulingId == 5){
+            return (
+                <Avatar aria-label="recipe" className={classes.avatar3}>
+                    <CheckIcon />
+                </Avatar>
+            )
+        }
+    }
 
   function avaliacao(show, item){
     setSelected(item);
@@ -290,14 +335,7 @@ export default function RecipeReviewCard() {
                                 <Col>
                                     <Card className={classes.root}>
                                         <CardHeader
-                                            avatar={
-                                                item.statusSchedulingId == '1' ?
-                                                    <Avatar aria-label="recipe" color='warning.main' className={classes.avatar}>
-                                                        <ScheduleIcon />
-                                                    </Avatar> :
-                                                    <Avatar aria-label="recipe" className={classes.avatar2}>
-                                                        <TimelapseIcon />
-                                                    </Avatar>}
+                                            avatar={<Status item={item} />}
 
                                             title={item.nametypeSchedulig}
 
