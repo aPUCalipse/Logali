@@ -28,6 +28,7 @@ class SchedulingRouter {
         this.app.post(`${this.baseRoute}/closeScheduling`, this.closeScheduling.bind(this))
         this.app.post(`${this.baseRoute}/takeloc`, this.takeLoc.bind(this));
         this.app.post(`${this.baseRoute}/saveTecLoc`, this.insertTecLoc.bind(this));
+        this.app.post(`${this.baseRoute}/startScheduling`, this.startScheduling.bind(this));
   }
 
   /**
@@ -518,7 +519,44 @@ class SchedulingRouter {
     } finally {
       res.send(response)
     }
-  }
+    }
+
+    async startScheduling(req, res) {
+        const response = _.clone(this.response)
+        try {
+            const schedulingCtrl = new SchedulingCtrl(this.dbPool)
+            if (!_.isEmpty(req.body)) {
+                const numberIdScheduling = parseInt(req.body.idScheduling)
+                const numberIdWorker = parseInt(req.body.idWorker)
+
+                if (
+                    (!_.isNaN(numberIdScheduling) && numberIdScheduling > 0) &&
+                    (!_.isNaN(numberIdWorker) && numberIdWorker > 0)
+                ) {
+                    const resp = await schedulingCtrl.startScheduling(numberIdWorker, numberIdScheduling);
+                    response.message = resp.message;
+                    response.data = resp;
+                    res.status(resp.statusCode);
+                } else {
+                    response.message = 'O id do agendamento e do técnico devem ser números maiores que zero'
+                    response.data = req.body
+                    res.status(400)
+                }
+            } else {
+                response.message = "Os parametros não foram enviados"
+                response.data = req.body
+                res.status(400)
+            }
+        } catch (err) {
+            console.log(err)
+            response.message = "Erro ao realizar inicialização"
+            res.status(500)
+        } finally {
+            res.send(response)
+        }
+
+    }
+
 }
 
 module.exports = SchedulingRouter;

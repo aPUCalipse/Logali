@@ -722,7 +722,28 @@ class SchedulingCtrl {
     } finally {
       return response;
     }
-  }
+    }
+
+    async startScheduling(workerId, id) {
+        const response = {
+            message: null,
+            statusCode: 500
+        }
+        try {
+            const scheduling = await this.scheduling.startScheduling(workerId, id)
+            if (scheduling) {
+                response.message = "Agendamento iniciado"
+                response.statusCode = 200
+            } else {
+                response.message = "Não foi possível iniciar o agendamento"
+                response.statusCode = 400
+            }
+        } catch (err) {
+            console.log("Erro ao iniciar agendamento -> " + err)
+        } finally {
+            return response;
+        }
+    }
 
 }
 
