@@ -44,10 +44,6 @@ class RegisterRouter {
                     req.body.geolocY
                 )
 
-                //response.data = validatedParams.data;
-                //response.message = "ok";
-                //res.send(response);
-
                 if (validatedParams && validatedParams.isValid) {
                     const resp = await registerCtrl.create(validatedParams.data)
 
@@ -66,14 +62,20 @@ class RegisterRouter {
                     response.data = validatedParams.data
                     res.status(validatedParams.statusCode)
                 }
+            } else {
+                response.message = "Os parametros não foram enviados"
+                response.data = req.body
+                res.status(200)
+            }
         } catch (err) {
-            console.log(err)
-            response.message = "Erro ao realizar cadastro " + err
-            res.status(500)
-        } finally {
-            res.send(response)
+                console.log(err)
+                response.message = "Erro ao realizar cadastro " + err
+                res.status(500)
+            } finally {
+                res.send(response)
+            }
         }
-    }
 }
+
 
 module.exports = RegisterRouter

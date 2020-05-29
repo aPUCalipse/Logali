@@ -9,9 +9,8 @@
     "\\backend\\src\\routes",
     "\\frontend",
     "\\frontend\\src",
-    "\\frontend\\src\\Views",
-    "\\frontend\\src\\Views\\SchedulePage"
+    "\\frontend\\src\\Views"
   ],
-  "SelectedNode": "\\backend\\src\\routes\\register.js",
+  "SelectedNode": "\\backend\\src\\model\\register.js",
   "PreviewInSolutionExplorer": false
 }
