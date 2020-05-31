@@ -272,6 +272,7 @@ class Scheduling {
         `ss.name 'nameStatusScheduling', ` +
         `s.workerId 'idWorker', ` +
         `uw.name 'workerName', ` +
+        `uw.rateAVG, ` +
         `s.id 'schedulingId', ` +
         `s.\`dateTime\`, ` +
         `s.observation, ` +
@@ -321,6 +322,7 @@ class Scheduling {
         `SELECT ` +
         `s.userId 'idClient', ` +
         `uc.name 'clientName', ` +
+        `uc.rateAVG, ` +
         `ad.geoLocX,  ` +
         `ad.geoLocY,  ` +
         `ad.zipCode,  ` +
