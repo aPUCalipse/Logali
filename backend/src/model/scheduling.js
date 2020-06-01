@@ -302,6 +302,9 @@ class Scheduling {
 
       query += `limit ${this.getPageByPaginatio(page, pageSize)}`;
       const resp = await this.dbPool.query(query);
+      console.log(query)
+      console.log('teste')
+      console.log(resp)
       return resp;
     } catch (err) {
       throw new Error(`Erro ao selecionar agendamentos -> ${err}`);
