@@ -1,16 +1,8 @@
 {
   "ExpandedNodes": [
     "",
-    "\\backend",
-    "\\backend\\src",
-    "\\backend\\src\\controllers",
-    "\\backend\\src\\dataBase",
-    "\\backend\\src\\model",
-    "\\backend\\src\\routes",
-    "\\frontend",
-    "\\frontend\\src",
-    "\\frontend\\src\\Views"
+    "\\backend"
   ],
-  "SelectedNode": "\\backend\\src\\model\\register.js",
+  "SelectedNode": "\\backend\\index.js",
   "PreviewInSolutionExplorer": false
 }

@@ -16,6 +16,7 @@ class RegisterRouter {
 
     init() {
         this.app.post(`${this.baseRoute}/create`, this.create.bind(this))
+        this.app.put(`${this.baseRoute}/update`, this.update.bind(this))
     }
 
     /**
@@ -74,7 +75,55 @@ class RegisterRouter {
             } finally {
                 res.send(response)
             }
+    }
+
+    async update(req, res) {
+        const response = _.clone(this.response);
+        try {
+            const registerCtrl = new RegisterCtrl(this.dbPool);
+
+            if (!_.isEmpty(req.body)) {
+                const validatedParams = registerCtrl.valitadeParamsUpdate(
+                    req.body.userId,
+                    req.body.nome,
+                    req.body.login,
+                    req.body.senha,
+                    req.body.tipoUsuario,
+                    req.body.estado,
+                    req.body.cidade,
+                    req.body.bairro,
+                    req.body.rua,
+                    req.body.cep,
+                    req.body.numero,
+                    req.body.complemento,
+                    req.body.geolocX,
+                    req.body.geolocY
+                )
+
+                if (validatedParams && validatedParams.isValid) {
+                    const resp = await registerCtrl.update(validatedParams.data)
+
+                    response.message = resp.message;
+                    response.data = resp;
+                    res.status(resp.statusCode);
+                } else {
+                    response.message = validatedParams.message
+                    response.data = validatedParams.data
+                    res.status(validatedParams.statusCode)
+                }
+            } else {
+                response.message = "Os parametros não foram enviados"
+                response.data = req.body
+                res.status(200)
+            }
+        } catch (err) {
+            console.log(err)
+            response.message = "Erro ao atualizar usuário" + err
+            res.status(500)
+        } finally {
+            res.send(response)
         }
+    }
 }
 
 
