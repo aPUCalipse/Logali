@@ -5,6 +5,7 @@ var socketIo = require('socket.io');
 
 const RouteService = require('./src/routes/index')
 const DBService = require('./src/dataBase/MySQLService')
+const chatCtrl = require('./src/controllers/chatCtrl')
 const pool = DBService.getPool()
 
 const app = express()
@@ -27,8 +28,28 @@ io.on("connection", (socket) => {
     console.log("New client connected")
 
     socket.on('Message', (dadosMensagem) => {
-
-        io.sockets.emit('Message', dadosMensagem)
+    try{
+        const senderId = parseInt(dadosMensagem.sender)
+        const recieverId = parseInt(dadosMensagem.reciever)
+        if ((!_.isNaN(senderId) && numberIdScheduling > 0) && (!_.isNaN(recieverId) && numberIdWorker > 0) ) {
+            if (dadosMensagem.mensagem !== '' && dadosMensagem.mensagem){
+                const resp = await chatCtrl.saveMessage(senderId,recieverId,mensagem)
+                if (resp.statusCode == 200)
+                    io.sockets.emit('Message', dadosMensagem)
+            }
+            else {
+                const erro = {mensagem : "A mensagem não pode estar vazia", sender : senderId}
+                io.sockets.emit('ErroEnvio', erro)
+            }
+        } else {
+            const erro = {mensagem : 'O id do agendamento e do técnico devem ser números maiores que zero', sender : senderId}
+            io.sockets.emit('ErroEnvio', erro)
+        } 
+    } catch (err) {
+        const erro = {mensagem : 'Erro ao salvar mensagem', sender : senderId}
+        io.sockets.emit('ErroEnvio', erro)
+    }
+        
     })
 
     socket.on("disconnect", () => {
