@@ -1,5 +1,7 @@
 const express = require('express')
 const bodyParser = require('body-parser')
+const http = require("http")
+var socketIo = require('socket.io');
 
 const RouteService = require('./src/routes/index')
 const DBService = require('./src/dataBase/MySQLService')
@@ -17,11 +19,27 @@ app.all('*', function (req, res, next) {
 })
 
 app.use(bodyParser.json())
+const server = http.createServer(app);
+
+const io = socketIo(server);
+
+io.on("connection", (socket) => {
+    console.log("New client connected")
+
+    socket.on('Message', (dadosMensagem) => {
+
+        io.sockets.emit('Message', dadosMensagem)
+    })
+
+    socket.on("disconnect", () => {
+        console.log("User disconnected");
+    });
+});
 
 const routeService = new RouteService(app, pool)
 
 routeService.init()
 
-app.listen(8000, () => {
+server.listen(8000, () => {
     console.log("Listening on http://localhost:8000/")
 })
