@@ -32,10 +32,9 @@ class Register {
                 `FROM messages ` +
                 `INNER JOIN users user on user.id = messages.recieverId ` +
                 `INNER JOIN users logado on logado.id = messages.senderId ` +
-                `WHERE (senderId = ${idLogged} AND recieverId = ${idOther}) `+
+                `WHERE (senderId = ${idLogged} AND recieverId = ${idOther}) ` +
                 `OR (senderId = ${idOther} AND recieverId = ${idLogged}) ` +
                 `ORDER BY id`
-            )`
 
             const resp = await this.dbPool.query(query)
             return resp

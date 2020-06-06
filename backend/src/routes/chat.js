@@ -18,7 +18,7 @@ class ChatRouter {
         this.app.post(`${this.baseRoute}/getMessages`, this.getMessages.bind(this))
     }
 
-    async getMessages(req, res){
+    async getMessages(req, res) {
         const response = _.clone(this.response)
         try {
             const chatCtrl = new ChatCtrl(this.dbPool)
@@ -48,7 +48,7 @@ class ChatRouter {
                     res.status(validatedParams.statusCode)
                 }
             } else {
-                response.message = "Os parametros não foram enviados"
+                response.message = "Os parametros nï¿½o foram enviados"
                 response.data = req.body
                 res.status(201)
             }
@@ -60,5 +60,6 @@ class ChatRouter {
             res.send(response)
         }
     }
-	}
 }
+
+module.exports = ChatRouter
