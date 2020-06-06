@@ -325,7 +325,7 @@ function ListTable(props) {
         <>
             <Card className={classes.card}>
                 <CardHeader
-                    title={item.nametypeSchedulig + ' - ' + item.clientName}
+                    title={item.nametypeSchedulig + ' - ' + item.clientName + ' - ' + item.rateAVG}
                     subheader={`Distância: ${getDistance(item.distance)}`}
                 />
                 <CardContent>
@@ -380,6 +380,7 @@ function ListTable(props) {
                 <Collapse in={expanded} timeout="auto" unmountOnExit>
                     <CardContent>
                         <Typography paragraph><b>Cliente:</b> {item.clientName}</Typography>
+                        <Typography paragraph><b>Nota:</b> {item.rateAVG}</Typography>
                         <Typography paragraph>
                             {splitDateTime(item)}
                         </Typography>
@@ -627,6 +628,7 @@ export default function Technical() {
                                 <option name="filterSchedulingType" value="3" >Bug</option>
                                 <option name="filterSchedulingType" value="2">Instalação</option>
                                 <option name="filterSchedulingType" value="1">Manutenção</option>
+                                <option name="filterSchedulingType" value="4">Outros</option>
                             </Form.Control>
                         </Form.Group>
                         <Form.Group as={Col} md={4} name="statusScheduling">
