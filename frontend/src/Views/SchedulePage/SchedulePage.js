@@ -293,34 +293,6 @@ function MyVerticallyCenteredModal(props, mode) {
                                     <FormHelperText className={classes.bodyError}>Campo obrigatório</FormHelperText>
                                 </div>
                             </Grid>
-                            {/* <Grid item xs={12} sm={12}>
-                            <div style={!validateDateTime ? {display:'block'} : { display: 'none' }}>
-                                <InputLabel id="demo-simple-select-label" className={classes.body}>Data e Hora</InputLabel>
-                                <TextField
-                                    id="datetime-local"
-                                    type="datetime-local"
-                                    onChange={e => setDateTime(e.target.value.replace("T"," "))}
-                                    className={classes.body}
-                                    InputLabelProps={{
-                                    shrink: true,
-                                    }}
-                                />
-                                </div>
-                                <div style={validateType ? {display:'block'} : { display: 'none' }} className={classes.body} error>
-                                    <InputLabel id="demo-simple-select-error-label" color="red" className={classes.bodyError}>Data e Hora</InputLabel>
-                                    <TextField
-                                        id="datetime-local"
-                                        type="datetime-local"
-                                        onChange={e => setDateTime(e.target.value)}
-                                        className={classes.bodyError}
-                                        InputLabelProps={{
-                                        shrink: true,
-                                        }}
-                                    />
-                                    <FormHelperText className={classes.bodyError}>Campo obrigatório</FormHelperText>
-                                </div>
-                            </Grid> */}
-
 
                             <Grid item xs={12} sm={12}>
                                 <InputLabel id="demo-simple-select-label" className={classes.body} >Observa&ccedil;&atilde;o</InputLabel>
@@ -398,40 +370,3 @@ function App() {
 }
 
 export default App;
-
-
-/*
- * async function handleRating() {
-    const response = await axios.post(
-      'http://localhost:8000/logali/app/rotadela/metododela',
-      {
-        "worker": selected.idClient,
-        "ratedId": selected.idWorker,
-        "schedulingId": selected.schedulingId ,
-        "rate":value,
-        "observation": observation
-      }
-    )
-      .then(function (response) {
-        alert(response.data.message)
-        console.log(response.data);
-      })
-      .catch(function (error) {
-        console.log(error.response);
-      });
-
-      console.log(response);
-      return response
-    };
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
-
