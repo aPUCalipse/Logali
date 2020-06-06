@@ -34,6 +34,8 @@ import SearchIcon from '@material-ui/icons/Search';
 import DirectionsWalkIcon from '@material-ui/icons/DirectionsWalk';
 import MoodBadIcon from '@material-ui/icons/MoodBad';
 import CheckIcon from '@material-ui/icons/Check';
+import VisibilityIcon from '@material-ui/icons/Visibility';
+import ModalViewUser from './ModalViewUser'
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -120,6 +122,18 @@ export default function RecipeReviewCard() {
     const [validateType, setValidateType] = React.useState(false);
     const [modalShow, setModalShow] = React.useState(false);
     const [selected, setSelected] = React.useState([]);
+    const [modalShowView, setModalShowView] = React.useState(false);
+    
+
+    const handleOpenView = (item) => {
+        setSelected(item);
+        setModalShowView(true);
+    };
+
+    const handleCloseView = () => {
+        setModalShowView(false);
+    };
+
     let [page, setPage] = React.useState(1);
     let [idTypeScheduling, setTypeScheduling] = React.useState(0);
     let [idStatusScheduling, setStatusScheduling] = React.useState(1);
@@ -143,6 +157,7 @@ export default function RecipeReviewCard() {
             )
         }
         if(item.statusSchedulingId == 2){
+            document.getElementById("btnView").removeAttribute('style', 'display: none')
             return (
                 <Avatar aria-label="recipe" className={classes.avatar2}>
                     <TimelapseIcon />
@@ -352,6 +367,10 @@ export default function RecipeReviewCard() {
                                             <Typography hidden={item.idWorker !== null ? false : true}> {item.workerName} - Nota: {item.rateAVG} </Typography>
                                         </CardContent>
                                         <CardActions disableSpacing>
+                                            <Tooltip title="Perfil Atendente">
+                                                <VisibilityIcon id={"btnView"} style={{ display: "none" }}   onClick={() => handleOpenView(item)}/>
+                                            </Tooltip>
+
                                             <Tooltip title="Editar">
                                                 <EditScheduling data={item} disabled={item.statusSchedulingId == '1' ? false : true} />
                                             </Tooltip>
@@ -385,6 +404,11 @@ export default function RecipeReviewCard() {
                 <MyVerticallyCenteredModal
                     show={modalShow}
                     onHide={() => setModalShow(false)}
+                    selected={selected}
+                />
+                <ModalViewUser
+                    show={modalShowView}
+                    onHide={() => setModalShowView(false)}
                     selected={selected}
                 />
             </>

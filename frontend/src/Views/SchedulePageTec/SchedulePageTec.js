@@ -40,7 +40,9 @@ import { getLocation } from "../../Functions/geolocation"
 import Tooltip from '@material-ui/core/Tooltip';
 import style from './SchedulePageTec.module.css'
 import GoogleMapReact from 'google-map-react';
-import MainLayout from '../MainLayout/MainLayout';
+import MainLayout from '../MainLayout/MainLayout'
+import ModalViewUser from './ModalViewUser'
+import VisibilityIcon from '@material-ui/icons/Visibility';
 import { Formik, Form } from "formik";
 import Pagination from '@material-ui/lab/Pagination';
 import Fab from '@material-ui/core/Fab';
@@ -48,7 +50,6 @@ import SearchIcon from '@material-ui/icons/Search';
 import FormControl from '@material-ui/core/FormControl';
 import { InputLabel, MenuItem } from '@material-ui/core';
 import Select from '@material-ui/core/Select';
-
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -352,6 +353,17 @@ function ListTable(props) {
         }
     })
 
+    const [modalShowView, setModalShowView] = React.useState(false);
+    
+
+    const handleOpenView = () => {
+        setModalShowView(true);
+    };
+
+    const handleCloseView = () => {
+        setModalShowView(false);
+    };
+
     return (
         <>
             <Card className={classes.card}>
@@ -384,11 +396,11 @@ function ListTable(props) {
                         className={clsx(classes.expand, {
                             [classes.expandOpen]: expanded,
                         })}
-                        onClick={handleExpandClick}
+                        onClick={handleOpenView}
                         aria-expanded={expanded}
                         aria-label="show more"
                     >
-                        <ExpandMoreIcon />
+                        <VisibilityIcon />
                     </IconButton>
                     <Button title='Aceitar' variant="contained" size="lg" id={"btnAccept" + item.schedulingId} className={classes.accept} onClick={handleOpenAcceptS}>
                         <FcOk />
@@ -440,7 +452,11 @@ function ListTable(props) {
                     </DialogActions>
                 </Dialog>
             </Card>
-
+                <ModalViewUser
+                    show={modalShowView}
+                    onHide={() => setModalShowView(false)}
+                    item={item}
+                />
             <MyVerticallyCenteredModal
                 show={modalShow}
                 onHide={() => setModalShow(false)}
