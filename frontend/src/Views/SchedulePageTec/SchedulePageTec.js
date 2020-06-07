@@ -333,12 +333,12 @@ function ListTable(props) {
         }
         else {
             document.getElementById("btnAccept" + item.schedulingId).setAttribute('style', 'display: none')
-            if(item.statusSchedulingId == 3){
+            if (item.statusSchedulingId == 3) {
                 document.getElementById("btnCancel" + item.schedulingId).removeAttribute('style', 'display: none')
                 document.getElementById("btnFinish" + item.schedulingId).removeAttribute('style', 'display: none')
                 document.getElementById("btnStart" + item.schedulingId).setAttribute('style', 'display: none')
             }
-            if(item.statusSchedulingId == 2){
+            if (item.statusSchedulingId == 2) {
                 document.getElementById("btnCancel" + item.schedulingId).removeAttribute('style', 'display: none')
                 document.getElementById("btnFinish" + item.schedulingId).setAttribute('style', 'display: none')
                 document.getElementById("btnStart" + item.schedulingId).removeAttribute('style', 'display: none')
@@ -354,7 +354,7 @@ function ListTable(props) {
     })
 
     const [modalShowView, setModalShowView] = React.useState(false);
-    
+
 
     const handleOpenView = () => {
         setModalShowView(true);
@@ -452,11 +452,11 @@ function ListTable(props) {
                     </DialogActions>
                 </Dialog>
             </Card>
-                <ModalViewUser
-                    show={modalShowView}
-                    onHide={() => setModalShowView(false)}
-                    item={item}
-                />
+            <ModalViewUser
+                show={modalShowView}
+                onHide={() => setModalShowView(false)}
+                item={item}
+            />
             <MyVerticallyCenteredModal
                 show={modalShow}
                 onHide={() => setModalShow(false)}
