@@ -380,6 +380,20 @@ class SchedulingCtrl {
     return isInRangeDistance;
   }
 
+  async getDistance(selectedSchedules, workerGeoLocalization) {
+    for (let i = 0; i < selectedSchedules.length; i++) {
+      const url = `https://maps.googleapis.com/maps/api/distancematrix/json?` +
+        `origins=${workerGeoLocalization.geoLocX},${workerGeoLocalization.geoLocY}&` +
+        `destinations=${selectedSchedules[i].geoLocX},${selectedSchedules[i].geoLocY}&` +
+        `key=AIzaSyCkIMj_uHe2IZkO0jtrx-tYGPbcJyvr2jo&`
+      const response = await axios.get(url)
+
+      selectedSchedules[i].distance = response.data.rows.pop().elements.pop().distance.value
+    }
+
+    return selectedSchedules
+  }
+
   async orderByDistance(selectedSchedules, workerGeoLocalization, page, pageSize, initDistance, endDistance) {
     for (let i = 0; i < selectedSchedules.length; i++) {
       const url = `https://maps.googleapis.com/maps/api/distancematrix/json?` +
@@ -445,22 +459,31 @@ class SchedulingCtrl {
     }
   }
 
-  async viewSchedulingPfTech(params) {
+  async viewSchedulingOfTech(params) {
     const response = {
       data: {},
       message: null,
       statusCode: 500,
     };
 
+
     try {
-      const selectedSchedules = await this.scheduling.viewSchedulingOfTech(
-        params.idWorker,
-        params.day
-      );
 
-      response.data = selectedSchedules
+      const getAddresOfWorker = await this.userCtrl.getUserById(params.idWorker);
 
-      response.statusCode = 200;
+      if (getAddresOfWorker.statusCode === 200) {
+        const selectedSchedules = await this.scheduling.viewSchedulingOfTech(
+          params.idWorker,
+          params.day
+        );
+
+        response.data = await this.getDistance(selectedSchedules, getAddresOfWorker.data)
+
+        response.statusCode = 200;
+      } else {
+        response.message = getAddresOfWorker.message
+        response.statusCode = getAddresOfWorker.statusCode
+      }
     } catch (err) {
       console.log(err)
       response.message = `Erro desconhecido ao selecionar agendamentos  -> ${err.toString()}`;

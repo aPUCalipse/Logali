@@ -385,7 +385,7 @@ class SchedulingRouter {
         );
 
         if (params.isValid) {
-          const resp = await schedulingCtrl.viewSchedulingPfTech(params.data);
+          const resp = await schedulingCtrl.viewSchedulingOfTech(params.data);
           response.message = "Seleção realizada com sucesso";
           response.data = resp.data;
           response.pagination = resp.pagination;
