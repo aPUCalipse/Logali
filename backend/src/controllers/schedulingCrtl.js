@@ -420,7 +420,7 @@ class SchedulingCtrl {
         const selectedSchedules = await this.scheduling.viewScheduling(
           params.idWorker,
           params.filterType,
-          params.filterStatus
+          params.filterStatuss
         );
 
         response.pagination.maxPages = await this.scheduling.getMaxPageOfView(
@@ -437,6 +437,30 @@ class SchedulingCtrl {
         response.message = getAddresOfWorker.message
         response.statusCode = getAddresOfWorker.statusCode
       }
+    } catch (err) {
+      console.log(err)
+      response.message = `Erro desconhecido ao selecionar agendamentos  -> ${err.toString()}`;
+    } finally {
+      return response;
+    }
+  }
+
+  async viewSchedulingPfTech(params) {
+    const response = {
+      data: {},
+      message: null,
+      statusCode: 500,
+    };
+
+    try {
+      const selectedSchedules = await this.scheduling.viewSchedulingOfTech(
+        params.idWorker,
+        params.day
+      );
+
+      response.data = selectedSchedules
+
+      response.statusCode = 200;
     } catch (err) {
       console.log(err)
       response.message = `Erro desconhecido ao selecionar agendamentos  -> ${err.toString()}`;
@@ -614,6 +638,42 @@ class SchedulingCtrl {
         validatedParams.message =
           "O inicio da distancia não pode ser maior que o fim da distancia e vice-versa ;)";
         validatedParams.statusCode = 400;
+      }
+    }
+
+    return validatedParams;
+  }
+
+  getPageParamsOfTech(idWorker, day) {
+    const validatedParams = {
+      isValid: true,
+      message: null,
+      statusCode: null,
+      data: {
+        idWorker: null,
+        day: null
+      },
+    };
+
+    const numberIdWorker = parseInt(idWorker);
+
+    if (_.isNaN(numberIdWorker) || numberIdWorker <= 0) {
+      validatedParams.isValid = false;
+      validatedParams.message =
+        "O parametro id do técnico deve ser enviado e deve ser maior que zero";
+      validatedParams.statusCode = 400;
+    } else {
+      validatedParams.data.idWorker = numberIdWorker;
+    }
+
+    if (!day) {
+      validatedParams.data.day = null;
+    } else {
+      const schedulingDay = Moment(day, "DD/MM/YYYY");
+      if (schedulingDay.isValid()) {
+        validatedParams.data.day = schedulingDay;
+      } else {
+        validatedParams.data.day = null;
       }
     }
 
