@@ -11,11 +11,11 @@ function Header(){
         const userData = JSON.parse(localStorage.getItem("userData"))
         if(userData && userData.isLogged){
           if(userData.typeUser === '1'){
-            document.getElementById('agendamentosCliente').removeAttribute('style')
+             document.getElementById('agendamentosCliente').removeAttribute('style')
           } else if(userData.typeUser === '2') {
             document.getElementById('agendamentosTecnico').removeAttribute('style')
           }
-          document.getElementById('logout').removeAttribute('style')
+           document.getElementById('logout').removeAttribute('style')
         }
         else{
           document.getElementById('register').removeAttribute('style')

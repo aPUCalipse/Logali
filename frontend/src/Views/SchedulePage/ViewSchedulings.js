@@ -26,11 +26,16 @@ import Typography from '@material-ui/core/Typography';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import listEmpty from '../../Images/listEmpty.svg';
 import MyVerticallyCenteredModal from '../SchedulePage/ModalRating';
-import {getLocation} from "../../Functions/geolocation"
+import { getLocation } from "../../Functions/geolocation"
 import Pagination from '@material-ui/lab/Pagination';
 import style from './SchedulePage.module.css';
 import Fab from '@material-ui/core/Fab';
 import SearchIcon from '@material-ui/icons/Search';
+import DirectionsWalkIcon from '@material-ui/icons/DirectionsWalk';
+import MoodBadIcon from '@material-ui/icons/MoodBad';
+import CheckIcon from '@material-ui/icons/Check';
+import VisibilityIcon from '@material-ui/icons/Visibility';
+import ModalViewUser from './ModalViewUser'
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -62,6 +67,10 @@ const useStyles = makeStyles((theme) => ({
     },
     avatar2: {
         backgroundColor: "#d32f2f",
+        color: 'white'
+    },
+    avatar3: {
+        backgroundColor: 'rgb(77, 203, 77)',
         color: 'white'
     },
     root4: {
@@ -113,6 +122,18 @@ export default function RecipeReviewCard() {
     const [validateType, setValidateType] = React.useState(false);
     const [modalShow, setModalShow] = React.useState(false);
     const [selected, setSelected] = React.useState([]);
+    const [modalShowView, setModalShowView] = React.useState(false);
+    
+
+    const handleOpenView = (item) => {
+        setSelected(item);
+        setModalShowView(true);
+    };
+
+    const handleCloseView = () => {
+        setModalShowView(false);
+    };
+
     let [page, setPage] = React.useState(1);
     let [idTypeScheduling, setTypeScheduling] = React.useState(0);
     let [idStatusScheduling, setStatusScheduling] = React.useState(1);
@@ -126,15 +147,54 @@ export default function RecipeReviewCard() {
     const handleExpandClick = () => {
         setExpanded(!expanded);
     };
+    const Status = props => {
+        const {item} = props
+        if(item.statusSchedulingId == 1){
+            return (
+                <Avatar aria-label="recipe" color='warning.main' className={classes.avatar}>
+                    <ScheduleIcon />
+                </Avatar> 
+            )
+        }
+        if(item.statusSchedulingId == 2){
+            document.getElementById("btnView").removeAttribute('style', 'display: none')
+            return (
+                <Avatar aria-label="recipe" className={classes.avatar2}>
+                    <TimelapseIcon />
+                </Avatar>
+            )
+        }
+        if(item.statusSchedulingId == 3){
+            return (
+                <Avatar aria-label="recipe" className={classes.avatar3}>
+                    <DirectionsWalkIcon />
+                </Avatar>
+            )
+        }
+        if(item.statusSchedulingId == 4){
+            return (
+                <Avatar aria-label="recipe" className={classes.avatar2}>
+                    <MoodBadIcon />
+                </Avatar>
+            )
+        }
+        if(item.statusSchedulingId == 5){
+            return (
+                <Avatar aria-label="recipe" className={classes.avatar3}>
+                    <CheckIcon />
+                </Avatar>
+            )
+        }
+    }
 
-  function avaliacao(show, item){
-    setSelected(item);
-    setModalShow(true)
-  
-  };
- 
-  function splitDateTime(item){
-  
+    function avaliacao(show, item) {
+        setSelected(item);
+        setModalShow(true)
+
+    };
+
+    function splitDateTime(item) {
+
         let arrayData = item.dateTime.split(' ')
         let dateSplit = arrayData[0].split('-')
         let dataCopy = dateSplit[2] + '/' + dateSplit[1] + '/' + dateSplit[0];
@@ -224,6 +284,7 @@ export default function RecipeReviewCard() {
                                         <MenuItem value={2}>Instalação</MenuItem>
                                         <MenuItem value={1}>Manutenção em rede</MenuItem>
                                         <MenuItem value={3}>BUG</MenuItem>
+                                        <MenuItem value={4}>Outros</MenuItem>
                                     </Select>
                                 </FormControl>
                             </Grid>
@@ -290,14 +351,7 @@ export default function RecipeReviewCard() {
                                 <Col>
                                     <Card className={classes.root}>
                                         <CardHeader
-                                            avatar={
-                                                item.statusSchedulingId == '1' ?
-                                                    <Avatar aria-label="recipe" color='warning.main' className={classes.avatar}>
-                                                        <ScheduleIcon />
-                                                    </Avatar> :
-                                                    <Avatar aria-label="recipe" className={classes.avatar2}>
-                                                        <TimelapseIcon />
-                                                    </Avatar>}
+                                            avatar={<Status item={item} />}
 
                                             title={item.nametypeSchedulig}
 
@@ -310,14 +364,26 @@ export default function RecipeReviewCard() {
                                             <Typography variant="body2" color="textSecondary" component="p">
                                                 {item.observation}
                                             </Typography>
+                                            <Typography hidden={item.idWorker !== null ? false : true}> {item.workerName} - Nota: {item.rateAVG} </Typography>
                                         </CardContent>
                                         <CardActions disableSpacing>
+                                            <Tooltip title="Perfil Atendente">
+                                                <VisibilityIcon id={"btnView"} style={{ display: "none" }}   onClick={() => handleOpenView(item)}/>
+                                            </Tooltip>
+
                                             <Tooltip title="Editar">
                                                 <EditScheduling data={item} disabled={item.statusSchedulingId == '1' ? false : true} />
                                             </Tooltip>
                                             <Tooltip title="Deletar">
                                                 <IconButton aria-label="share">
                                                     <DeleteForeverIcon onClick={() => handleClickValidate(item.schedulingId)} />
+                                                </IconButton>
+                                            </Tooltip>
+                                            <Tooltip title='Avaliar'>
+                                                <IconButton title="Avaliar" id={"StarRating" + item.schedulingId} hidden={item.statusSchedulingId == 5 ? false : true }
+                                                    onClick={() => avaliacao(true, item)}
+                                                >
+                                                    <StarBorderIcon />
                                                 </IconButton>
                                             </Tooltip>
                                         </CardActions>
@@ -338,6 +404,11 @@ export default function RecipeReviewCard() {
                 <MyVerticallyCenteredModal
                     show={modalShow}
                     onHide={() => setModalShow(false)}
+                    selected={selected}
+                />
+                <ModalViewUser
+                    show={modalShowView}
+                    onHide={() => setModalShowView(false)}
                     selected={selected}
                 />
             </>

@@ -1,0 +1,103 @@
+@media only screen and (max-device-width: 1920px) {
+    .map{
+        width: 88%;
+        height: 30vh;
+        border: none;
+    }
+}
+
+@media only screen and (max-device-width: 1024px) {
+    .map{
+        width: 71%;
+        height: 20vh;
+        border: none;
+    }
+}
+
+@media only screen and (max-device-width: 900px) {
+    .map{
+        width: 50%;
+        height: 20vh;
+        border: none;
+    }
+}
+
+@media only screen and (max-device-width: 768px) {
+    .map{
+        width: 50%;
+        height: 30vh;
+        border: none;
+    }
+}
+
+@media only screen and (max-device-width: 720px) {
+    .map{
+        width: 57%;
+        height: 20vh;
+        border: none;
+    }
+}
+
+@media only screen and (max-device-width: 480px) {
+    .map{
+        width: 102%;
+        height: 20vh;
+        border: none;
+    }
+}
+
+@media only screen and (max-device-width: 360px) {
+    .map{
+        width: 69%;
+        height: 20vh;
+        border: none;
+    }
+}
+
+@media only screen and (max-device-width: 320px) {
+    .map{
+        width: 57%;
+        height: 30vh;
+        border: none;
+    }
+}
+
+@media only screen and (min-device-width: 2048px) {
+    .map{
+        width: 88%;
+        height: 20vh;
+        border: none;
+    }
+}
+
+.paginatioin{
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 15px;
+    margin-left: 33%;
+}
+
+.input{
+    min-width: 98% !important;
+    padding: 1% !important;
+}
+
+.but{
+    padding: 1% !important;
+}
+
+.searchButton{
+    background-color: rgba(241, 196, 58, 0.7) !important;
+}
+
+.labell{
+    margin-top: 1%;
+}
+
+.labellInput{
+    margin-top: -10% !important;
+}
+
+.inputText{
+    margin-top: 10% !important;
+}

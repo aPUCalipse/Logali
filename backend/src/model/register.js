@@ -6,13 +6,11 @@ class Register {
     }
 
     async create(nome,login, senha, tipoUsuario, estado, cidade ,bairro, rua, cep, numero, complemento , geolocX, geolocY ,InseridoEm) {
-        try {
-            var address_id = 1;
-            if(tipoUsuario === 1){
-                const qryAddress =
-                `INSERT INTO logali.address ` +
-                `(geoLocX, geoLocY, state, city, neighborhood, street, zipCode, number, complement ,createdAt) VALUES ` +
-                `(
+        try {            
+                var qryAddress =
+                    `INSERT INTO logali.address ` +
+                    `(geoLocX, geoLocY, state, city, neighborhood, street, zipCode, number, complement ,createdAt) VALUES ` +
+                    `(
                 ${geolocX},
                 ${geolocY},
                 '${estado}', 
@@ -23,12 +21,13 @@ class Register {
                 ${numero},
                 '${complemento}',
                 '${InseridoEm}'
-            )`
-                const addressResp = await this.dbPool.query(qryAddress)
+                    )`
+                var addressResp = await this.dbPool.query(qryAddress)
+            //adiciona o endereço tanto de cliente ou tecnico
             
                 address_id = addressResp.insertId;
-            }
-            const query =
+        //insere na tabela user especificando o tipo de usuario e passando o último adicionado 
+            var query =
                 `INSERT INTO logali.user ` +
                 `(name, login, typeUserId,password, createdAt, addressId) VALUES ` +
                 `(
@@ -44,6 +43,56 @@ class Register {
             return resp
         } catch (err) {
             throw new Error(`Erro ao inserir usuário -> ${err}`)
+        }
+    }
+
+
+    async update(userId, nome, login, senha, estado, cidade, bairro, rua, cep, numero, complemento, geolocX, geolocY) {
+
+        try {
+            var querySelect =
+                `SELECT addressId ` +
+                `FROM logali.user ` +
+                `WHERE id = ${userId}`
+
+            var respQuerySelect = await this.dbPool.query(query)
+
+            var now = Moment().format("YYYY-MM-DD HH:mm:ss")
+            var query_address =
+                `UPDATE logali.address ` +
+                `SET ` +
+                `geoLocX = ${geolocX}, ` +
+                `geoLocY = ${geolocY}, ` +
+                `zipCode = ${cep}, ` +
+                `number = ${numero}, ` +
+                `street = '${rua}', ` +
+                `complement = '${complemento}', ` +
+                `neighborhood = '${bairro}', ` +
+                `cidade = '${cidade}', ` +
+                `state = '${estado}', ` +
+                `updatedAt = ${now} ` +
+                `join user ` +
+                `on user.id = ${userId} ` +
+                `WHERE ` +  
+                `address.id = ${respQuerySelect[0].addressId}`;
+            
+            var query = await this.dbPool.query(query_address)
+
+            var query_user =
+                `UPDATE logali.user ` +
+                `SET ` +
+                `name = '${nome}', ` +
+                `login = '${login}', ` +
+                `password = '${senha}', ` +
+                `updatedAt = ${now}, ` +
+                `WHERE ` +
+                `user.id = ${userId}`;
+
+            var resp = await this.dbPool.query(query_user);
+
+            return resp;
+        }catch(err){
+            throw new Error(`Erro ao atualizar usuário -> ${err}`)
         }
     }
 
