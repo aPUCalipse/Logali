@@ -2,6 +2,7 @@ const SchedulingRouter = require("./scheduling");
 const RegisterRouter = require("./register");
 const RatingRouter = require("./rating");
 const LoginRouter = require("./login");
+const UserRouter = require("./user");
 
 const SchedulingQueueConsumer = require("../routines/schedulingQueueConsumer");
 const appBaseRoute = "/logali/app";
@@ -17,6 +18,7 @@ class RouteService {
     this.registerRouter = new RegisterRouter(this.app, appBaseRoute, dbPool);
     this.loginRouter = new LoginRouter(this.app, appBaseRoute, dbPool);
     this.ratingRouter = new RatingRouter(this.app, appBaseRoute, dbPool);
+    this.userRouter = new UserRouter(this.app, this.appBaseRoute, dbPool);
     SchedulingQueueConsumer(dbPool);
   }
 
@@ -26,6 +28,7 @@ class RouteService {
     this.registerRouter.init();
     this.ratingRouter.init();
     this.loginRouter.init();
+    this.userRouter.init();
   }
 
   test() {

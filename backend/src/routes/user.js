@@ -16,7 +16,7 @@ class userRouter {
 
     init() {
         this.app.post(`${this.baseRoute}/selectUser`, this.selectUser.bind(this))
-        this.app.get(`${this.baseRoute}/takeDatas`, this.takeDatas.bind(this))
+        this.app.post(`${this.baseRoute}/takeDatas`, this.takeDatas.bind(this))
     }
 
     async selectUser(userId) {

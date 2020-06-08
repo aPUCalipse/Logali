@@ -96,6 +96,7 @@ class User {
                 `WHERE logali.user.Id = ${userId} `;
 
             const resp = await this.dbPool.query(query);
+            return resp;
 
         }catch (err) {
             throw new Error(`Erro ao pesquisar dados do Usuário -> ${err}`);
