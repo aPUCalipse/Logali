@@ -70,6 +70,38 @@ class User {
 
     }
 
+    async takeDatas(userId) {
+        try {
+            var query =
+                `SELECT ` +
+                //dados de User
+                `typeUserId, ` +
+                `name, ` +
+                `login, ` +
+                `rateAVG, ` +
+                //dados de Address
+                `geoLocX, ` +
+                `geoLocY, ` +
+                `zipCode, ` +
+                `number, ` +
+                `street, ` +
+                `complement, ` +
+                `neighborhood, ` +
+                `city, ` +
+                `state, ` +
+                `FROM logali.user ` +
+                //join tabela User com Address
+                `JOIN logali.address ` +
+                `on logali.user.addressId = logali.addressId.id ` +
+                `WHERE logali.user.Id = ${userId} `;
+
+            const resp = await this.dbPool.query(query);
+
+        }catch (err) {
+            throw new Error(`Erro ao pesquisar dados do Usuário -> ${err}`);
+        }
+    }
+
 }
 
 module.exports = User;
