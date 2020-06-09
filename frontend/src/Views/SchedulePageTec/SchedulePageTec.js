@@ -333,12 +333,12 @@ function ListTable(props) {
         }
         else {
             document.getElementById("btnAccept" + item.schedulingId).setAttribute('style', 'display: none')
-            if(item.statusSchedulingId == 3){
+            if (item.statusSchedulingId == 3) {
                 document.getElementById("btnCancel" + item.schedulingId).removeAttribute('style', 'display: none')
                 document.getElementById("btnFinish" + item.schedulingId).removeAttribute('style', 'display: none')
                 document.getElementById("btnStart" + item.schedulingId).setAttribute('style', 'display: none')
             }
-            if(item.statusSchedulingId == 2){
+            if (item.statusSchedulingId == 2) {
                 document.getElementById("btnCancel" + item.schedulingId).removeAttribute('style', 'display: none')
                 document.getElementById("btnFinish" + item.schedulingId).setAttribute('style', 'display: none')
                 document.getElementById("btnStart" + item.schedulingId).removeAttribute('style', 'display: none')
@@ -354,7 +354,7 @@ function ListTable(props) {
     })
 
     const [modalShowView, setModalShowView] = React.useState(false);
-    
+
 
     const handleOpenView = () => {
         setModalShowView(true);
@@ -452,11 +452,11 @@ function ListTable(props) {
                     </DialogActions>
                 </Dialog>
             </Card>
-                <ModalViewUser
-                    show={modalShowView}
-                    onHide={() => setModalShowView(false)}
-                    item={item}
-                />
+            <ModalViewUser
+                show={modalShowView}
+                onHide={() => setModalShowView(false)}
+                item={item}
+            />
             <MyVerticallyCenteredModal
                 show={modalShow}
                 onHide={() => setModalShow(false)}
@@ -470,6 +470,7 @@ export default function Technical() {
     const classes = useStyles();
     const [week, setWeek] = React.useState([]);
     const [data, setData] = React.useState([]);
+    const [dataOfDate, setDataOfDate] = React.useState([]);
     const [dataTec, setDataTec] = React.useState([]);
     const [value, setValue] = React.useState(0);
 
@@ -483,27 +484,6 @@ export default function Technical() {
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
-    };
-
-    const nextPage = () => {
-        setPage(page + 1);
-        setData([]);
-        if (page == 2) {
-            document.getElementById('btnPreviousPage').removeAttribute('style', 'readOnly');
-            document.getElementById('btnPreviousPage').removeAttribute('style', 'borderColor: gray');
-        }
-    };
-
-    const previousPage = () => {
-        if (page > 1) {
-            setPage(page - 1);
-            setData([]);
-        }
-    };
-
-    const goToPage = (value) => {
-        setPage(value);
-        setData([]);
     };
 
     async function getScheduling(event, eventPage) {
@@ -538,6 +518,32 @@ export default function Technical() {
                 console.log(error.response);
             });
         console.log(response);
+    }
+
+    async function getSchedulingOfDay(event, eventPage) {
+        const tec = JSON.parse(localStorage.getItem('userData'))
+        page = (eventPage) ? eventPage : 1
+
+        if (initDistance === '') {
+            initDistance = -1
+        }
+
+        if (endDistance === '') {
+            endDistance = -1
+        }
+
+        const response = await axios.post('http://localhost:8000/logali/app/scheduling/viewOfTech', {
+            "idWorker": tec.idUser,
+            "day": moment().format("DD/MM/YYYY"),
+        })
+            .then(function (response) {
+                if (response.data && response.data.data && response.data.data.length > 0) {
+                    setDataOfDate(response.data.data)
+                }
+            })
+            .catch(function (error) {
+                console.log(error.response);
+            });
     }
 
     async function getGeoLocXY() {
@@ -598,6 +604,9 @@ export default function Technical() {
         if (data == null || data.length == 0)
             getScheduling();
 
+        if (dataOfDate == null || dataOfDate.length == 0)
+            getSchedulingOfDay();
+
         if (dataTec == null || dataTec.length == 0)
             getGeoLocXY()
     })
@@ -648,86 +657,84 @@ export default function Technical() {
                             <Tab label="Semana" {...a11yProps(2)} />
                         </Tabs>
                     </AppBar>
-                    <Container>
-                        <Formik>
-                            <Form>
-                                <Grid container
-                                    spacing={0.5}
-                                    justify="left"
-                                    alignItems="left">
-                                    <Grid item xs={3} >
-                                        <FormControl className={style.input}>
-                                            <InputLabel className={style.labell} id="demo-simple-select-label">Serviço</InputLabel>
-                                            <Select
-                                                labelId="demo-simple-select-label"
-                                                id="demo-simple-select"
-                                                className={classes.body}
-                                                onChange={e => setTypeScheduling(e.target.value)}
-                                                value={idTypeScheduling}
-                                            >
-                                                <MenuItem value={0}>Todos os serviços</MenuItem>
-                                                <MenuItem value={2}>Instalação</MenuItem>
-                                                <MenuItem value={1}>Manutenção em rede</MenuItem>
-                                                <MenuItem value={3}>BUG</MenuItem>
-                                            </Select>
-                                        </FormControl>
-                                    </Grid>
-                                    <Grid item xs={3} >
-                                        <FormControl className={style.input}>
-                                            <InputLabel className={style.labell} id="statusAgendamento">Status do Agendamento</InputLabel>
-                                            <Select
-                                                labelId="statusAgendamento"
-                                                id="statusScheduling"
-                                                className={classes.body}
-                                                onChange={e => setStatusScheduling(e.target.value)}
-                                                value={idStatusScheduling}
-                                            >
-                                                <MenuItem value={1}>Aguardando Aceite</MenuItem>
-                                                <MenuItem value={2}>Aceitado</MenuItem>
-                                                <MenuItem value={3}>À Caminho</MenuItem>
-                                                <MenuItem value={4}>Cancelado</MenuItem>
-                                                <MenuItem value={5}>Terminado</MenuItem>
-                                            </Select>
-                                        </FormControl>
-                                    </Grid>
-                                    <Grid item xs={2} >
-                                        <FormControl>
-                                            <InputLabel className={style.labellInput} id="statusAgendamento">Distancia inicial</InputLabel>
-                                            <TextField
-                                                id="initDistance"
-                                                name="initDistance"
-                                                type="number"
-                                                onChange={e => setInitDistance(e.target.value)}
-                                                className={style.inputText}
-                                                value={initDistance}
-                                            />
-                                        </FormControl>
-                                    </Grid>
-
-                                    <Grid item xs={2} >
-                                        <FormControl>
-                                            <InputLabel className={style.labellInput} id="statusAgendamento">Distancia Final</InputLabel>
-                                            <TextField
-                                                id="endDIstance"
-                                                name="endDIstance"
-                                                type="number"
-                                                onChange={e => setEndDistance(e.target.value)}
-                                                className={style.inputText}
-                                                value={endDistance}
-                                            />
-                                        </FormControl>
-                                    </Grid>
-                                    <Grid item xs={1} className={style.but}>
-                                        <Fab variant="round" className={style.searchButton} size="small" onClick={getScheduling}>
-                                            <SearchIcon className={classes.icon} />
-                                        </Fab>
-                                    </Grid>
-                                </Grid>
-                            </Form>
-                        </Formik>
-                    </Container>
                     <TabPanel value={value} index={0}>
                         <Container>
+                            <Formik as={Row}>
+                                <Form>
+                                    <Grid container
+                                        spacing={0.5}
+                                        justify="left"
+                                        alignItems="left">
+                                        <Grid item xs={3} >
+                                            <FormControl className={style.input}>
+                                                <InputLabel className={style.labell} id="demo-simple-select-label">Serviço</InputLabel>
+                                                <Select
+                                                    labelId="demo-simple-select-label"
+                                                    id="demo-simple-select"
+                                                    className={classes.body}
+                                                    onChange={e => setTypeScheduling(e.target.value)}
+                                                    value={idTypeScheduling}
+                                                >
+                                                    <MenuItem value={0}>Todos os serviços</MenuItem>
+                                                    <MenuItem value={2}>Instalação</MenuItem>
+                                                    <MenuItem value={1}>Manutenção em rede</MenuItem>
+                                                    <MenuItem value={3}>BUG</MenuItem>
+                                                </Select>
+                                            </FormControl>
+                                        </Grid>
+                                        <Grid item xs={3} >
+                                            <FormControl className={style.input}>
+                                                <InputLabel className={style.labell} id="statusAgendamento">Status do Agendamento</InputLabel>
+                                                <Select
+                                                    labelId="statusAgendamento"
+                                                    id="statusScheduling"
+                                                    className={classes.body}
+                                                    onChange={e => setStatusScheduling(e.target.value)}
+                                                    value={idStatusScheduling}
+                                                >
+                                                    <MenuItem value={1}>Aguardando Aceite</MenuItem>
+                                                    <MenuItem value={2}>Aceitado</MenuItem>
+                                                    <MenuItem value={3}>À Caminho</MenuItem>
+                                                    <MenuItem value={4}>Cancelado</MenuItem>
+                                                    <MenuItem value={5}>Terminado</MenuItem>
+                                                </Select>
+                                            </FormControl>
+                                        </Grid>
+                                        <Grid item xs={2} >
+                                            <FormControl>
+                                                <InputLabel className={style.labellInput} id="statusAgendamento">Distancia inicial</InputLabel>
+                                                <TextField
+                                                    id="initDistance"
+                                                    name="initDistance"
+                                                    type="number"
+                                                    onChange={e => setInitDistance(e.target.value)}
+                                                    className={style.inputText}
+                                                    value={initDistance}
+                                                />
+                                            </FormControl>
+                                        </Grid>
+
+                                        <Grid item xs={2} >
+                                            <FormControl>
+                                                <InputLabel className={style.labellInput} id="statusAgendamento">Distancia Final</InputLabel>
+                                                <TextField
+                                                    id="endDIstance"
+                                                    name="endDIstance"
+                                                    type="number"
+                                                    onChange={e => setEndDistance(e.target.value)}
+                                                    className={style.inputText}
+                                                    value={endDistance}
+                                                />
+                                            </FormControl>
+                                        </Grid>
+                                        <Grid item xs={1} className={style.but}>
+                                            <Fab variant="round" className={style.searchButton} size="small" onClick={getScheduling}>
+                                                <SearchIcon className={classes.icon} />
+                                            </Fab>
+                                        </Grid>
+                                    </Grid>
+                                </Form>
+                            </Formik>
                             <Row xs={1} sm={2} md={3} lg={3}>
                                 {data.map((item) => (
                                     <Col>
@@ -740,11 +747,10 @@ export default function Technical() {
                     <TabPanel value={value} index={1}>
                         <Container>
                             <Row xs={1} sm={2} md={3} lg={3}>
-                                {data.map((item) => (
-                                    dateSplit(item) == (week[0].getDate() + '/0' + (week[0].getMonth() + 1) + '/' + week[0].getFullYear()) ?
-                                        <Col>
-                                            <ListTable item={item} week={week} />
-                                        </Col> : ''
+                                {dataOfDate.map((item) => (
+                                    <Col>
+                                        <ListTable item={item} week={week} />
+                                    </Col>
                                 ))}
                             </Row>
                         </Container>

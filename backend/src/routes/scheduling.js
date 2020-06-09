@@ -29,6 +29,7 @@ class SchedulingRouter {
     this.app.post(`${this.baseRoute}/takeloc`, this.takeLoc.bind(this));
     this.app.post(`${this.baseRoute}/saveTecLoc`, this.insertTecLoc.bind(this));
     this.app.post(`${this.baseRoute}/startScheduling`, this.startScheduling.bind(this));
+    this.app.post(`${this.baseRoute}/viewOfTech`, this.viewOfTech.bind(this));
   }
 
   /**
@@ -347,6 +348,44 @@ class SchedulingRouter {
 
         if (params.isValid) {
           const resp = await schedulingCtrl.viewScheduling(params.data);
+          response.message = "Seleção realizada com sucesso";
+          response.data = resp.data;
+          response.pagination = resp.pagination;
+          res.status(200);
+        } else {
+          response.message = params.message;
+          response.data = params.data;
+          res.status(params.statusCode);
+        }
+      } else {
+        response.message = "Os parametros não foram enviados";
+        response.data = req.body;
+        res.status(400);
+      }
+    } catch (err) {
+      console.log(err);
+      response.message = "Erro ao realizar seleção";
+      res.status(500);
+    } finally {
+      console.log("resposta: " + response);
+      res.send(response);
+    }
+  }
+
+
+  async viewOfTech(req, res) {
+    const response = _.clone(this.response);
+    try {
+      const schedulingCtrl = new SchedulingCtrl(this.dbPool);
+
+      if (!_.isEmpty(req.body)) {
+        const params = schedulingCtrl.getPageParamsOfTech(
+          req.body.idWorker,
+          req.body.day
+        );
+
+        if (params.isValid) {
+          const resp = await schedulingCtrl.viewSchedulingOfTech(params.data);
           response.message = "Seleção realizada com sucesso";
           response.data = resp.data;
           response.pagination = resp.pagination;
