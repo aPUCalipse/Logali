@@ -448,8 +448,7 @@ class SchedulingRouter {
 
         if (validatedParams && validatedParams.isValid) {
 
-          //response.data = validatedParams;
-          //response.message = "Routes apos chamar a função Controller";
+              
 
           const resp = await schedulingCtrl.insertLoc(validatedParams)
 
