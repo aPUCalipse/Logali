@@ -402,6 +402,7 @@ class SchedulingCtrl {
   }
 
   getSchedulingGrouppedByDate(schedulings) {
+    schedulings = _.orderBy(schedulings, 'dateTime')
     for (let i = 0; i < schedulings.length; i++) {
       const date = schedulings[i].dateTime.split(" ")[0]
       const momentDate = Moment(date, "YYYY-MM-DD")
