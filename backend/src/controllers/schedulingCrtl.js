@@ -401,6 +401,17 @@ class SchedulingCtrl {
     return _.slice(sortedSchedules, init, end)
   }
 
+  getSchedulingGrouppedByDate(schedulings) {
+    for (let i = 0; i < schedulings.length; i++) {
+      const date = schedulings[i].dateTime.split(" ")[0]
+      const momentDate = Moment(date, "YYYY-MM-DD")
+
+      schedulings[i].date = momentDate.format("DD/MM/YYYY")
+    }
+
+    return _.groupBy(schedulings, 'date')
+  }
+
   async viewScheduling(params) {
     const response = {
       data: {},
