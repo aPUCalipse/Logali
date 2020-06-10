@@ -402,6 +402,13 @@ class SchedulingCtrl {
   }
 
   getSchedulingGrouppedByDate(schedulings) {
+    const daysOfWeek = {}
+    const momentItereteeTime = Moment()
+    for (let i = 0; i < 7; i++) {
+      daysOfWeek[momentItereteeTime.format("DD/MM/YYYY")] = []
+      momentItereteeTime.add(1, 'day')
+    }
+
     schedulings = _.orderBy(schedulings, 'dateTime')
     for (let i = 0; i < schedulings.length; i++) {
       const date = schedulings[i].dateTime.split(" ")[0]
@@ -410,7 +417,15 @@ class SchedulingCtrl {
       schedulings[i].date = momentDate.format("DD/MM/YYYY")
     }
 
-    return _.groupBy(schedulings, 'date')
+    const grouppedSchedulings = _.groupBy(schedulings, 'date')
+
+    for (const keyShe in grouppedSchedulings) {
+      if (daysOfWeek[keyShe]) {
+        daysOfWeek[keyShe] = grouppedSchedulings[keyShe]
+      }
+    }
+
+    return daysOfWeek
   }
 
   async viewScheduling(params) {
