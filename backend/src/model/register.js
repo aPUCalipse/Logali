@@ -10,18 +10,18 @@ class Register {
             var qryAddress =
                 `INSERT INTO logali.address ` +
                 `(geoLocX, geoLocY, state, city, neighborhood, street, zipCode, number, complement ,createdAt) VALUES ` +
-                `(
-                ${geolocX},
-                ${geolocY},
-                '${estado}', 
-                '${cidade}', 
-                '${bairro}', 
-                '${rua}', 
-                ${cep},
-                ${numero},
-                '${complemento}',
-                '${InseridoEm}'
-                    )`
+                `(` +
+                `${geolocX}, ` +
+                `${geolocY}, ` +
+                `'${estado}', ` +
+                `'${cidade}', ` +
+                `'${bairro}', ` +
+                `'${rua}', ` +
+                `'${cep}', ` +
+                `'${numero}', ` +
+                `'${complemento}', ` +
+                `'${InseridoEm}' ` +
+                `)`
             var addressResp = await this.dbPool.query(qryAddress)
 
             const address_id = addressResp.insertId;
@@ -40,6 +40,7 @@ class Register {
             const resp = await this.dbPool.query(query)
             return resp
         } catch (err) {
+            console.log(err)
             throw new Error(`Erro ao inserir usuário -> ${err}`)
         }
     }

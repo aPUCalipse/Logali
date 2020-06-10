@@ -299,8 +299,45 @@ class Scheduling {
       }
 
       query += `limit ${this.getPageByPaginatio(page, pageSize)}`;
+
       const resp = await this.dbPool.query(query);
       return resp;
+    } catch (err) {
+      throw new Error(`Erro ao selecionar agendamentos -> ${err}`);
+    }
+  }
+
+  async getMaxPages(pageSize, idTypeScheduling, idStatusScheduling, idUser) {
+    try {
+      let query =
+        `` +
+        `SELECT ` +
+        `count(*) as 'totalLines' ` +
+        `FROM logali.scheduling s ` +
+        `join logali.user uc ` +
+        `on uc.id = s.userId ` +
+        `left join logali.user uw ` +
+        `on uw.id = s.workerId ` +
+        `join logali.statusscheduling ss ` +
+        `on ss.id = s.statusSchedulingId ` +
+        `join logali.typescheduling ts ` +
+        `on ts.id = s.typeSchedulingId ` +
+        `join logali.address ad ` +
+        `on ad.id = uc.addressId ` +
+        `where 1=1 ` +
+        `and uc.id = ${idUser} ` +
+        `AND deletedAt is null `;
+
+      if (idTypeScheduling) {
+        query += `and s.typeSchedulingId = ${idTypeScheduling} `;
+      }
+
+      if (idStatusScheduling) {
+        query += `and s.statusSchedulingId = ${idStatusScheduling} `;
+      }
+
+      const resp = await this.dbPool.query(query);
+      return Math.ceil(resp.pop().totalLines / pageSize);
     } catch (err) {
       throw new Error(`Erro ao selecionar agendamentos -> ${err}`);
     }
@@ -351,13 +388,13 @@ class Scheduling {
         `AND s.workerId is null ` +
         `AND deletedAt is null `
 
-      // if (filterStatus) {
-      //   query += `and s.statusSchedulingId = ${filterStatus} `;
-      // }
+      if (filterStatus) {
+        query += `and s.statusSchedulingId = ${filterStatus} `;
+      }
 
-      // if (filterType) {
-      //   query += `and s.typeSchedulingId = ${filterType} `;
-      // }
+      if (filterType) {
+        query += `and s.typeSchedulingId = ${filterType} `;
+      }
 
       query += `union `;
 

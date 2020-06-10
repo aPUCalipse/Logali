@@ -244,7 +244,7 @@ class SchedulingCtrl {
         filter.idStatusScheduling,
         filter.idUser
       );
-      response.pagination.maxPages = await this.scheduling.getMaxPages(
+      response.pagination.maxPages = await this.scheduling.getsMaxPages(
         filter.pageSize,
         filter.idTypeScheduling,
         filter.idStatusScheduling,
@@ -253,6 +253,7 @@ class SchedulingCtrl {
       response.data = selectedSchedules;
       response.statusCode = 200;
     } catch (err) {
+      console.log(err)
       response.message = `Erro desconhecido ao pesquisar agendamentos  -> ${err.toString()}`;
     } finally {
       return response;
