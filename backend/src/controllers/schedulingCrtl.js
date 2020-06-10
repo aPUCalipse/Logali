@@ -422,7 +422,7 @@ class SchedulingCtrl {
         daysOfWeek[keyShe] = grouppedSchedulings[keyShe]
       }
     }
-
+    console.log(daysOfWeek)
     return daysOfWeek
   }
 

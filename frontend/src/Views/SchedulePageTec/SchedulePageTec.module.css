@@ -242,20 +242,22 @@
 
 .but{
     padding: 1% !important;
+    margin-top: 1% !important;
 }
 
 .searchButton{
     background-color: rgba(241, 196, 58, 0.7) !important;
+    margin-top: 1% !important;
 }
 
 .labell{
     margin-top: 1%;
 }
 
-.labellInput{
+/* .labellInput{
     margin-top: -10% !important;
-}
+} */
 
 .inputText{
-    margin-top: 10% !important;
+    margin-top: 3% !important;
 }

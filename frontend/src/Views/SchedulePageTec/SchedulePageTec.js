@@ -51,9 +51,10 @@ import FormControl from '@material-ui/core/FormControl';
 import { InputLabel, MenuItem } from '@material-ui/core';
 import Select from '@material-ui/core/Select';
 
+
+
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
-
     return (
         <Typography
             component="div"
@@ -130,6 +131,7 @@ const useStyles = makeStyles(theme => ({
         backgroundColor: '#009999',
         color: "white",
         minHeight: theme.spacing(80),
+        maxHeight: '1000px',
         overflowY: 'auto'
     },
     slide: {
@@ -684,12 +686,23 @@ export default function Technical() {
         ]
     };
 
+    const searchByTab = () =>{
+        console.log('ENTREI nada')
+        console.log(value)
+        if(value == 0)
+            getScheduling()
+        else if(value == 2){
+            console.log('ENTREI TAB')
+            getSchedulingOfDaysWeek()
+            console.log(TabPanel.propTypes.index)
+        }
+    }
     return (
         <div className={classes.root}>
             <MainLayout>
                 <Card className={classes.root}>
                     <AppBar position="static" className={classes.tabs}>
-                        <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
+                        <Tabs value={value} onChange={handleChange} aria-label="simple tabs example"  indicatorColor="primary">
                             <Tab label="Tudo" {...a11yProps(0)} />
                             <Tab label="Hoje" {...a11yProps(1)} />
                             <Tab label="Semana" {...a11yProps(2)} />
@@ -739,36 +752,40 @@ export default function Technical() {
                                         </FormControl>
                                     </Grid>
                                     <Grid item xs={12} sm={4} lg={2} >
-                                        <FormControl >
-                                            <InputLabel className={style.labellInput} id="statusAgendamento">Distancia inicial</InputLabel>
+                                        <FormControl className={style.input}>
+                                            {/* <InputLabel className={style.labellInput} id="initDistance">Distancia inicial</InputLabel> */}
                                             <TextField
                                                 id="initDistance"
+                                                labelId="initDistance"
                                                 name="initDistance"
                                                 type="number"
                                                 onChange={e => setInitDistance(e.target.value)}
-                                                className={style.inputText}
+                                                 className={style.inputText}
                                                 value={initDistance}
+                                                label="Distancia inicial"
                                                 fullWidth
                                             />
                                         </FormControl>
                                     </Grid>
 
                                     <Grid item xs={12} sm={4} lg={2} >
-                                        <FormControl >
-                                            <InputLabel className={style.labellInput} id="statusAgendamento">Distancia Final</InputLabel>
+                                        <FormControl className={style.input}>
+                                            {/* <InputLabel className={style.labellInput} id="endDIstance">Distancia Final</InputLabel> */}
                                             <TextField
                                                 id="endDIstance"
                                                 name="endDIstance"
+                                                labelId="endDIstance"
                                                 type="number"
                                                 onChange={e => setEndDistance(e.target.value)}
                                                 className={style.inputText}
                                                 value={endDistance}
+                                                label="Distancia Final"
                                                 fullWidth
                                             />
                                         </FormControl>
                                     </Grid>
                                     <Grid item xs={6} sm={2} lg={1} className={style.but}>
-                                        <Fab variant="round" className={style.searchButton} size="small" onClick={getScheduling}>
+                                        <Fab variant="round" className={style.searchButton} size="small" onClick={searchByTab}>
                                             <SearchIcon className={classes.icon} />
                                         </Fab>
                                     </Grid>
