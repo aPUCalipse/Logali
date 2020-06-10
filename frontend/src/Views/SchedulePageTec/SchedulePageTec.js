@@ -129,7 +129,8 @@ const useStyles = makeStyles(theme => ({
     rootCard: {
         backgroundColor: '#009999',
         color: "white",
-        minHeight: theme.spacing(80)
+        minHeight: theme.spacing(80),
+        overflowY:'auto'
     },
     slide: {
         backgroundColor: '#009999',
@@ -375,7 +376,7 @@ function ListTable(props) {
                     <CardMedia className={classes.media}>
                         <Row>
                             <Col>
-                                <div className={style.map}>
+                                <div className={week==true?style.mapWeek:style.map}>
                                     <GoogleMapReact
                                         bootstrapURLKeys={{ key: "AIzaSyCkIMj_uHe2IZkO0jtrx-tYGPbcJyvr2jo" }}
                                         defaultCenter={{
@@ -472,6 +473,7 @@ export default function Technical() {
     const [data, setData] = React.useState([]);
     const [dataTec, setDataTec] = React.useState([]);
     const [value, setValue] = React.useState(0);
+    const [weekOfDays, setWeekOfDays] = React.useState([]);
 
     let [page, setPage] = React.useState(1);
     let [idTypeScheduling, setTypeScheduling] = React.useState(0);
@@ -584,6 +586,40 @@ export default function Technical() {
         return days;
     }
 
+    async function getSchedulingOfDaysWeek(event, eventPage) {
+        const tec = JSON.parse(localStorage.getItem('userData'))
+        page = (eventPage) ? eventPage : 1
+
+        if (initDistance === '') {
+            initDistance = -1
+        }
+
+        if (endDistance === '') {
+            endDistance = -1
+        }
+
+        const response = await axios.post('http://localhost:8000/logali/app/scheduling/viewByDates', {
+            "page": page,
+            "pageSize": 10,
+            "idWorker": tec.idUser,
+            "filterType": idTypeScheduling,
+            "filterStatus": idStatusScheduling,
+            "initDistance": initDistance,
+            "endDistance": endDistance,
+        })
+            .then(function (response) {
+                console.log(response);
+                if (response.data && response.data.data) {
+                    console.log('HELLLLOU')
+                    setWeekOfDays(Object.values(response.data.data))
+                    setMaxPages(response.data.pagination.maxPages)
+                }
+            })
+            .catch(function (error) {
+                console.log(error.response);
+            });
+        console.log(weekOfDays);
+    }
 
     function dateSplit(item) {
         let arrayData = item.dateTime.split(' ')
@@ -600,6 +636,11 @@ export default function Technical() {
 
         if (dataTec == null || dataTec.length == 0)
             getGeoLocXY()
+        
+        if(weekOfDays == null || weekOfDays.length == 0){
+            console.log('ESTOU AQUI')
+            getSchedulingOfDaysWeek();
+        }
     })
 
     const settings = {
@@ -611,7 +652,7 @@ export default function Technical() {
         initialSlide: 0,
         responsive: [
             {
-                breakpoint: 1024,
+                breakpoint: 1300,
                 settings: {
                     slidesToShow: 3,
                     slidesToScroll: 3,
@@ -620,7 +661,7 @@ export default function Technical() {
                 }
             },
             {
-                breakpoint: 600,
+                breakpoint: 1200,
                 settings: {
                     slidesToShow: 2,
                     slidesToScroll: 2,
@@ -628,7 +669,7 @@ export default function Technical() {
                 }
             },
             {
-                breakpoint: 480,
+                breakpoint: 800,
                 settings: {
                     slidesToShow: 1,
                     slidesToScroll: 1
@@ -655,7 +696,7 @@ export default function Technical() {
                                     spacing={0.5}
                                     justify="left"
                                     alignItems="left">
-                                    <Grid item xs={3} >
+                                    <Grid item xs={12} sm={6} lg={3} >
                                         <FormControl className={style.input}>
                                             <InputLabel className={style.labell} id="demo-simple-select-label">Serviço</InputLabel>
                                             <Select
@@ -672,7 +713,7 @@ export default function Technical() {
                                             </Select>
                                         </FormControl>
                                     </Grid>
-                                    <Grid item xs={3} >
+                                    <Grid item xs={12} sm={6} lg={3} >
                                         <FormControl className={style.input}>
                                             <InputLabel className={style.labell} id="statusAgendamento">Status do Agendamento</InputLabel>
                                             <Select
@@ -690,8 +731,8 @@ export default function Technical() {
                                             </Select>
                                         </FormControl>
                                     </Grid>
-                                    <Grid item xs={2} >
-                                        <FormControl>
+                                    <Grid item xs={12} sm={4} lg={2} >
+                                        <FormControl >
                                             <InputLabel className={style.labellInput} id="statusAgendamento">Distancia inicial</InputLabel>
                                             <TextField
                                                 id="initDistance"
@@ -700,12 +741,13 @@ export default function Technical() {
                                                 onChange={e => setInitDistance(e.target.value)}
                                                 className={style.inputText}
                                                 value={initDistance}
+                                                fullWidth
                                             />
                                         </FormControl>
                                     </Grid>
 
-                                    <Grid item xs={2} >
-                                        <FormControl>
+                                    <Grid item xs={12} sm={4} lg={2} >
+                                        <FormControl >
                                             <InputLabel className={style.labellInput} id="statusAgendamento">Distancia Final</InputLabel>
                                             <TextField
                                                 id="endDIstance"
@@ -714,10 +756,11 @@ export default function Technical() {
                                                 onChange={e => setEndDistance(e.target.value)}
                                                 className={style.inputText}
                                                 value={endDistance}
+                                                fullWidth
                                             />
                                         </FormControl>
                                     </Grid>
-                                    <Grid item xs={1} className={style.but}>
+                                    <Grid item xs={6} sm={2} lg={1} className={style.but}>
                                         <Fab variant="round" className={style.searchButton} size="small" onClick={getScheduling}>
                                             <SearchIcon className={classes.icon} />
                                         </Fab>
@@ -731,7 +774,7 @@ export default function Technical() {
                             <Row xs={1} sm={2} md={3} lg={3}>
                                 {data.map((item) => (
                                     <Col>
-                                        <ListTable item={item} week={week} />
+                                        <ListTable item={item} week={false} />
                                     </Col>
                                 ))}
                             </Row>
@@ -743,30 +786,33 @@ export default function Technical() {
                                 {data.map((item) => (
                                     dateSplit(item) == (week[0].getDate() + '/0' + (week[0].getMonth() + 1) + '/' + week[0].getFullYear()) ?
                                         <Col>
-                                            <ListTable item={item} week={week} />
+                                            <ListTable item={item} week={false} />
                                         </Col> : ''
                                 ))}
                             </Row>
                         </Container>
                     </TabPanel>
                     <TabPanel value={value} index={2}>
+                        {console.log(Object.values(weekOfDays))}
                         <Slider {...settings} >
-                            {week.map((date) => (
+                            {weekOfDays && weekOfDays.map((weekDay) => (
+                               
                                 <Container>
                                     <Row xs={12} lg={12}>
                                         <Col>
                                             <Card className={classes.rootCard}>
                                                 <CardActionArea>
                                                     <CardContent>
+                                                        { console.log(weekDay)}
                                                         <Typography gutterBottom variant="h5" component="h2">
-                                                            {date.getDate()} / 0{date.getMonth() + 1}
+                                                            {weekDay[0].date}
                                                         </Typography>
-                                                        {data.map((item) => (
-                                                            dateSplit(item) == (date.getDate() + '/0' + (date.getMonth() + 1) + '/' + date.getFullYear()) ?
+                                                         {weekDay.map((item) => (
+                                                         
                                                                 <Col>
-                                                                    <ListTable item={item} week={week} />
-                                                                </Col> : ''
-                                                        ))}
+                                                                    <ListTable item={item} week={true} />
+                                                                </Col> 
+                                                         ))} 
                                                     </CardContent>
                                                 </CardActionArea>
                                             </Card>

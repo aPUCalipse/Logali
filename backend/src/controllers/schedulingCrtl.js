@@ -244,12 +244,12 @@ class SchedulingCtrl {
         filter.idStatusScheduling,
         filter.idUser
       );
-      // response.pagination.maxPages = await this.scheduling.getMaxPages(
-      //   filter.pageSize,
-      //   filter.idTypeScheduling,
-      //   filter.idStatusScheduling,
-      //   filter.idUser
-      // )
+      response.pagination.maxPages = await this.scheduling.getMaxPages(
+        filter.pageSize,
+        filter.idTypeScheduling,
+        filter.idStatusScheduling,
+        filter.idUser
+      )
       response.data = selectedSchedules;
       response.statusCode = 200;
     } catch (err) {
