@@ -374,9 +374,6 @@ class SchedulingCtrl {
       isInRangeDistance = true
     }
 
-    console.log(isInRangeDistance)
-    console.log("\n\n")
-
     return isInRangeDistance;
   }
 
@@ -779,6 +776,7 @@ class SchedulingCtrl {
       }
     } catch (err) {
       console.log("Erro em updateWorkerId -> " + err);
+      response.message = "Erro em updateWorkerId -> " + err;
     } finally {
       return response;
     }
@@ -800,6 +798,7 @@ class SchedulingCtrl {
       }
     } catch (err) {
       console.log("Erro ao fechar agendamento -> " + err)
+      response.message = "Erro ao fechar agendamento -> " + err
     } finally {
       return response;
     }
@@ -821,6 +820,7 @@ class SchedulingCtrl {
       }
     } catch (err) {
       console.log("Erro ao iniciar agendamento -> " + err)
+      response.message = "Erro ao iniciar agendamento -> " + err
     } finally {
       return response;
     }

@@ -29,7 +29,7 @@ class LoginCtrl {
             validatedParams.isValid = false
             validatedParams.message = "O parâmetro tipo de usuário está incorreto"
             validatedParams.statusCode = 400
-        }else {
+        } else {
             validatedParams.isValid = true
             validatedParams.statusCode = 200
         }
@@ -58,7 +58,6 @@ class LoginCtrl {
         catch (err) {
             response.message = `Erro desconhecido ao fazer login -> ${err.toString()}`
         } finally {
-            console.log(response)
             return response
         }
     }

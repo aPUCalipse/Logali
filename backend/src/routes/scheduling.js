@@ -140,7 +140,6 @@ class SchedulingRouter {
       response.message = "Erro ao realizar pesquisa";
       res.status(500);
     } finally {
-      console.log(response);
       res.send(response);
     }
   }
@@ -203,7 +202,6 @@ class SchedulingRouter {
       response.message = "Erro ao realizar seleção";
       res.status(500);
     } finally {
-      console.log("resposta: " + response);
       res.send(response);
     }
   }
@@ -367,7 +365,6 @@ class SchedulingRouter {
       response.message = "Erro ao realizar seleção";
       res.status(500);
     } finally {
-      console.log("resposta: " + response);
       res.send(response);
     }
   }
@@ -413,7 +410,6 @@ class SchedulingRouter {
       response.message = "Erro ao realizar seleção";
       res.status(500);
     } finally {
-      console.log("resposta: " + response);
       res.send(response);
     }
   }
@@ -437,7 +433,6 @@ class SchedulingRouter {
       response.message = "Erro ao realizar seleção";
       res.status(500);
     } finally {
-      console.log("resposta: " + response);
       res.send(response);
     }
   }
@@ -490,7 +485,6 @@ class SchedulingRouter {
       response.message = "Erro ao realizar inserção";
       res.status(500);
     } finally {
-      //console.log("resposta: " + response);
       res.send(response);
     }
   }

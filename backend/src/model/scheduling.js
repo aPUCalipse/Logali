@@ -96,8 +96,6 @@ class Scheduling {
         `WHERE id = '${id}' ` +
         `AND deletedAt is null`;
 
-      console.log(query);
-
       const resp = await this.dbPool.query(query);
 
       if (resp && resp.affectedRows >= 1) {
@@ -464,8 +462,6 @@ class Scheduling {
         `WHERE ` +
         `user.id = ${workerId}`;
 
-      console.log(query);
-
       const resp = await this.dbPool.query(query);
 
       return resp.pop();
@@ -568,8 +564,6 @@ class Scheduling {
         `, updatedAt = '${now}' ` +
         `WHERE id = '${id}' ` +
         `AND deletedAt is null `
-
-      console.log(query);
 
       const resp = await this.dbPool.query(query);
 
