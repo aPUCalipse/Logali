@@ -46,8 +46,8 @@ CREATE TABLE IF NOT EXISTS `logali`.`typeScheduling` (
 ENGINE = InnoDB;
 
 INSERT INTO `logali`.`typescheduling` (`name`) VALUES 
-('Manutenção'),
 ('Instalação'),
+('Manutenção'),
 ('Bug'),
 ('Outros');
 

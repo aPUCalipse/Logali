@@ -130,7 +130,7 @@ const useStyles = makeStyles(theme => ({
         backgroundColor: '#009999',
         color: "white",
         minHeight: theme.spacing(80),
-        overflowY:'auto'
+        overflowY: 'auto'
     },
     slide: {
         backgroundColor: '#009999',
@@ -376,7 +376,7 @@ function ListTable(props) {
                     <CardMedia className={classes.media}>
                         <Row>
                             <Col>
-                                <div className={week==true?style.mapWeek:style.map}>
+                                <div className={week == true ? style.mapWeek : style.map}>
                                     <GoogleMapReact
                                         bootstrapURLKeys={{ key: "AIzaSyCkIMj_uHe2IZkO0jtrx-tYGPbcJyvr2jo" }}
                                         defaultCenter={{
@@ -642,8 +642,8 @@ export default function Technical() {
 
         if (dataTec == null || dataTec.length == 0)
             getGeoLocXY()
-        
-        if(weekOfDays == null || weekOfDays.length == 0){
+
+        if (weekOfDays == null || weekOfDays.length == 0) {
             console.log('ESTOU AQUI')
             getSchedulingOfDaysWeek();
         }
@@ -716,6 +716,7 @@ export default function Technical() {
                                                 <MenuItem value={2}>Instalação</MenuItem>
                                                 <MenuItem value={1}>Manutenção em rede</MenuItem>
                                                 <MenuItem value={3}>BUG</MenuItem>
+                                                <MenuItem value={4}>Outros</MenuItem>
                                             </Select>
                                         </FormControl>
                                     </Grid>
@@ -801,24 +802,24 @@ export default function Technical() {
                     <TabPanel value={value} index={2}>
                         {console.log(Object.values(weekOfDays))}
                         <Slider {...settings} >
-                            {weekOfDays && Object.keys(weekOfDays).map((weekDay,index) => (
-                               
+                            {weekOfDays && Object.keys(weekOfDays).map((weekDay, index) => (
+
                                 <Container>
                                     <Row xs={12} lg={12}>
                                         <Col>
                                             <Card className={classes.rootCard}>
                                                 <CardActionArea>
                                                     <CardContent>
-                                                        { console.log(weekDay)}
+                                                        {console.log(weekDay)}
                                                         <Typography gutterBottom variant="h5" component="h2">
                                                             {weekDay}
                                                         </Typography>
-                                                         {Object.values(weekOfDays)[index].map((item) => (
-                                                         
-                                                                <Col>
-                                                                    <ListTable item={item} week={true} />
-                                                                </Col> 
-                                                         ))} 
+                                                        {Object.values(weekOfDays)[index].map((item) => (
+
+                                                            <Col>
+                                                                <ListTable item={item} week={true} />
+                                                            </Col>
+                                                        ))}
                                                     </CardContent>
                                                 </CardActionArea>
                                             </Card>
