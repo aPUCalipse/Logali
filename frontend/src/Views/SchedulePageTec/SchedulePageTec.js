@@ -615,7 +615,7 @@ export default function Technical() {
                 console.log(response);
                 if (response.data && response.data.data) {
                     console.log('HELLLLOU')
-                    setWeekOfDays(Object.values(response.data.data))
+                    setWeekOfDays(response.data.data)
                     setMaxPages(response.data.pagination.maxPages)
                 }
             })
@@ -801,7 +801,7 @@ export default function Technical() {
                     <TabPanel value={value} index={2}>
                         {console.log(Object.values(weekOfDays))}
                         <Slider {...settings} >
-                            {weekOfDays && weekOfDays.map((weekDay) => (
+                            {weekOfDays && Object.keys(weekOfDays).map((weekDay,index) => (
                                
                                 <Container>
                                     <Row xs={12} lg={12}>
@@ -811,9 +811,9 @@ export default function Technical() {
                                                     <CardContent>
                                                         { console.log(weekDay)}
                                                         <Typography gutterBottom variant="h5" component="h2">
-                                                            {weekDay[0].date}
+                                                            {weekDay}
                                                         </Typography>
-                                                         {weekDay.map((item) => (
+                                                         {Object.values(weekOfDays)[index].map((item) => (
                                                          
                                                                 <Col>
                                                                     <ListTable item={item} week={true} />

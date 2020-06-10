@@ -351,13 +351,13 @@ class Scheduling {
         `AND s.workerId is null ` +
         `AND deletedAt is null `
 
-      if (filterStatus) {
-        query += `and s.statusSchedulingId = ${filterStatus} `;
-      }
+      // if (filterStatus) {
+      //   query += `and s.statusSchedulingId = ${filterStatus} `;
+      // }
 
-      if (filterType) {
-        query += `and s.typeSchedulingId = ${filterType} `;
-      }
+      // if (filterType) {
+      //   query += `and s.typeSchedulingId = ${filterType} `;
+      // }
 
       query += `union `;
 
