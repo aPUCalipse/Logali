@@ -244,7 +244,7 @@ class SchedulingCtrl {
         filter.idStatusScheduling,
         filter.idUser
       );
-      response.pagination.maxPages = await this.scheduling.getsMaxPages(
+      response.pagination.maxPages = await this.scheduling.getMaxPages(
         filter.pageSize,
         filter.idTypeScheduling,
         filter.idStatusScheduling,
