@@ -1,5 +1,5 @@
 const _ = require('lodash')
-const userCtrl = require("../controllers/userCrtl")
+const userCtrl = require("../controllers/userCtrl")
 const baseModuleRoute = "/user"
 
 class userRouter {

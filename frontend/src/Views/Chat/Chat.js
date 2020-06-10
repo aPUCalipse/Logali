@@ -1,13 +1,15 @@
 import React , {useEffect, useState} from 'react'
 import socketIOClient from 'socket.io-client'
+import MainLayout from '../MainLayout/MainLayout';
 
 function Chat(){
 
 	const[message, setMessage] = useState('');
 	const[receiver, setReciever] = useState(0);
 	const userData = JSON.parse(localStorage.getItem("userData"));
-    const logado = userData.idUser;
-	const socket = socketIOClient(this.state.serverURL)
+	const logado = userData.idUser;
+	const serverURL = 'http://localhost:8000';
+	const socket = socketIOClient(serverURL)
 	 
 	 useEffect(() => { 
 		socket.on('Message', (receivedInfo) => {
@@ -24,15 +26,15 @@ function Chat(){
 	 
 	function sendMessage(){
 		const dadosMensagem = {
-			sender : logado,
-			reciever : receiver,
-			mensagem : message
+			sender: logado,
+			reciever: reciever,
+			mensagem: message
 		}
 		socket.emit('Message', dadosMensagem)
 	}
 	
 	return(
-	
+		
 	)
 }
 
