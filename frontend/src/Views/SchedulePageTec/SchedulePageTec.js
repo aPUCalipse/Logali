@@ -333,12 +333,12 @@ function ListTable(props) {
         }
         else {
             document.getElementById("btnAccept" + item.schedulingId).setAttribute('style', 'display: none')
-            if(item.statusSchedulingId == 3){
+            if (item.statusSchedulingId == 3) {
                 document.getElementById("btnCancel" + item.schedulingId).removeAttribute('style', 'display: none')
                 document.getElementById("btnFinish" + item.schedulingId).removeAttribute('style', 'display: none')
                 document.getElementById("btnStart" + item.schedulingId).setAttribute('style', 'display: none')
             }
-            if(item.statusSchedulingId == 2){
+            if (item.statusSchedulingId == 2) {
                 document.getElementById("btnCancel" + item.schedulingId).removeAttribute('style', 'display: none')
                 document.getElementById("btnFinish" + item.schedulingId).setAttribute('style', 'display: none')
                 document.getElementById("btnStart" + item.schedulingId).removeAttribute('style', 'display: none')
@@ -354,7 +354,7 @@ function ListTable(props) {
     })
 
     const [modalShowView, setModalShowView] = React.useState(false);
-    
+
 
     const handleOpenView = () => {
         setModalShowView(true);
@@ -452,11 +452,11 @@ function ListTable(props) {
                     </DialogActions>
                 </Dialog>
             </Card>
-                <ModalViewUser
-                    show={modalShowView}
-                    onHide={() => setModalShowView(false)}
-                    item={item}
-                />
+            <ModalViewUser
+                show={modalShowView}
+                onHide={() => setModalShowView(false)}
+                item={item}
+            />
             <MyVerticallyCenteredModal
                 show={modalShow}
                 onHide={() => setModalShow(false)}
@@ -469,6 +469,7 @@ function ListTable(props) {
 export default function Technical() {
     const classes = useStyles();
     const [week, setWeek] = React.useState([]);
+    const [canGetScheduling, setCanGetScheduling] = React.useState(true);
     const [data, setData] = React.useState([]);
     const [dataTec, setDataTec] = React.useState([]);
     const [value, setValue] = React.useState(0);
@@ -532,6 +533,9 @@ export default function Technical() {
                 if (response.data && response.data.data && response.data.data.length > 0) {
                     setData(response.data.data)
                     setMaxPages(response.data.pagination.maxPages)
+                } else {
+                    setData([])
+                    setMaxPages(1)
                 }
             })
             .catch(function (error) {
@@ -595,8 +599,10 @@ export default function Technical() {
         if (week.length == 0)
             setWeek(getWeekDays());
 
-        if (data == null || data.length == 0)
+        if (canGetScheduling) {
             getScheduling();
+            setCanGetScheduling(false)
+        }
 
         if (dataTec == null || dataTec.length == 0)
             getGeoLocXY()

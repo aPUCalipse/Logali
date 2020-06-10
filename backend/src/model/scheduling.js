@@ -351,9 +351,53 @@ class Scheduling {
         `on ad.id = uc.addressId ` +
         `WHERE 1=1 ` +
         `AND s.workerId is null ` +
-        `AND deletedAt is null ` +
-        `OR s.workerId = ${idWorker} ` +
-        `ORDER BY s.workerId DESC `
+        `AND deletedAt is null `
+
+      if (filterStatus) {
+        query += `and s.statusSchedulingId = ${filterStatus} `;
+      }
+
+      if (filterType) {
+        query += `and s.typeSchedulingId = ${filterType} `;
+      }
+
+      query += `union `;
+
+      query +=
+        `` +
+        `SELECT ` +
+        `s.userId 'idClient', ` +
+        `uc.name 'clientName', ` +
+        `uc.rateAVG, ` +
+        `ad.geoLocX,  ` +
+        `ad.geoLocY,  ` +
+        `ad.zipCode,  ` +
+        `ad.number,  ` +
+        `ad.street,  ` +
+        `ad.complement,  ` +
+        `ad.neighborhood,  ` +
+        `ad.city,  ` +
+        `ad.state, ` +
+        `s.typeSchedulingId, ` +
+        `ts.name 'nametypeSchedulig', ` +
+        `s.statusSchedulingId, ` +
+        `ss.name 'nameStatusScheduling', ` +
+        `s.id 'schedulingId', ` +
+        `s.\`dateTime\`, ` +
+        `s.observation, ` +
+        `s.createdAt ` +
+        `FROM logali.scheduling s ` +
+        `join logali.user uc ` +
+        `on uc.id = s.userId ` +
+        `join logali.statusscheduling ss ` +
+        `on ss.id = s.statusSchedulingId ` +
+        `join logali.typescheduling ts ` +
+        `on ts.id = s.typeSchedulingId ` +
+        `join logali.address ad ` +
+        `on ad.id = uc.addressId ` +
+        `WHERE 1=1 ` +
+        `AND s.workerId = ${idWorker} ` +
+        `AND deletedAt is null `
 
       if (filterStatus) {
         query += `and s.statusSchedulingId = ${filterStatus} `;
