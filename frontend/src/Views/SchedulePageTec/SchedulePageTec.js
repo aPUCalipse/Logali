@@ -687,15 +687,10 @@ export default function Technical() {
     };
 
     const searchByTab = () =>{
-        console.log('ENTREI nada')
-        console.log(value)
         if(value == 0)
             getScheduling()
-        else if(value == 2){
-            console.log('ENTREI TAB')
+        else if(value == 2)
             getSchedulingOfDaysWeek()
-            console.log(TabPanel.propTypes.index)
-        }
     }
     return (
         <div className={classes.root}>
@@ -817,7 +812,6 @@ export default function Technical() {
                         </Container>
                     </TabPanel>
                     <TabPanel value={value} index={2}>
-                        {console.log(Object.values(weekOfDays))}
                         <Slider {...settings} >
                             {weekOfDays && Object.keys(weekOfDays).map((weekDay, index) => (
 
@@ -827,7 +821,6 @@ export default function Technical() {
                                             <Card className={classes.rootCard}>
                                                 <CardActionArea>
                                                     <CardContent>
-                                                        {console.log(weekDay)}
                                                         <Typography gutterBottom variant="h5" component="h2">
                                                             {weekDay}
                                                         </Typography>
