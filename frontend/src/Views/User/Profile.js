@@ -24,6 +24,9 @@ import axios from 'axios'
 
 export default function Technical() {
     const [anchorEl, setAnchorEl] = React.useState(null);
+    const open = Boolean(anchorEl);
+
+    const [userId, setUserId] = React.useState(null);
     const [login, setLogin] = React.useState(null);
     const [password, setPassword] = React.useState(null);
     const [confPassword, setConfPassword] = React.useState(null);
@@ -38,7 +41,11 @@ export default function Technical() {
     const [city, setCity] = React.useState(null);
     const [state, setState] = React.useState(null);
     const [rateAVG, setRateAVG] = React.useState(null);
-    const open = Boolean(anchorEl);
+    const [geolocX, setGeolocX] = React.useState(null);
+    const [geolocY, setGeolocY] = React.useState(null);
+
+    const [hasGetted, setHasGette] = React.useState(false);
+
 
     const useStyles = makeStyles((theme) => ({
         popover: {
@@ -59,6 +66,64 @@ export default function Technical() {
         setAnchorEl(null);
     };
 
+    const updateUserData = async () => {
+        const body = {
+            userId: userId,
+            nome: name,
+            login: login,
+            senha: null,
+            tipoUsuario: typeUser,
+            estado: state,
+            cidade: city,
+            bairro: neighborhood,
+            rua: street,
+            cep: zipCode,
+            numero: number,
+            complemento: complement,
+            geolocX: null,
+            geolocY: null
+        }
+
+        if (password) {
+            if (password !== confPassword) {
+                alert("As senhas ao conferem")
+                return
+            } else {
+                body.senha = password
+            }
+        } else {
+            alert("Você deve digitar a senha e a cofnirmação da senha para atualizar seu dados")
+            return
+        }
+
+        const fullAddresSplitedByPlus = `` +
+            `${zipCode.toString().replace(" ", "+")}+` +
+            `${street.replace(" ", "+")}+` +
+            `${number.toString().replace(" ", "+")}+` +
+            `${neighborhood.replace(" ", "+")}+` +
+            `${city.replace(" ", "+")}` +
+            `${state.replace(" ", "+")}` +
+            `Brasil`
+
+        const APIResponse = await axios.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${fullAddresSplitedByPlus}&key=AIzaSyCkIMj_uHe2IZkO0jtrx-tYGPbcJyvr2jo`)
+
+        const addressData = APIResponse.data.results.pop().geometry.location
+
+        setGeolocX(addressData.lat)
+        setGeolocY(addressData.lng)
+
+        body.geolocX = geolocX
+        body.geolocY = geolocY
+
+        const updateOfUser = await axios.put("http://localhost:8000/logali/app/register/update", body)
+
+        if (updateOfUser.status === 200) {
+            alert("Usuario alterado com sucesso")
+        } else {
+            alert(updateOfUser.data.message)
+        }
+    }
+
     const getUserData = async () => {
         try {
             const userDataLocal = JSON.parse(localStorage.getItem("userData"))
@@ -73,6 +138,7 @@ export default function Technical() {
 
                 if (response.status === 200) {
                     const userData = response.data.data
+                    setUserId(userDataLocal.idUser)
                     setLogin(userData.login)
                     setName(userData.name)
                     setNameTitle(userData.name)
@@ -84,6 +150,8 @@ export default function Technical() {
                     setCity(userData.city)
                     setState(userData.state)
                     setRateAVG(userData.rateAVG)
+                    setGeolocX(userData.geoLocX)
+                    setGeolocY(userData.geoLocY)
 
 
                     if (userData.typeUserId === 1) {
@@ -132,6 +200,7 @@ export default function Technical() {
                     setState(response.state)
                 }
             } catch (err) {
+                console.log(err)
                 alert("Endereço não encontrado pelo CEP informado")
             }
         } else {
@@ -139,14 +208,17 @@ export default function Technical() {
         }
     }
 
-    getUserData()
+    if (!hasGetted) {
+        getUserData()
+        setHasGette(true)
+    }
 
     return (
         <div>
             <MainLayout>
                 <Card>
                     <CardContent>
-                        <div onLoad={getUserData}>
+                        <div>
                             <Fab
                                 className={style.rateIcon}
                                 size="large"
@@ -355,6 +427,7 @@ export default function Technical() {
                                     variant="contained"
                                     color="primary"
                                     size="medium"
+                                    onClick={updateUserData}
                                     startIcon={<SaveIcon />}
                                 >
                                     Salvar

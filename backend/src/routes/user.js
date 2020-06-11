@@ -28,7 +28,7 @@ class userRouter {
 
         try {
             const user = new userCtrl(this.dbPool)
-            const response = await this.user.selectUser(userId)
+            const response = await user.selectUser(userId)
 
             if (response) {
                 response.message = 'Usuário encontrado com sucesso'

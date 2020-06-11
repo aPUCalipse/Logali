@@ -54,7 +54,10 @@ class Register {
                 `FROM logali.user ` +
                 `WHERE id = ${userId}`
 
-            var respQuerySelect = await this.dbPool.query(query)
+            console.log("querySelect")
+            console.log(querySelect)
+            console.log("\n\n")
+            var respQuerySelect = await this.dbPool.query(querySelect)
 
             var now = Moment().format("YYYY-MM-DD HH:mm:ss")
             var query_address =
@@ -67,14 +70,15 @@ class Register {
                 `street = '${rua}', ` +
                 `complement = '${complemento}', ` +
                 `neighborhood = '${bairro}', ` +
-                `cidade = '${cidade}', ` +
+                `city = '${cidade}', ` +
                 `state = '${estado}', ` +
-                `updatedAt = ${now} ` +
-                `join user ` +
-                `on user.id = ${userId} ` +
+                `updatedAt = '${now}' ` +
                 `WHERE ` +
                 `address.id = ${respQuerySelect[0].addressId}`;
 
+            console.log("query_address")
+            console.log(query_address)
+            console.log("\n\n")
             var query = await this.dbPool.query(query_address)
 
             var query_user =
@@ -83,14 +87,18 @@ class Register {
                 `name = '${nome}', ` +
                 `login = '${login}', ` +
                 `password = '${senha}', ` +
-                `updatedAt = ${now}, ` +
+                `updatedAt = '${now}' ` +
                 `WHERE ` +
                 `user.id = ${userId}`;
 
+            console.log("query_user")
+            console.log(query_user)
+            console.log("\n\n")
             var resp = await this.dbPool.query(query_user);
 
             return resp;
         } catch (err) {
+            console.log(err)
             throw new Error(`Erro ao atualizar usuário -> ${err}`)
         }
     }
