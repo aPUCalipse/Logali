@@ -106,6 +106,7 @@ function MyVerticallyCenteredModal(props,mode) {
                 .then(function (response) {
                     console.log(response);
                     if (response.status == 200) {
+                        props.onHide()
                         alert("Alterado com sucesso!");
                     }
                 })

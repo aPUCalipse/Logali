@@ -139,6 +139,7 @@ function MyVerticallyCenteredModal(props, mode) {
             setValidateType(false);
             setValidateDate(false)
             setValidateTime(false)
+            props.onHide()
         }
     }
 

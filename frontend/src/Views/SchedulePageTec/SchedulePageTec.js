@@ -766,36 +766,39 @@ export default function Technical() {
                                                 onChange={e => setInitDistance(e.target.value)}
                                                 className={style.inputText}
                                                 value={initDistance}
-                                                label="Distancia inicial"
+                                                label="Distância Inicial"
                                                 fullWidth
                                             />
                                         </FormControl>
                                     </Grid>
 
-                                    <Grid item xs={2} >
-                                        <FormControl>
-                                            <InputLabel className={style.labellInput} id="statusAgendamento">Distancia Final</InputLabel>
+                                    <Grid item xs={12} sm={4} lg={2}  >
+                                        <FormControl className={style.input}>
+                                            {/* <InputLabel className={style.labellInput} id="statusAgendamento">Distancia Final</InputLabel> */}
                                             <TextField
                                                 id="endDIstance"
                                                 name="endDIstance"
                                                 type="number"
                                                 onChange={e => setEndDistance(e.target.value)}
                                                 className={style.inputText}
+                                                label="Distância Final"
                                                 value={endDistance}
+                                                fullWidth
                                             />
                                         </FormControl>
                                     </Grid>
-                                    <Grid item xs={1} className={style.but}>
+                                    {/* <Grid item xs={1} className={style.but}>
                                         <Fab variant="round" className={style.searchButton} size="small" onClick={getScheduling}>
                                             <SearchIcon className={classes.icon} />
                                         </Fab>
-                                    </Grid>
-                                </Grid>
-                                <Grid item xs={6} sm={2} lg={1} className={style.but}>
+                                    </Grid> */}
+                                    <Grid item xs={6} sm={2} lg={1} className={style.but}>
                                     <Fab variant="round" className={style.searchButton} size="small" onClick={searchByTab}>
                                         <SearchIcon className={classes.icon} />
                                     </Fab>
                                 </Grid>
+                                </Grid>
+                                
                             </Form>
                         </Formik>
                     </Container>
