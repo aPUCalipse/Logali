@@ -10,13 +10,10 @@ function getPool() {
     database: 'logali'
   });
 
-    connection.query = util.promisify(connection.query).bind(connection)
-    if(connection){
-        console.log('Opa');
-    }
-    return connection
+  connection.query = util.promisify(connection.query).bind(connection)
+  return connection
 }
 
 module.exports = {
-    getPool: getPool
+  getPool: getPool
 }

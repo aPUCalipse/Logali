@@ -1,5 +1,5 @@
 const _ = require('lodash')
-const userCtrl = require("../controllers/userCrtl")
+const userCtrl = require("../controllers/userCtrl")
 const baseModuleRoute = "/user"
 
 class userRouter {
@@ -16,29 +16,30 @@ class userRouter {
 
     init() {
         this.app.post(`${this.baseRoute}/selectUser`, this.selectUser.bind(this))
+        this.app.post(`${this.baseRoute}/takeDatas`, this.takeDatas.bind(this))
     }
 
     async selectUser(userId) {
         const response = {
-            data:[],
+            data: [],
             message: null,
             statusCode: 500
         }
 
         try {
             const user = new userCtrl(this.dbPool)
-            const response = await this.user.selectUser(userId) 
+            const response = await this.user.selectUser(userId)
 
-            if(response){  
-                    response.message = 'Usuário encontrado com sucesso'
-                    response.data = user
-                    response.statusCode = 200
+            if (response) {
+                response.message = 'Usuário encontrado com sucesso'
+                response.data = user
+                response.statusCode = 200
             } else {
-                    response.message = 'Usuário não encontrado.'
-                    response.statusCode = 404
-                }
-            } 
-        
+                response.message = 'Usuário não encontrado.'
+                response.statusCode = 404
+            }
+        }
+
         catch (err) {
             response.message = `Erro desconhecido ao pesquisar -> ${err.toString()}`
         } finally {
@@ -46,6 +47,36 @@ class userRouter {
         }
     }
 
+    async takeDatas(req, res) {
+        const response = _.clone(this.response);
+        try {
+            const user = new userCtrl(this.dbPool);
+
+            if (!_.isEmpty(req.body)) {
+                const validadeData = user.validatedParams(req.body.userId)
+
+                if (validadeData) {
+                    const resp = await user.takeData(req.body.userId)
+                    response.message = "Seleção realizada com sucesso";
+                    response.data = resp.data;
+                    res.status(200);
+                } else {
+                    response.message = `Erro ao selecionar dados -> ${resp.message}`;
+                    response.data = validatedParams.data;
+                    res.status(resp.statusCode);
+                }
+            } else {
+                response.message = "Os parametros não foram enviados";
+                response.data = req.body;
+                res.status(400);
+            }
+        } catch (err) {
+            response.message = `Erro desconhecido ao pesquisar -> ${err.toString()}`
+            res.status(500);
+        } finally {
+            res.send(response);
+        }
+    }
 }
 
 module.exports = userRouter

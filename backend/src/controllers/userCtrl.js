@@ -33,6 +33,7 @@ class userCtrl {
             return response
         }
     }
+
     async getUserById(id) {
         const response = {
             message: null,
@@ -57,6 +58,47 @@ class userCtrl {
             return response
         }
     }
+
+    async takeData(userId) {
+        const response = {
+            message: null,
+            statusCode: 500,
+            data: {}
+        }
+
+        try {
+            const resp = await this.user.takeDatas(userId);
+            response.data = resp;
+            response.statusCode = 200;
+        } catch (err) {
+            response.message = `Erro desconhecido ao selecionar dados -> ${err.toString()}`;
+        } finally {
+            return response;
+        }
+    }
+
+    validatedParams(userId) {
+        const validatedParams = {
+            isValid: null,
+            message: null,
+            statusCode: null,
+            data: {
+                userId: userId,
+            },
+        }
+
+        if (!userId) {
+            validatedParams.isValid = false;
+            validatedParams.message = "O parametro usuario está incorreto";
+            validatedParams.statusCode = 400;
+        } else {
+            validatedParams.isValid = true;
+            validatedParams.statusCode = 200;
+        }
+
+        return validatedParams;
+    }
+
 }
 
 module.exports = userCtrl

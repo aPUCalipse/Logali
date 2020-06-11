@@ -253,6 +253,7 @@ class SchedulingCtrl {
       response.data = selectedSchedules;
       response.statusCode = 200;
     } catch (err) {
+      console.log(err)
       response.message = `Erro desconhecido ao pesquisar agendamentos  -> ${err.toString()}`;
     } finally {
       return response;
@@ -374,10 +375,21 @@ class SchedulingCtrl {
       isInRangeDistance = true
     }
 
-    console.log(isInRangeDistance)
-    console.log("\n\n")
-
     return isInRangeDistance;
+  }
+
+  async getDistance(selectedSchedules, workerGeoLocalization) {
+    for (let i = 0; i < selectedSchedules.length; i++) {
+      const url = `https://maps.googleapis.com/maps/api/distancematrix/json?` +
+        `origins=${workerGeoLocalization.geoLocX},${workerGeoLocalization.geoLocY}&` +
+        `destinations=${selectedSchedules[i].geoLocX},${selectedSchedules[i].geoLocY}&` +
+        `key=AIzaSyCkIMj_uHe2IZkO0jtrx-tYGPbcJyvr2jo&`
+      const response = await axios.get(url)
+
+      selectedSchedules[i].distance = response.data.rows.pop().elements.pop().distance.value
+    }
+
+    return selectedSchedules
   }
 
   async orderByDistance(selectedSchedules, workerGeoLocalization, page, pageSize, initDistance, endDistance) {
@@ -401,6 +413,32 @@ class SchedulingCtrl {
     return _.slice(sortedSchedules, init, end)
   }
 
+  getSchedulingGrouppedByDate(schedulings) {
+    const daysOfWeek = {}
+    const momentItereteeTime = Moment()
+    for (let i = 0; i < 7; i++) {
+      daysOfWeek[momentItereteeTime.format("DD/MM/YYYY")] = []
+      momentItereteeTime.add(1, 'day')
+    }
+
+    schedulings = _.orderBy(schedulings, 'dateTime')
+    for (let i = 0; i < schedulings.length; i++) {
+      const date = schedulings[i].dateTime.split(" ")[0]
+      const momentDate = Moment(date, "YYYY-MM-DD")
+
+      schedulings[i].date = momentDate.format("DD/MM/YYYY")
+    }
+
+    const grouppedSchedulings = _.groupBy(schedulings, 'date')
+
+    for (const keyShe in grouppedSchedulings) {
+      if (daysOfWeek[keyShe]) {
+        daysOfWeek[keyShe] = grouppedSchedulings[keyShe]
+      }
+    }
+    return daysOfWeek
+  }
+
   async viewScheduling(params) {
     const response = {
       data: {},
@@ -420,7 +458,7 @@ class SchedulingCtrl {
         const selectedSchedules = await this.scheduling.viewScheduling(
           params.idWorker,
           params.filterType,
-          params.filterStatus
+          params.filterStatuss
         );
 
         response.pagination.maxPages = await this.scheduling.getMaxPageOfView(
@@ -431,6 +469,39 @@ class SchedulingCtrl {
         )
 
         response.data = await this.orderByDistance(selectedSchedules, getAddresOfWorker.data, params.page, params.pageSize, params.initDistance, params.endDistance)
+
+        response.statusCode = 200;
+      } else {
+        response.message = getAddresOfWorker.message
+        response.statusCode = getAddresOfWorker.statusCode
+      }
+    } catch (err) {
+      console.log(err)
+      response.message = `Erro desconhecido ao selecionar agendamentos  -> ${err.toString()}`;
+    } finally {
+      return response;
+    }
+  }
+
+  async viewSchedulingOfTech(params) {
+    const response = {
+      data: {},
+      message: null,
+      statusCode: 500,
+    };
+
+
+    try {
+
+      const getAddresOfWorker = await this.userCtrl.getUserById(params.idWorker);
+
+      if (getAddresOfWorker.statusCode === 200) {
+        const selectedSchedules = await this.scheduling.viewSchedulingOfTech(
+          params.idWorker,
+          params.day
+        );
+
+        response.data = await this.getDistance(selectedSchedules, getAddresOfWorker.data)
 
         response.statusCode = 200;
       } else {
@@ -620,6 +691,42 @@ class SchedulingCtrl {
     return validatedParams;
   }
 
+  getPageParamsOfTech(idWorker, day) {
+    const validatedParams = {
+      isValid: true,
+      message: null,
+      statusCode: null,
+      data: {
+        idWorker: null,
+        day: null
+      },
+    };
+
+    const numberIdWorker = parseInt(idWorker);
+
+    if (_.isNaN(numberIdWorker) || numberIdWorker <= 0) {
+      validatedParams.isValid = false;
+      validatedParams.message =
+        "O parametro id do técnico deve ser enviado e deve ser maior que zero";
+      validatedParams.statusCode = 400;
+    } else {
+      validatedParams.data.idWorker = numberIdWorker;
+    }
+
+    if (!day) {
+      validatedParams.data.day = null;
+    } else {
+      const schedulingDay = Moment(day, "DD/MM/YYYY");
+      if (schedulingDay.isValid()) {
+        validatedParams.data.day = schedulingDay;
+      } else {
+        validatedParams.data.day = null;
+      }
+    }
+
+    return validatedParams;
+  }
+
   async verifyAcceptance(idScheduling, idWorker) {
     const response = {
       message: null,
@@ -752,6 +859,7 @@ class SchedulingCtrl {
       }
     } catch (err) {
       console.log("Erro em updateWorkerId -> " + err);
+      response.message = "Erro em updateWorkerId -> " + err;
     } finally {
       return response;
     }
@@ -773,6 +881,7 @@ class SchedulingCtrl {
       }
     } catch (err) {
       console.log("Erro ao fechar agendamento -> " + err)
+      response.message = "Erro ao fechar agendamento -> " + err
     } finally {
       return response;
     }
@@ -794,6 +903,7 @@ class SchedulingCtrl {
       }
     } catch (err) {
       console.log("Erro ao iniciar agendamento -> " + err)
+      response.message = "Erro ao iniciar agendamento -> " + err
     } finally {
       return response;
     }

@@ -3,6 +3,14 @@
         width: 88%;
         height: 30vh;
         border: none;
+        text-align: center;
+    }
+    .mapWeek{
+        width: 95%;
+        height: 25vh;
+        border: none;
+        text-align: center;
+        justify-content: center;
     }
 }
 
@@ -11,46 +19,194 @@
         width: 71%;
         height: 20vh;
         border: none;
+        text-align: center;
+        justify-content: center;
+    }
+
+    .mapWeek{
+        width: 83%;
+        height: 20vh;
+        border: none;
+        text-align: center;
+        justify-content: center;
     }
 }
+
+@media only screen and (max-device-width: 1024px) {
+   
+
+    .mapWeek{
+        width: 80%;
+        height: 20vh;
+        border: none;
+        text-align: center;
+        justify-content: center;
+    }
+}
+
+@media only screen and (max-device-width: 960px) {
+    .mapWeek{
+        width: 78%;
+        height: 20vh;
+        border: none;
+        text-align: center;
+        justify-content: center;
+    }
+}
+
 
 @media only screen and (max-device-width: 900px) {
     .map{
         width: 50%;
         height: 20vh;
         border: none;
+        text-align: center;
+    }
+    .mapWeek{
+        width: 70%;
+        height: 20vh;
+        border: none;
+        text-align: center;
+        justify-content: center;
     }
 }
 
-@media only screen and (max-device-width: 768px) {
-    .map{
-        width: 50%;
+@media only screen and (max-device-width: 795px) {
+    .mapWeek{
+        width: 150%;
         height: 30vh;
         border: none;
+        text-align: center;
+        justify-content: center;
     }
+
 }
 
-@media only screen and (max-device-width: 720px) {
+@media only screen and (max-device-width: 795px) {
+    .mapWeek{
+        width: 110%;
+        height: 30vh;
+        border: none;
+        text-align: center;
+        justify-content: center;
+    }
+
+}
+
+@media only screen and (max-device-width: 722px) {
     .map{
         width: 57%;
         height: 20vh;
         border: none;
     }
+    .mapWeek{
+        width: 115%;
+        height: 20vh;
+        border: none;
+        text-align: center;
+        justify-content: center;
+    }
 }
 
-@media only screen and (max-device-width: 480px) {
+
+@media only screen and (max-device-width: 652px) {
+    .map{
+        width: 50%;
+        height: 30vh;
+        border: none;
+    }
+    .mapWeek{
+        width: 115%;
+        height: 20vh;
+        border: none;
+        text-align: center;
+        justify-content: center;
+    }
+}
+
+@media only screen and (max-device-width: 640px) {
+  
+    .mapWeek{
+        width: 108%;
+        height: 20vh;
+        border: none;
+        text-align: center;
+        justify-content: center;
+    }
+}
+
+@media only screen and (max-device-width: 628px) {
+  
+    .mapWeek{
+        width: 107%;
+        height: 28vh;
+        border: none;
+        text-align: center;
+        justify-content: center;
+    }
+}
+
+@media only screen and (max-device-width: 612px) {
+
+    .mapWeek{
+        width: 100%;
+        height: 28vh;
+        border: none;
+        text-align: center;
+        justify-content: center;
+    }
+}
+
+@media only screen and (max-device-width: 599px) {
+  
+    .mapWeek{
+        width: 98%;
+        height: 28vh;
+        border: none;
+        text-align: center;
+        justify-content: center;
+    }
+}
+
+@media only screen and (max-device-width: 550px) {
+  
+    .mapWeek{
+        width: 93%;
+        height: 28vh;
+        border: none;
+        text-align: center;
+        justify-content: center;
+    }
+}
+
+@media only screen and (max-device-width: 487px) {
     .map{
         width: 102%;
         height: 20vh;
         border: none;
     }
+    .mapWeek{
+        width: 80%;
+        height: 20vh;
+        border: none;
+        text-align: center;
+        justify-content: center;
+    }
 }
 
-@media only screen and (max-device-width: 360px) {
+@media only screen and (max-device-width: 361px) {
     .map{
         width: 69%;
         height: 20vh;
         border: none;
+    }
+
+    .mapWeek{
+        width: 40%;
+        height: 20vh;
+        border: none;
+        text-align: center;
+        justify-content: center;
     }
 }
 
@@ -80,24 +236,28 @@
 .input{
     min-width: 98% !important;
     padding: 1% !important;
+    margin: 2%;
+    margin-top: 5% !important;
 }
 
 .but{
     padding: 1% !important;
+    margin-top: 1% !important;
 }
 
 .searchButton{
     background-color: rgba(241, 196, 58, 0.7) !important;
+    margin-top: 1% !important;
 }
 
 .labell{
     margin-top: 1%;
 }
 
-.labellInput{
+/* .labellInput{
     margin-top: -10% !important;
-}
+} */
 
 .inputText{
-    margin-top: 10% !important;
+    margin-top: 3% !important;
 }

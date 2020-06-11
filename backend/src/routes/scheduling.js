@@ -29,6 +29,8 @@ class SchedulingRouter {
     this.app.post(`${this.baseRoute}/takeloc`, this.takeLoc.bind(this));
     this.app.post(`${this.baseRoute}/saveTecLoc`, this.insertTecLoc.bind(this));
     this.app.post(`${this.baseRoute}/startScheduling`, this.startScheduling.bind(this));
+    this.app.post(`${this.baseRoute}/viewOfTech`, this.viewOfTech.bind(this));
+    this.app.post(`${this.baseRoute}/viewByDates`, this.viewSchedulingByDate.bind(this));
   }
 
   /**
@@ -139,7 +141,6 @@ class SchedulingRouter {
       response.message = "Erro ao realizar pesquisa";
       res.status(500);
     } finally {
-      console.log(response);
       res.send(response);
     }
   }
@@ -202,7 +203,6 @@ class SchedulingRouter {
       response.message = "Erro ao realizar seleção";
       res.status(500);
     } finally {
-      console.log("resposta: " + response);
       res.send(response);
     }
   }
@@ -366,6 +366,88 @@ class SchedulingRouter {
       response.message = "Erro ao realizar seleção";
       res.status(500);
     } finally {
+      res.send(response);
+    }
+  }
+
+  async viewSchedulingByDate(req, res) {
+    const response = _.clone(this.response);
+    try {
+      const schedulingCtrl = new SchedulingCtrl(this.dbPool);
+
+      if (!_.isEmpty(req.body)) {
+        const params = schedulingCtrl.getPageParams(
+          req.body.page,
+          req.body.pageSize,
+          req.body.idWorker,
+          req.body.filterType,
+          req.body.filterStatus,
+          req.body.initDistance,
+          req.body.endDistance,
+        );
+
+        if (params.isValid) {
+          const resp = await schedulingCtrl.viewScheduling(params.data);
+          response.message = "Seleção realizada com sucesso";
+          if (resp.data.length > 0) {
+            response.data = schedulingCtrl.getSchedulingGrouppedByDate(resp.data);
+          } else {
+            response.data = {}
+          }
+          response.pagination = resp.pagination;
+          res.status(200);
+        } else {
+          response.message = params.message;
+          response.data = params.data;
+          res.status(params.statusCode);
+        }
+      } else {
+        response.message = "Os parametros não foram enviados";
+        response.data = req.body;
+        res.status(400);
+      }
+    } catch (err) {
+      console.log(err);
+      response.message = "Erro ao realizar seleção";
+      res.status(500);
+    } finally {
+      res.send(response);
+    }
+  }
+
+
+  async viewOfTech(req, res) {
+    const response = _.clone(this.response);
+    try {
+      const schedulingCtrl = new SchedulingCtrl(this.dbPool);
+
+      if (!_.isEmpty(req.body)) {
+        const params = schedulingCtrl.getPageParamsOfTech(
+          req.body.idWorker,
+          req.body.day
+        );
+
+        if (params.isValid) {
+          const resp = await schedulingCtrl.viewSchedulingOfTech(params.data);
+          response.message = "Seleção realizada com sucesso";
+          response.data = resp.data;
+          response.pagination = resp.pagination;
+          res.status(200);
+        } else {
+          response.message = params.message;
+          response.data = params.data;
+          res.status(params.statusCode);
+        }
+      } else {
+        response.message = "Os parametros não foram enviados";
+        response.data = req.body;
+        res.status(400);
+      }
+    } catch (err) {
+      console.log(err);
+      response.message = "Erro ao realizar seleção";
+      res.status(500);
+    } finally {
       console.log("resposta: " + response);
       res.send(response);
     }
@@ -390,7 +472,6 @@ class SchedulingRouter {
       response.message = "Erro ao realizar seleção";
       res.status(500);
     } finally {
-      console.log("resposta: " + response);
       res.send(response);
     }
   }
@@ -409,8 +490,7 @@ class SchedulingRouter {
 
         if (validatedParams && validatedParams.isValid) {
 
-          //response.data = validatedParams;
-          //response.message = "Routes apos chamar a função Controller";
+              
 
           const resp = await schedulingCtrl.insertLoc(validatedParams)
 
@@ -443,7 +523,6 @@ class SchedulingRouter {
       response.message = "Erro ao realizar inserção";
       res.status(500);
     } finally {
-      //console.log("resposta: " + response);
       res.send(response);
     }
   }

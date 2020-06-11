@@ -157,7 +157,7 @@ export default function RecipeReviewCard() {
             )
         }
         if(item.statusSchedulingId == 2){
-            document.getElementById("btnView").removeAttribute('style', 'display: none')
+            document.getElementById("btnView") && document.getElementById("btnView").removeAttribute('style', 'display: none')
             return (
                 <Avatar aria-label="recipe" className={classes.avatar2}>
                     <TimelapseIcon />
@@ -213,6 +213,7 @@ export default function RecipeReviewCard() {
         const response = await axios.post('http://localhost:8000/logali/app/scheduling/select', {
             "idUser": user.idUser,
             "page": page,
+            "maxPages": 10,
             "pageSize": 10,
             "idTypeScheduling": idTypeScheduling,
             "idStatusScheduling": idStatusScheduling,
@@ -364,7 +365,7 @@ export default function RecipeReviewCard() {
                                             <Typography variant="body2" color="textSecondary" component="p">
                                                 {item.observation}
                                             </Typography>
-                                            <Typography hidden={item.idWorker !== null ? false : true}> {item.workerName} - Nota: {item.rateAVG} </Typography>
+                                         {/* <Typography hidden={item.idWorker !== null ? false : true}> {item.workerName} - Nota: {item.rateAVG} </Typography> */}
                                         </CardContent>
                                         <CardActions disableSpacing>
                                             <Tooltip title="Perfil Atendente">

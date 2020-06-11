@@ -14,15 +14,15 @@ class LoginRouter {
         }
     }
 
-	init() {
+    init() {
         this.app.post(`${this.baseRoute}`, this.login.bind(this))
     }
-	
+
 	/**
      * @params
      *  login, senha, tipoUsuario
      */
-	 async login(req, res) {
+    async login(req, res) {
         const response = _.clone(this.response)
         try {
             const loginCtrl = new LoginCtrl(this.dbPool)
@@ -39,8 +39,7 @@ class LoginRouter {
 
                     if (resp && resp.message === true) {
                         response.message = "Login realizado com sucesso"
-                        response.data = validatedParams.data
-                        response.data.idUser = resp.idUser
+                        response.data = resp.data
                         res.status(200)
                     } else {
                         response.message = `Erro ao realizar login -> ${resp.message}`
