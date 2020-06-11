@@ -33,6 +33,7 @@ export default function Technical() {
     const [name, setName] = React.useState(null);
     const [nameTitle, setNameTitle] = React.useState(null);
     const [typeUser, setTypeUser] = React.useState(null);
+    const [idTypeUser, setIdTypeUser] = React.useState(null);
     const [zipCode, setZipCode] = React.useState(null);
     const [street, setStreet] = React.useState(null);
     const [number, setNumber] = React.useState(null);
@@ -72,7 +73,7 @@ export default function Technical() {
             nome: name,
             login: login,
             senha: null,
-            tipoUsuario: typeUser,
+            tipoUsuario: idTypeUser,
             estado: state,
             cidade: city,
             bairro: neighborhood,
@@ -152,10 +153,14 @@ export default function Technical() {
                     setRateAVG(userData.rateAVG)
                     setGeolocX(userData.geoLocX)
                     setGeolocY(userData.geoLocY)
-
+                    setIdTypeUser(userData.typeUserId)
 
                     if (userData.typeUserId === 1) {
                         setTypeUser("Cliente")
+                        const addressInput = document.getElementsByName('canShowAddress')
+                        for (let i = 0; i < addressInput.length; i++) {
+                            addressInput[i].removeAttribute('style');
+                        }
                     } else if (userData.typeUserId === 2) {
                         setTypeUser("Tecnico")
                     }
@@ -321,8 +326,8 @@ export default function Technical() {
                                     />
                                 </FormControl>
                             </Grid>
-                            <Grid item xs={8} name="canShowAddress"></Grid>
-                            <Grid item xs={3} name="canShowAddress">
+                            <Grid item xs={8} name="canShowAddress" style={{ display: "none" }}></Grid>
+                            <Grid item xs={3} name="canShowAddress" style={{ display: "none" }}>
                                 <FormControl fullWidth variant="outlined">
                                     <InputLabel shrink>Cep</InputLabel>
                                     <OutlinedInput
@@ -336,8 +341,8 @@ export default function Technical() {
                                     />
                                 </FormControl>
                             </Grid>
-                            <Grid item xs={9} name="canShowAddress"></Grid>
-                            <Grid item xs={6} name="canShowAddress">
+                            <Grid item xs={9} name="canShowAddress" style={{ display: "none" }}></Grid>
+                            <Grid item xs={6} name="canShowAddress" style={{ display: "none" }}>
                                 <FormControl fullWidth variant="outlined">
                                     <InputLabel shrink>Rua</InputLabel>
                                     <OutlinedInput
@@ -351,7 +356,7 @@ export default function Technical() {
                                     />
                                 </FormControl>
                             </Grid>
-                            <Grid item xs={2} name="canShowAddress">
+                            <Grid item xs={2} name="canShowAddress" style={{ display: "none" }}>
                                 <FormControl fullWidth variant="outlined">
                                     <InputLabel shrink>Numero</InputLabel>
                                     <OutlinedInput
@@ -365,7 +370,7 @@ export default function Technical() {
                                     />
                                 </FormControl>
                             </Grid>
-                            <Grid item xs={4} name="canShowAddress">
+                            <Grid item xs={4} name="canShowAddress" style={{ display: "none" }}>
                                 <FormControl fullWidth variant="outlined">
                                     <InputLabel shrink>Complemento</InputLabel>
                                     <OutlinedInput
@@ -379,7 +384,7 @@ export default function Technical() {
                                     />
                                 </FormControl>
                             </Grid>
-                            <Grid item xs={4} name="canShowAddress">
+                            <Grid item xs={4} name="canShowAddress" style={{ display: "none" }}>
                                 <FormControl fullWidth variant="outlined">
                                     <InputLabel shrink>Bairro</InputLabel>
                                     <OutlinedInput
@@ -393,7 +398,7 @@ export default function Technical() {
                                     />
                                 </FormControl>
                             </Grid>
-                            <Grid item xs={4} name="canShowAddress">
+                            <Grid item xs={4} name="canShowAddress" style={{ display: "none" }}>
                                 <FormControl fullWidth variant="outlined">
                                     <InputLabel shrink>Cidade</InputLabel>
                                     <OutlinedInput
@@ -407,7 +412,7 @@ export default function Technical() {
                                     />
                                 </FormControl>
                             </Grid>
-                            <Grid item xs={4} name="canShowAddress">
+                            <Grid item xs={4} name="canShowAddress" style={{ display: "none" }}>
                                 <FormControl fullWidth variant="outlined">
                                     <InputLabel shrink>Estado</InputLabel>
                                     <OutlinedInput
