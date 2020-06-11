@@ -1,5 +1,6 @@
 import React , {useEffect, useState} from 'react'
 import socketIOClient from 'socket.io-client'
+import ChatWindow from '../../Components/Chat/Chat'
 
 function Chat(){
 
@@ -32,7 +33,7 @@ function Chat(){
 	}
 	
 	return(
-	
+		<ChatWindow></ChatWindow>
 	)
 }
 
