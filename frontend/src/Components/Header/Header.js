@@ -113,7 +113,8 @@ function Header() {
             >
               <div className={style.userTextStyle}>
                 <Fab size="medium" className={style.peopelIcon}>
-                  {rateAVG} <Star />
+                  <div className={style.starIconText}>{rateAVG}</div>
+                  <Star className={style.starIcon} />
                 </Fab>
                 {name}
               </div>

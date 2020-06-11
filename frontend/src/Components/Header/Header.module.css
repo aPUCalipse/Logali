@@ -63,3 +63,16 @@
 .peopelIcon:focus{
     outline: 0px !important;
 }
+
+.starIcon{
+    font-size: 43px !important;
+    color: #FFF;
+}
+
+.starIconText{
+    position: absolute !important;
+    left: 40%;
+    font-size: 17px;
+    color: #000;
+    top: 22%;
+}
