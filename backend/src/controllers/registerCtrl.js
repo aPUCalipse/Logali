@@ -6,7 +6,7 @@ class RegisterCtrl {
         this.register = new Register(dbPool)
     }
 
-    valitadeParamsCreate(nome, login, senha, tipoUsuario, estado, cidade, bairro, rua, cep, numero, complemento ,geolocX, geolocY) {
+    valitadeParamsCreate(nome, login, senha, tipoUsuario, estado, cidade, bairro, rua, cep, numero, complemento, geolocX, geolocY) {
         const validatedParams = {
             isValid: null,
             message: null,
@@ -17,15 +17,15 @@ class RegisterCtrl {
                 password: senha,
                 tipoUsuario: tipoUsuario,
                 state: estado,
-                city : cidade,
-                neighborhood : bairro,
-                street : rua,
-                zipCode : cep,
+                city: cidade,
+                neighborhood: bairro,
+                street: rua,
+                zipCode: cep,
                 number: numero,
-                complement : complemento,
+                complement: complemento,
                 geoLocX: geolocX,
                 geoLocY: geolocY,
-                CreatedAt :null
+                CreatedAt: null
             }
         }
 
@@ -81,7 +81,7 @@ class RegisterCtrl {
             validatedParams.message = "O parametro Geolocalização do eixo Y está incorreto"
             validatedParams.statusCode = 400
         }
-            // Complemento pode ser um parâmetro vazio e n sera validado.
+        // Complemento pode ser um parâmetro vazio e n sera validado.
         else {
             validatedParams.isValid = true
             validatedParams.statusCode = 200
@@ -147,7 +147,7 @@ class RegisterCtrl {
             validatedParams.isValid = false
             validatedParams.message = "O parametro id está incorreto"
             validatedParams.statusCode = 400
-        }else if (!nome) {
+        } else if (!nome) {
             validatedParams.isValid = false
             validatedParams.message = "O parametro nome está incorreto"
             validatedParams.statusCode = 400
@@ -207,10 +207,13 @@ class RegisterCtrl {
             statusCode: 500
         }
 
+        console.log(updater)
+
         try {
-            const updaterRegister = await this.register.updater(updater.userId, updater.name, updater.login, updater.password, updater.state, updater.city, updater.neighborhood, updater.street, updater.zipCode, updater.number, updater.complement, updater.geoLocX, updater.geoLocY, updater.updatedAt)
+            const updaterRegister = await this.register.update(updater.id, updater.name, updater.login, updater.password, updater.state, updater.city, updater.neighborhood, updater.street, updater.zipCode, updater.number, updater.complement, updater.geoLocX, updater.geoLocY)
             response.insertId = updaterRegister.insertId
             response.message = updaterRegister.message
+            response.statusCode = 200
         } catch (err) {
             response.message = `Erro desconhecido ao atualizar usuário -> ${err.toString()}`
         } finally {

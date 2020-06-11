@@ -18,9 +18,35 @@ import Fab from '@material-ui/core/Fab';
 import style from './Profile.module.css'
 import { makeStyles } from '@material-ui/core/styles';
 
+import cep from 'cep-promise'
+
+import axios from 'axios'
+
 export default function Technical() {
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
+
+    const [userId, setUserId] = React.useState(null);
+    const [login, setLogin] = React.useState(null);
+    const [password, setPassword] = React.useState(null);
+    const [confPassword, setConfPassword] = React.useState(null);
+    const [name, setName] = React.useState(null);
+    const [nameTitle, setNameTitle] = React.useState(null);
+    const [typeUser, setTypeUser] = React.useState(null);
+    const [idTypeUser, setIdTypeUser] = React.useState(null);
+    const [zipCode, setZipCode] = React.useState(null);
+    const [street, setStreet] = React.useState(null);
+    const [number, setNumber] = React.useState(null);
+    const [complement, setComplement] = React.useState(null);
+    const [neighborhood, setNeighborhood] = React.useState(null);
+    const [city, setCity] = React.useState(null);
+    const [state, setState] = React.useState(null);
+    const [rateAVG, setRateAVG] = React.useState(null);
+    const [geolocX, setGeolocX] = React.useState(null);
+    const [geolocY, setGeolocY] = React.useState(null);
+
+    const [hasGetted, setHasGette] = React.useState(false);
+
 
     const useStyles = makeStyles((theme) => ({
         popover: {
@@ -41,6 +67,157 @@ export default function Technical() {
         setAnchorEl(null);
     };
 
+    const updateUserData = async () => {
+        const body = {
+            userId: userId,
+            nome: name,
+            login: login,
+            senha: null,
+            tipoUsuario: idTypeUser,
+            estado: state,
+            cidade: city,
+            bairro: neighborhood,
+            rua: street,
+            cep: zipCode,
+            numero: number,
+            complemento: complement,
+            geolocX: null,
+            geolocY: null
+        }
+
+        if (password) {
+            if (password !== confPassword) {
+                alert("As senhas ao conferem")
+                return
+            } else {
+                body.senha = password
+            }
+        } else {
+            alert("Você deve digitar a senha e a cofnirmação da senha para atualizar seu dados")
+            return
+        }
+
+        const fullAddresSplitedByPlus = `` +
+            `${zipCode.toString().replace(" ", "+")}+` +
+            `${street.replace(" ", "+")}+` +
+            `${number.toString().replace(" ", "+")}+` +
+            `${neighborhood.replace(" ", "+")}+` +
+            `${city.replace(" ", "+")}` +
+            `${state.replace(" ", "+")}` +
+            `Brasil`
+
+        const APIResponse = await axios.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${fullAddresSplitedByPlus}&key=AIzaSyCkIMj_uHe2IZkO0jtrx-tYGPbcJyvr2jo`)
+
+        const addressData = APIResponse.data.results.pop().geometry.location
+
+        setGeolocX(addressData.lat)
+        setGeolocY(addressData.lng)
+
+        body.geolocX = geolocX
+        body.geolocY = geolocY
+
+        const updateOfUser = await axios.put("http://localhost:8000/logali/app/register/update", body)
+
+        if (updateOfUser.status === 200) {
+            alert("Usuario alterado com sucesso")
+        } else {
+            alert(updateOfUser.data.message)
+        }
+    }
+
+    const getUserData = async () => {
+        try {
+            const userDataLocal = JSON.parse(localStorage.getItem("userData"))
+
+            if (userDataLocal && userDataLocal.isLogged && userDataLocal.idUser) {
+                const body = {
+                    "userId": userDataLocal.idUser
+                }
+
+                const response = await axios.post("http://localhost:8000/logali/app/user/takeDatas", body)
+                console.log(response)
+
+                if (response.status === 200) {
+                    const userData = response.data.data
+                    setUserId(userDataLocal.idUser)
+                    setLogin(userData.login)
+                    setName(userData.name)
+                    setNameTitle(userData.name)
+                    setZipCode(userData.zipCode)
+                    setStreet(userData.street)
+                    setNumber(userData.number)
+                    setComplement(userData.complement)
+                    setNeighborhood(userData.neighborhood)
+                    setCity(userData.city)
+                    setState(userData.state)
+                    setRateAVG(userData.rateAVG)
+                    setGeolocX(userData.geoLocX)
+                    setGeolocY(userData.geoLocY)
+                    setIdTypeUser(userData.typeUserId)
+
+                    if (userData.typeUserId === 1) {
+                        setTypeUser("Cliente")
+                        const addressInput = document.getElementsByName('canShowAddress')
+                        for (let i = 0; i < addressInput.length; i++) {
+                            addressInput[i].removeAttribute('style');
+                        }
+                    } else if (userData.typeUserId === 2) {
+                        setTypeUser("Tecnico")
+                    }
+                } else {
+                    alert(response.data.message)
+                }
+            }
+        } catch (err) {
+            console.log(err)
+        }
+    }
+
+    const onBlurZipCode = async (element) => {
+        const zipCode = element.target.value
+        if (zipCode && zipCode.length === 8) {
+            try {
+                const response = await cep(zipCode)
+                console.log(response)
+
+                document.getElementById('number').removeAttribute('readonly');
+                document.getElementById('complement').removeAttribute('readonly');
+
+                if (response.street) {
+                    setStreet(response.street)
+                } else {
+                    document.getElementById('street').removeAttribute('readonly');
+                }
+
+                if (response.neighborhood) {
+                    setNeighborhood(response.neighborhood)
+                } else {
+                    document.getElementById('neighborhod').removeAttribute('readonly');
+                }
+
+                if (response.city) {
+                    setCity(response.city)
+                } else {
+                    document.getElementById('city').removeAttribute('readonly');
+                }
+
+                if (response.state) {
+                    setState(response.state)
+                }
+            } catch (err) {
+                console.log(err)
+                alert("Endereço não encontrado pelo CEP informado")
+            }
+        } else {
+            alert("O cep deve conter 8 numeros")
+        }
+    }
+
+    if (!hasGetted) {
+        getUserData()
+        setHasGette(true)
+    }
+
     return (
         <div>
             <MainLayout>
@@ -55,7 +232,7 @@ export default function Technical() {
                                 onMouseEnter={handlePopoverOpen}
                                 onMouseLeave={handlePopoverClose}
                             >
-                                <div className={style.starIconText}>{4}</div>
+                                <div className={style.starIconText}>{rateAVG}</div>
                                 <StarIcon className={style.starIcon} />
                             </Fab>
                             <Popover
@@ -81,7 +258,7 @@ export default function Technical() {
                             </Popover>
                         </div>
                         <Typography className={style.title} variant="h5" component="h2">
-                            Perfil do {"Cliente"} {"Bananinha"}
+                            Perfil do {typeUser} {nameTitle}
                         </Typography>
 
                         <Grid container spacing={2}>
@@ -92,11 +269,14 @@ export default function Technical() {
                             </Grid>
                             <Grid item xs={6}>
                                 <FormControl fullWidth variant="outlined">
-                                    <InputLabel>login</InputLabel>
+                                    <InputLabel shrink>login</InputLabel>
                                     <OutlinedInput
                                         id="login"
                                         readOnly={true}
-                                        value={"bananinha123"}
+                                        value={login}
+                                        onChange={(event) => {
+                                            setLogin(event.target.value)
+                                        }}
                                         labelWidth={40}
                                     />
                                 </FormControl>
@@ -107,6 +287,10 @@ export default function Technical() {
                                     <InputLabel>Senha</InputLabel>
                                     <OutlinedInput
                                         id="passwrd"
+                                        value={password}
+                                        onChange={(event) => {
+                                            setPassword(event.target.value)
+                                        }}
                                         labelWidth={50}
                                     />
                                 </FormControl>
@@ -116,6 +300,10 @@ export default function Technical() {
                                     <InputLabel>Confirmação de senha</InputLabel>
                                     <OutlinedInput
                                         id="confPasswrd"
+                                        value={confPassword}
+                                        onChange={(event) => {
+                                            setConfPassword(event.target.value)
+                                        }}
                                         labelWidth={170}
                                     />
                                 </FormControl>
@@ -127,82 +315,113 @@ export default function Technical() {
                             </Grid>
                             <Grid item xs={4}>
                                 <FormControl fullWidth variant="outlined">
-                                    <InputLabel>Nome</InputLabel>
+                                    <InputLabel shrink>Nome</InputLabel>
                                     <OutlinedInput
                                         id="name"
-                                        value={"Bananinha"}
+                                        value={name}
+                                        onChange={(event) => {
+                                            setName(event.target.value)
+                                        }}
                                         labelWidth={60}
                                     />
                                 </FormControl>
                             </Grid>
-                            <Grid item xs={8} name="canShowAddress"></Grid>
-                            <Grid item xs={3} name="canShowAddress">
+                            <Grid item xs={8} name="canShowAddress" style={{ display: "none" }}></Grid>
+                            <Grid item xs={3} name="canShowAddress" style={{ display: "none" }}>
                                 <FormControl fullWidth variant="outlined">
-                                    <InputLabel>Cep</InputLabel>
+                                    <InputLabel shrink>Cep</InputLabel>
                                     <OutlinedInput
-                                        id="zipCodw"
-                                        value={"12345678"}
+                                        id="zipCode"
+                                        value={zipCode}
+                                        onChange={(event) => {
+                                            setZipCode(event.target.value)
+                                        }}
                                         labelWidth={60}
+                                        onBlur={onBlurZipCode}
                                     />
                                 </FormControl>
                             </Grid>
-                            <Grid item xs={9} name="canShowAddress"></Grid>
-                            <Grid item xs={6} name="canShowAddress">
+                            <Grid item xs={9} name="canShowAddress" style={{ display: "none" }}></Grid>
+                            <Grid item xs={6} name="canShowAddress" style={{ display: "none" }}>
                                 <FormControl fullWidth variant="outlined">
-                                    <InputLabel>Rua</InputLabel>
+                                    <InputLabel shrink>Rua</InputLabel>
                                     <OutlinedInput
                                         id="street"
-                                        value={"rua da banana"}
+                                        value={street}
+                                        onChange={(event) => {
+                                            setStreet(event.target.value)
+                                        }}
+                                        readOnly={true}
                                         labelWidth={60}
                                     />
                                 </FormControl>
                             </Grid>
-                            <Grid item xs={2} name="canShowAddress">
+                            <Grid item xs={2} name="canShowAddress" style={{ display: "none" }}>
                                 <FormControl fullWidth variant="outlined">
-                                    <InputLabel>Numero</InputLabel>
+                                    <InputLabel shrink>Numero</InputLabel>
                                     <OutlinedInput
-                                        id="numberm"
-                                        value={"12"}
+                                        id="number"
+                                        readOnly={true}
+                                        value={number}
+                                        onChange={(event) => {
+                                            setNumber(event.target.value)
+                                        }}
                                         labelWidth={60}
                                     />
                                 </FormControl>
                             </Grid>
-                            <Grid item xs={4} name="canShowAddress">
+                            <Grid item xs={4} name="canShowAddress" style={{ display: "none" }}>
                                 <FormControl fullWidth variant="outlined">
-                                    <InputLabel>Complemento</InputLabel>
+                                    <InputLabel shrink>Complemento</InputLabel>
                                     <OutlinedInput
                                         id="complement"
-                                        value={"CASA"}
-                                        labelWidth={60}
+                                        readOnly={true}
+                                        value={complement}
+                                        onChange={(event) => {
+                                            setComplement(event.target.value)
+                                        }}
+                                        labelWidth={100}
                                     />
                                 </FormControl>
                             </Grid>
-                            <Grid item xs={4} name="canShowAddress">
+                            <Grid item xs={4} name="canShowAddress" style={{ display: "none" }}>
                                 <FormControl fullWidth variant="outlined">
-                                    <InputLabel>Bairro</InputLabel>
+                                    <InputLabel shrink>Bairro</InputLabel>
                                     <OutlinedInput
                                         id="neighborhod"
-                                        value={"bairro banana"}
+                                        readOnly={true}
+                                        value={neighborhood}
+                                        onChange={(event) => {
+                                            setNeighborhood(event.target.value)
+                                        }}
                                         labelWidth={60}
                                     />
                                 </FormControl>
                             </Grid>
-                            <Grid item xs={4} name="canShowAddress">
+                            <Grid item xs={4} name="canShowAddress" style={{ display: "none" }}>
                                 <FormControl fullWidth variant="outlined">
-                                    <InputLabel>Cidade</InputLabel>
+                                    <InputLabel shrink>Cidade</InputLabel>
                                     <OutlinedInput
                                         id="city"
-                                        value={"city banana"}
+                                        readOnly={true}
+                                        value={city}
+                                        onChange={(event) => {
+                                            setCity(event.target.value)
+                                        }}
                                         labelWidth={60}
                                     />
                                 </FormControl>
                             </Grid>
-                            <Grid item xs={4} name="canShowAddress">
+                            <Grid item xs={4} name="canShowAddress" style={{ display: "none" }}>
                                 <FormControl fullWidth variant="outlined">
-                                    <InputLabel>Estado</InputLabel>
+                                    <InputLabel shrink>Estado</InputLabel>
                                     <OutlinedInput
                                         id="state"
-                                        value={"estado banana"}
+                                        readOnly={true}
+                                        value={state}
+                                        onChange={(event) => {
+                                            setState(event.target.value)
+                                        }}
                                         labelWidth={60}
                                     />
                                 </FormControl>
@@ -213,6 +432,7 @@ export default function Technical() {
                                     variant="contained"
                                     color="primary"
                                     size="medium"
+                                    onClick={updateUserData}
                                     startIcon={<SaveIcon />}
                                 >
                                     Salvar

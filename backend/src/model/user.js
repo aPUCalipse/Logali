@@ -98,7 +98,7 @@ class User {
             console.log(query)
 
             const resp = await this.dbPool.query(query);
-            return resp;
+            return resp.pop();
 
         } catch (err) {
             throw new Error(`Erro ao pesquisar dados do Usuário -> ${err}`);
