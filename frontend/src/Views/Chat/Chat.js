@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import socketIOClient from 'socket.io-client'
 import MainLayout from '../MainLayout/MainLayout';
-import ChatWindow from '../../Components/Chat/Chat'
+import ChatWidget from '../../Components/Chat/Chat'
 
 function Chat() {
 
-	const [message, setMessage] = useState('');
-	const [receiver, setReciever] = useState(0);
+	const[message, setMessage] = useState('');
+	const[reciever, setReciever] = useState(0);
 	const userData = JSON.parse(localStorage.getItem("userData"));
 	const logado = userData.idUser;
 	const serverURL = 'http://localhost:8000';
@@ -35,7 +35,9 @@ function Chat() {
 	}
 	
 	return(
-		<ChatWindow></ChatWindow>
+		<div>
+			<ChatWidget></ChatWidget>
+		</div>
 	)
 }
 

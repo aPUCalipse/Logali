@@ -5,7 +5,7 @@ import Cadastro from '../Views/RegisterPage/Register'
 import Login from '../Views/Login/Login'
 import Technical from '../Views/SchedulePageTec/SchedulePageTec'
 import Profile from '../Views/User/Profile'
-// import Chat from '../Views/Chat/Chat'
+import Chat from '../Views/Chat/Chat'
 
 const router = {
   "/": () => <HomePage />,
@@ -14,7 +14,7 @@ const router = {
   "/login": () => <Login />,
   "/agenda": () => <Technical />,
   "/perfil": () => <Profile />,
-  // "/chat": () => <Chat />
+  "/chat": () => <Chat />
   //"/about": () => <About />,
 };
 export default router;
