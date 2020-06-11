@@ -490,7 +490,7 @@ class SchedulingRouter {
 
         if (validatedParams && validatedParams.isValid) {
 
-              
+
 
           const resp = await schedulingCtrl.insertLoc(validatedParams)
 

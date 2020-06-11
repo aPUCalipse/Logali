@@ -712,97 +712,97 @@ export default function Technical() {
                             <Tab label="Semana" {...a11yProps(2)} />
                         </Tabs>
                     </AppBar>
-                    <Container>
-                        <Formik>
-                            <Form>
-                                <Grid container
-                                    spacing={0.5}
-                                    justify="left"
-                                    alignItems="left">
-                                    <Grid item xs={12} sm={6} lg={3} >
-                                        <FormControl className={style.input}>
-                                            <InputLabel className={style.labell} id="demo-simple-select-label">Serviço</InputLabel>
-                                            <Select
-                                                labelId="demo-simple-select-label"
-                                                id="demo-simple-select"
-                                                className={classes.body}
-                                                onChange={e => setTypeScheduling(e.target.value)}
-                                                value={idTypeScheduling}
-                                            >
-                                                <MenuItem value={0}>Todos os serviços</MenuItem>
-                                                <MenuItem value={2}>Instalação</MenuItem>
-                                                <MenuItem value={1}>Manutenção em rede</MenuItem>
-                                                <MenuItem value={3}>BUG</MenuItem>
-                                                <MenuItem value={4}>Outros</MenuItem>
-                                            </Select>
-                                        </FormControl>
-                                    </Grid>
-                                    <Grid item xs={12} sm={6} lg={3} >
-                                        <FormControl className={style.input}>
-                                            <InputLabel className={style.labell} id="statusAgendamento">Status do Agendamento</InputLabel>
-                                            <Select
-                                                labelId="statusAgendamento"
-                                                id="statusScheduling"
-                                                className={classes.body}
-                                                onChange={e => setStatusScheduling(e.target.value)}
-                                                value={idStatusScheduling}
-                                            >
-                                                <MenuItem value={1}>Aguardando Aceite</MenuItem>
-                                                <MenuItem value={2}>Aceitado</MenuItem>
-                                                <MenuItem value={3}>À Caminho</MenuItem>
-                                                <MenuItem value={4}>Cancelado</MenuItem>
-                                                <MenuItem value={5}>Terminado</MenuItem>
-                                            </Select>
-                                        </FormControl>
-                                    </Grid>
-                                    <Grid item xs={12} sm={4} lg={2} >
-                                        <FormControl className={style.input}>
-                                            {/* <InputLabel className={style.labellInput} id="initDistance">Distancia inicial</InputLabel> */}
-                                            <TextField
-                                                id="initDistance"
-                                                labelId="initDistance"
-                                                name="initDistance"
-                                                type="number"
-                                                onChange={e => setInitDistance(e.target.value)}
-                                                className={style.inputText}
-                                                value={initDistance}
-                                                label="Distância Inicial"
-                                                fullWidth
-                                            />
-                                        </FormControl>
-                                    </Grid>
+                    <TabPanel value={value} index={0}>
+                        <Container>
+                            <Formik>
+                                <Form>
+                                    <Grid container
+                                        spacing={0.5}
+                                        justify="left"
+                                        alignItems="left">
+                                        <Grid item xs={12} sm={6} lg={3} >
+                                            <FormControl className={style.input}>
+                                                <InputLabel className={style.labell} id="demo-simple-select-label">Serviço</InputLabel>
+                                                <Select
+                                                    labelId="demo-simple-select-label"
+                                                    id="demo-simple-select"
+                                                    className={classes.body}
+                                                    onChange={e => setTypeScheduling(e.target.value)}
+                                                    value={idTypeScheduling}
+                                                >
+                                                    <MenuItem value={0}>Todos os serviços</MenuItem>
+                                                    <MenuItem value={2}>Instalação</MenuItem>
+                                                    <MenuItem value={1}>Manutenção em rede</MenuItem>
+                                                    <MenuItem value={3}>BUG</MenuItem>
+                                                    <MenuItem value={4}>Outros</MenuItem>
+                                                </Select>
+                                            </FormControl>
+                                        </Grid>
+                                        <Grid item xs={12} sm={6} lg={3} >
+                                            <FormControl className={style.input}>
+                                                <InputLabel className={style.labell} id="statusAgendamento">Status do Agendamento</InputLabel>
+                                                <Select
+                                                    labelId="statusAgendamento"
+                                                    id="statusScheduling"
+                                                    className={classes.body}
+                                                    onChange={e => setStatusScheduling(e.target.value)}
+                                                    value={idStatusScheduling}
+                                                >
+                                                    <MenuItem value={1}>Aguardando Aceite</MenuItem>
+                                                    <MenuItem value={2}>Aceitado</MenuItem>
+                                                    <MenuItem value={3}>À Caminho</MenuItem>
+                                                    <MenuItem value={4}>Cancelado</MenuItem>
+                                                    <MenuItem value={5}>Terminado</MenuItem>
+                                                </Select>
+                                            </FormControl>
+                                        </Grid>
+                                        <Grid item xs={12} sm={4} lg={2} >
+                                            <FormControl className={style.input}>
+                                                {/* <InputLabel className={style.labellInput} id="initDistance">Distancia inicial</InputLabel> */}
+                                                <TextField
+                                                    id="initDistance"
+                                                    labelId="initDistance"
+                                                    name="initDistance"
+                                                    type="number"
+                                                    onChange={e => setInitDistance(e.target.value)}
+                                                    className={style.inputText}
+                                                    value={initDistance}
+                                                    label="Distância Inicial"
+                                                    fullWidth
+                                                />
+                                            </FormControl>
+                                        </Grid>
 
-                                    <Grid item xs={12} sm={4} lg={2}  >
-                                        <FormControl className={style.input}>
-                                            {/* <InputLabel className={style.labellInput} id="statusAgendamento">Distancia Final</InputLabel> */}
-                                            <TextField
-                                                id="endDIstance"
-                                                name="endDIstance"
-                                                type="number"
-                                                onChange={e => setEndDistance(e.target.value)}
-                                                className={style.inputText}
-                                                label="Distância Final"
-                                                value={endDistance}
-                                                fullWidth
-                                            />
-                                        </FormControl>
-                                    </Grid>
-                                    {/* <Grid item xs={1} className={style.but}>
+                                        <Grid item xs={12} sm={4} lg={2}  >
+                                            <FormControl className={style.input}>
+                                                {/* <InputLabel className={style.labellInput} id="statusAgendamento">Distancia Final</InputLabel> */}
+                                                <TextField
+                                                    id="endDIstance"
+                                                    name="endDIstance"
+                                                    type="number"
+                                                    onChange={e => setEndDistance(e.target.value)}
+                                                    className={style.inputText}
+                                                    label="Distância Final"
+                                                    value={endDistance}
+                                                    fullWidth
+                                                />
+                                            </FormControl>
+                                        </Grid>
+                                        {/* <Grid item xs={1} className={style.but}>
                                         <Fab variant="round" className={style.searchButton} size="small" onClick={getScheduling}>
                                             <SearchIcon className={classes.icon} />
                                         </Fab>
                                     </Grid> */}
-                                    <Grid item xs={6} sm={2} lg={1} className={style.but}>
-                                    <Fab variant="round" className={style.searchButton} size="small" onClick={searchByTab}>
-                                        <SearchIcon className={classes.icon} />
-                                    </Fab>
-                                </Grid>
-                                </Grid>
-                                
-                            </Form>
-                        </Formik>
-                    </Container>
-                    <TabPanel value={value} index={0}>
+                                        <Grid item xs={6} sm={2} lg={1} className={style.but}>
+                                            <Fab variant="round" className={style.searchButton} size="small" onClick={searchByTab}>
+                                                <SearchIcon className={classes.icon} />
+                                            </Fab>
+                                        </Grid>
+                                    </Grid>
+
+                                </Form>
+                            </Formik>
+                        </Container>
                         <Container>
                             <Row xs={1} sm={2} md={3} lg={3}>
                                 {data.map((item) => (
@@ -825,6 +825,96 @@ export default function Technical() {
                         </Container>
                     </TabPanel>
                     <TabPanel value={value} index={2}>
+                        <Container>
+                            <Formik>
+                                <Form>
+                                    <Grid container
+                                        spacing={0.5}
+                                        justify="left"
+                                        alignItems="left">
+                                        <Grid item xs={12} sm={6} lg={3} >
+                                            <FormControl className={style.input}>
+                                                <InputLabel className={style.labell} id="demo-simple-select-label">Serviço</InputLabel>
+                                                <Select
+                                                    labelId="demo-simple-select-label"
+                                                    id="demo-simple-select"
+                                                    className={classes.body}
+                                                    onChange={e => setTypeScheduling(e.target.value)}
+                                                    value={idTypeScheduling}
+                                                >
+                                                    <MenuItem value={0}>Todos os serviços</MenuItem>
+                                                    <MenuItem value={2}>Instalação</MenuItem>
+                                                    <MenuItem value={1}>Manutenção em rede</MenuItem>
+                                                    <MenuItem value={3}>BUG</MenuItem>
+                                                    <MenuItem value={4}>Outros</MenuItem>
+                                                </Select>
+                                            </FormControl>
+                                        </Grid>
+                                        <Grid item xs={12} sm={6} lg={3} >
+                                            <FormControl className={style.input}>
+                                                <InputLabel className={style.labell} id="statusAgendamento">Status do Agendamento</InputLabel>
+                                                <Select
+                                                    labelId="statusAgendamento"
+                                                    id="statusScheduling"
+                                                    className={classes.body}
+                                                    onChange={e => setStatusScheduling(e.target.value)}
+                                                    value={idStatusScheduling}
+                                                >
+                                                    <MenuItem value={1}>Aguardando Aceite</MenuItem>
+                                                    <MenuItem value={2}>Aceitado</MenuItem>
+                                                    <MenuItem value={3}>À Caminho</MenuItem>
+                                                    <MenuItem value={4}>Cancelado</MenuItem>
+                                                    <MenuItem value={5}>Terminado</MenuItem>
+                                                </Select>
+                                            </FormControl>
+                                        </Grid>
+                                        <Grid item xs={12} sm={4} lg={2} >
+                                            <FormControl className={style.input}>
+                                                {/* <InputLabel className={style.labellInput} id="initDistance">Distancia inicial</InputLabel> */}
+                                                <TextField
+                                                    id="initDistance"
+                                                    labelId="initDistance"
+                                                    name="initDistance"
+                                                    type="number"
+                                                    onChange={e => setInitDistance(e.target.value)}
+                                                    className={style.inputText}
+                                                    value={initDistance}
+                                                    label="Distância Inicial"
+                                                    fullWidth
+                                                />
+                                            </FormControl>
+                                        </Grid>
+
+                                        <Grid item xs={12} sm={4} lg={2}  >
+                                            <FormControl className={style.input}>
+                                                {/* <InputLabel className={style.labellInput} id="statusAgendamento">Distancia Final</InputLabel> */}
+                                                <TextField
+                                                    id="endDIstance"
+                                                    name="endDIstance"
+                                                    type="number"
+                                                    onChange={e => setEndDistance(e.target.value)}
+                                                    className={style.inputText}
+                                                    label="Distância Final"
+                                                    value={endDistance}
+                                                    fullWidth
+                                                />
+                                            </FormControl>
+                                        </Grid>
+                                        {/* <Grid item xs={1} className={style.but}>
+                                        <Fab variant="round" className={style.searchButton} size="small" onClick={getScheduling}>
+                                            <SearchIcon className={classes.icon} />
+                                        </Fab>
+                                    </Grid> */}
+                                        <Grid item xs={6} sm={2} lg={1} className={style.but}>
+                                            <Fab variant="round" className={style.searchButton} size="small" onClick={searchByTab}>
+                                                <SearchIcon className={classes.icon} />
+                                            </Fab>
+                                        </Grid>
+                                    </Grid>
+
+                                </Form>
+                            </Formik>
+                        </Container>
                         <Slider {...settings} >
                             {weekOfDays && Object.keys(weekOfDays).map((weekDay, index) => (
 

@@ -301,11 +301,6 @@ function MyVerticallyCenteredModal(props, mode) {
                                 <TextareaAutosize id="standard-basic-obs" name="observation" onChange={e => setObservation(e.target.value)} className={classes.body} label="Observação" color="#45B39D" />
                             </Grid>
                             <Grid item xs={12} sm={12}>
-                                <FormControlLabel
-                                    control={<Checkbox name="checkedG" checked={true} color="primary" />}
-
-                                    label="Continuar com este endereço"
-                                />
 
                                 <TextareaAutosize
                                     id="standard-basic"

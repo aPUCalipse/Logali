@@ -400,6 +400,9 @@ class SchedulingCtrl {
         `key=AIzaSyCkIMj_uHe2IZkO0jtrx-tYGPbcJyvr2jo&`
       const response = await axios.get(url)
 
+      console.log(url)
+      console.log(response.data.rows[0].elements[0])
+
       selectedSchedules[i].distance = response.data.rows.pop().elements.pop().distance.value
       selectedSchedules[i].isInRangeDistance = this.getIsInRangeDistance(initDistance, endDistance, selectedSchedules[i].distance)
     }
@@ -500,6 +503,8 @@ class SchedulingCtrl {
           params.idWorker,
           params.day
         );
+
+        console.log(selectedSchedules)
 
         response.data = await this.getDistance(selectedSchedules, getAddresOfWorker.data)
 

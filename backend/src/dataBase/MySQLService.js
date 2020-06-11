@@ -6,7 +6,7 @@ function getPool() {
     connectionLimit: 10,
     host: 'localhost',
     user: 'root',
-    password: 'toor',
+    password: '',
     database: 'logali'
   });
 

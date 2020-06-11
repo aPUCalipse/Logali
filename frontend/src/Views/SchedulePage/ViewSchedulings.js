@@ -123,7 +123,7 @@ export default function RecipeReviewCard() {
     const [modalShow, setModalShow] = React.useState(false);
     const [selected, setSelected] = React.useState([]);
     const [modalShowView, setModalShowView] = React.useState(false);
-    
+
 
     const handleOpenView = (item) => {
         setSelected(item);
@@ -148,15 +148,15 @@ export default function RecipeReviewCard() {
         setExpanded(!expanded);
     };
     const Status = props => {
-        const {item} = props
-        if(item.statusSchedulingId == 1){
+        const { item } = props
+        if (item.statusSchedulingId == 1) {
             return (
                 <Avatar aria-label="recipe" color='warning.main' className={classes.avatar}>
                     <ScheduleIcon />
-                </Avatar> 
+                </Avatar>
             )
         }
-        if(item.statusSchedulingId == 2){
+        if (item.statusSchedulingId != 1) {
             document.getElementById("btnView") && document.getElementById("btnView").removeAttribute('style', 'display: none')
             return (
                 <Avatar aria-label="recipe" className={classes.avatar2}>
@@ -164,21 +164,21 @@ export default function RecipeReviewCard() {
                 </Avatar>
             )
         }
-        if(item.statusSchedulingId == 3){
+        if (item.statusSchedulingId == 3) {
             return (
                 <Avatar aria-label="recipe" className={classes.avatar3}>
                     <DirectionsWalkIcon />
                 </Avatar>
             )
         }
-        if(item.statusSchedulingId == 4){
+        if (item.statusSchedulingId == 4) {
             return (
                 <Avatar aria-label="recipe" className={classes.avatar2}>
                     <MoodBadIcon />
                 </Avatar>
             )
         }
-        if(item.statusSchedulingId == 5){
+        if (item.statusSchedulingId == 5) {
             return (
                 <Avatar aria-label="recipe" className={classes.avatar3}>
                     <CheckIcon />
@@ -365,11 +365,11 @@ export default function RecipeReviewCard() {
                                             <Typography variant="body2" color="textSecondary" component="p">
                                                 {item.observation}
                                             </Typography>
-                                         {/* <Typography hidden={item.idWorker !== null ? false : true}> {item.workerName} - Nota: {item.rateAVG} </Typography> */}
+                                            {/* <Typography hidden={item.idWorker !== null ? false : true}> {item.workerName} - Nota: {item.rateAVG} </Typography> */}
                                         </CardContent>
                                         <CardActions disableSpacing>
                                             <Tooltip title="Perfil Atendente">
-                                                <VisibilityIcon id={"btnView"} style={{ display: "none" }}   onClick={() => handleOpenView(item)}/>
+                                                <VisibilityIcon id={"btnView"} style={{ display: "none" }} onClick={() => handleOpenView(item)} />
                                             </Tooltip>
 
                                             <Tooltip title="Editar">
@@ -381,7 +381,7 @@ export default function RecipeReviewCard() {
                                                 </IconButton>
                                             </Tooltip>
                                             <Tooltip title='Avaliar'>
-                                                <IconButton title="Avaliar" id={"StarRating" + item.schedulingId} hidden={item.statusSchedulingId == 5 ? false : true }
+                                                <IconButton title="Avaliar" id={"StarRating" + item.schedulingId} hidden={item.statusSchedulingId == 5 ? false : true}
                                                     onClick={() => avaliacao(true, item)}
                                                 >
                                                     <StarBorderIcon />

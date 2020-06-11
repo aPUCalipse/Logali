@@ -49,7 +49,7 @@ function Header() {
           setName(userData.name)
         }
 
-        if (userData.rateAVG) {
+        if (typeof userData.rateAVG !== 'undefined') {
           setRateAVG(userData.rateAVG)
         }
       }
