@@ -25,6 +25,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
 import axios from 'axios';
+import ChatWidget from '../../Components/Chat/Chat'
 
 
 const useStyles = makeStyles(theme => ({
@@ -366,6 +367,8 @@ function App() {
                 show={modalShow}
                 onHide={() => setModalShow(false)}
             />
+
+            <ChatWidget />
         </MainLayout>
     );
 }
