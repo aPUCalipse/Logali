@@ -6,36 +6,36 @@ class Rating {
         this.dbPool = dbPool
     }
 
-    async getAvgRate(ratedId){
-        try{
+    async getAvgRate(ratedId) {
+        try {
             const select = `SELECT rateAVG ` +
-            `FROM logali.user ` +
-            `WHERE id = '${ratedId}' `
+                `FROM logali.user ` +
+                `WHERE id = '${ratedId}' `
 
             const resp = await this.dbPool.query(select)
 
             return resp.pop()
-            
-        }catch(err){
+
+        } catch (err) {
             throw new Error(`Erro ao selecionar a média do usuário -> ${err}`)
         }
-        
+
     }
 
-    async getHistoryQtd(ratedId){
-        try{
+    async getHistoryQtd(ratedId) {
+        try {
             const select = `SELECT 1 ` +
-            `FROM logali.rating ` +
-            `WHERE ratedId = '${ratedId}' `+
-            `limit 1` 
+                `FROM logali.rating ` +
+                `WHERE ratedId = '${ratedId}' ` +
+                `limit 1`
 
             const resp = await this.dbPool.query(select)
 
             return resp
-        }catch(err){
+        } catch (err) {
             throw new Error(`Erro ao selecionar a média do usuário -> ${err}`)
         }
-        
+
     }
 
     async avgRate(ratedId, rate) {
@@ -71,13 +71,11 @@ class Rating {
                 `AND ratedId = '${ratedId}' ` +
                 `AND schedulingId = '${schedulingId}' `
 
-                console.log(searchRateQuery)
-
             const searchRate = await this.dbPool.query(searchRateQuery)
 
-            if(searchRate.length > 0){
+            if (searchRate.length > 0) {
                 throw new Error(`Usuário já avaliado`)
-            }else{
+            } else {
                 response.isValid = true
                 response.rate = searchRate.pop()
                 return response

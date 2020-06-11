@@ -5,28 +5,26 @@ class Register {
         this.dbPool = dbPool
     }
 
-    async create(nome,login, senha, tipoUsuario, estado, cidade ,bairro, rua, cep, numero, complemento , geolocX, geolocY ,InseridoEm) {
-        try {            
-                var qryAddress =
-                    `INSERT INTO logali.address ` +
-                    `(geoLocX, geoLocY, state, city, neighborhood, street, zipCode, number, complement ,createdAt) VALUES ` +
-                    `(
-                ${geolocX},
-                ${geolocY},
-                '${estado}', 
-                '${cidade}', 
-                '${bairro}', 
-                '${rua}', 
-                ${cep},
-                ${numero},
-                '${complemento}',
-                '${InseridoEm}'
-                    )`
-                var addressResp = await this.dbPool.query(qryAddress)
-            //adiciona o endereço tanto de cliente ou tecnico
-            
-                address_id = addressResp.insertId;
-        //insere na tabela user especificando o tipo de usuario e passando o último adicionado 
+    async create(nome, login, senha, tipoUsuario, estado, cidade, bairro, rua, cep, numero, complemento, geolocX, geolocY, InseridoEm) {
+        try {
+            var qryAddress =
+                `INSERT INTO logali.address ` +
+                `(geoLocX, geoLocY, state, city, neighborhood, street, zipCode, number, complement ,createdAt) VALUES ` +
+                `(` +
+                `${geolocX}, ` +
+                `${geolocY}, ` +
+                `'${estado}', ` +
+                `'${cidade}', ` +
+                `'${bairro}', ` +
+                `'${rua}', ` +
+                `'${cep}', ` +
+                `'${numero}', ` +
+                `'${complemento}', ` +
+                `'${InseridoEm}' ` +
+                `)`
+            var addressResp = await this.dbPool.query(qryAddress)
+
+            const address_id = addressResp.insertId;
             var query =
                 `INSERT INTO logali.user ` +
                 `(name, login, typeUserId,password, createdAt, addressId) VALUES ` +
@@ -42,6 +40,7 @@ class Register {
             const resp = await this.dbPool.query(query)
             return resp
         } catch (err) {
+            console.log(err)
             throw new Error(`Erro ao inserir usuário -> ${err}`)
         }
     }
@@ -73,9 +72,9 @@ class Register {
                 `updatedAt = ${now} ` +
                 `join user ` +
                 `on user.id = ${userId} ` +
-                `WHERE ` +  
+                `WHERE ` +
                 `address.id = ${respQuerySelect[0].addressId}`;
-            
+
             var query = await this.dbPool.query(query_address)
 
             var query_user =
@@ -91,7 +90,7 @@ class Register {
             var resp = await this.dbPool.query(query_user);
 
             return resp;
-        }catch(err){
+        } catch (err) {
             throw new Error(`Erro ao atualizar usuário -> ${err}`)
         }
     }
@@ -103,8 +102,8 @@ class Register {
                 `FROM logali.user ` +
                 `WHERE login = '${login}' ` +
                 `AND typeUserId = ${tipoUsuario}`
-            
-                const resp = await this.dbPool.query(query)
+
+            const resp = await this.dbPool.query(query)
             return resp.pop()
         } catch (err) {
             throw new Error(`Erro na validação de usuário-> ${err}`)

@@ -253,6 +253,7 @@ class SchedulingCtrl {
       response.data = selectedSchedules;
       response.statusCode = 200;
     } catch (err) {
+      console.log(err)
       response.message = `Erro desconhecido ao pesquisar agendamentos  -> ${err.toString()}`;
     } finally {
       return response;
@@ -374,9 +375,6 @@ class SchedulingCtrl {
       isInRangeDistance = true
     }
 
-    console.log(isInRangeDistance)
-    console.log("\n\n")
-
     return isInRangeDistance;
   }
 
@@ -413,6 +411,32 @@ class SchedulingCtrl {
     const end = page * pageSize;
 
     return _.slice(sortedSchedules, init, end)
+  }
+
+  getSchedulingGrouppedByDate(schedulings) {
+    const daysOfWeek = {}
+    const momentItereteeTime = Moment()
+    for (let i = 0; i < 7; i++) {
+      daysOfWeek[momentItereteeTime.format("DD/MM/YYYY")] = []
+      momentItereteeTime.add(1, 'day')
+    }
+
+    schedulings = _.orderBy(schedulings, 'dateTime')
+    for (let i = 0; i < schedulings.length; i++) {
+      const date = schedulings[i].dateTime.split(" ")[0]
+      const momentDate = Moment(date, "YYYY-MM-DD")
+
+      schedulings[i].date = momentDate.format("DD/MM/YYYY")
+    }
+
+    const grouppedSchedulings = _.groupBy(schedulings, 'date')
+
+    for (const keyShe in grouppedSchedulings) {
+      if (daysOfWeek[keyShe]) {
+        daysOfWeek[keyShe] = grouppedSchedulings[keyShe]
+      }
+    }
+    return daysOfWeek
   }
 
   async viewScheduling(params) {
@@ -835,6 +859,7 @@ class SchedulingCtrl {
       }
     } catch (err) {
       console.log("Erro em updateWorkerId -> " + err);
+      response.message = "Erro em updateWorkerId -> " + err;
     } finally {
       return response;
     }
@@ -856,6 +881,7 @@ class SchedulingCtrl {
       }
     } catch (err) {
       console.log("Erro ao fechar agendamento -> " + err)
+      response.message = "Erro ao fechar agendamento -> " + err
     } finally {
       return response;
     }
@@ -877,6 +903,7 @@ class SchedulingCtrl {
       }
     } catch (err) {
       console.log("Erro ao iniciar agendamento -> " + err)
+      response.message = "Erro ao iniciar agendamento -> " + err
     } finally {
       return response;
     }

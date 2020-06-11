@@ -5,6 +5,8 @@ import api from '../../Components/Assets/api';
 import "bootstrap/dist/css/bootstrap.min.css";
 import { navigate, A } from 'hookrouter';
 
+import cep from 'cep-promise'
+
 //componentes 
 import MainLayout from '../MainLayout/MainLayout'
 import Address from '../../Components/Address/Address'
@@ -39,6 +41,52 @@ class Register extends Component {
         });
     }
 
+    onBlurZipCode = async (element) => {
+        const zipCode = element.target.value
+        if (zipCode && zipCode.length === 8) {
+            try {
+                const response = await cep(zipCode)
+                console.log(response)
+
+                document.getElementById('numberInput').removeAttribute('disabled');
+                document.getElementById('complementoInput').removeAttribute('disabled');
+
+                if (response.street) {
+                    document.getElementById('ruaInput').value = response.street
+                } else {
+                    document.getElementById('ruaInput').removeAttribute('disabled');
+                }
+
+                if (response.neighborhood) {
+                    document.getElementById('bairroInput').value = response.neighborhood
+                } else {
+                    document.getElementById('bairroInput').removeAttribute('disabled');
+                }
+
+                if (response.city) {
+                    document.getElementById('cidadeInput').value = response.city
+                } else {
+                    document.getElementById('cidadeInput').removeAttribute('disabled');
+                }
+
+                if (response.state) {
+                    const optionsState = document.getElementsByName('optionStates')
+                    for (let i = 0; i < optionsState.length; i++) {
+                        if (optionsState[i].value === response.state) {
+                            optionsState[i].setAttribute("selected", "true")
+                            break
+                        }
+                    }
+                } else {
+                    document.getElementsByName('stateInput').removeAttribute('disabled');
+                }
+            } catch (err) {
+                alert("Endereço não encontrado pelo CEP informado")
+            }
+        } else {
+            alert("O cep deve conter 8 numeros")
+        }
+    }
 
     handleRegister = async () => {
         if (
@@ -175,7 +223,9 @@ class Register extends Component {
                                 />
                             </Col>
 
-                            <Address />
+                            <Address
+                                onBlurZipCode={this.onBlurZipCode}
+                            />
 
                             <Col md={10}></Col>
                             <Col md={1}>

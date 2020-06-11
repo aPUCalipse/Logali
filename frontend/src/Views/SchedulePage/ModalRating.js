@@ -125,7 +125,7 @@ export default function MyVerticallyCenteredModal(props) {
         >
             <Modal.Header closeButton>
                 <Modal.Title id="contained-modal-title-vcenter">
-                    Avaliação
+                    AvaliaÃ§Ã£o
         </Modal.Title>
             </Modal.Header>
             <Modal.Body>
@@ -141,7 +141,7 @@ export default function MyVerticallyCenteredModal(props) {
                         justify="center"
                     >
                         <Typography variant="body2" color="textSecondary" component="p" className={classes.textAva}>
-                            Qual seu nível de satisfação com {selected.nametypeSchedulig}?
+                            Qual seu nÃ­vel de satisfaÃ§Ã£o com {selected.nametypeSchedulig}?
                         </Typography>
                     </Grid>
                     <Grid item>
@@ -175,7 +175,7 @@ export default function MyVerticallyCenteredModal(props) {
                                 name="observation"
                                 onChange={e => setObservation(e.target.value)}
                                 className={classes.inputRate}
-                                label="Observação"
+                                label="ObservaÃ§Ã£so"
                                 color="#45B39D" />
                         </Grid>
                     </Grid>

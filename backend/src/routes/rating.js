@@ -35,18 +35,18 @@ class RatingRouter {
                     req.body.schedulingId
                 )
 
-                if(validatedParams && validatedParams.isValid) {
-                    
+                if (validatedParams && validatedParams.isValid) {
+
                     const resp = await ratingCtrl.avaliacao(validatedParams)
                     response.message = resp.message
                     response.data = resp.data
-                    
-                   
+
+
                 } else {
                     response.message = validatedParams.message
                     response.data = validatedParams.data
                     res.status(validatedParams.statusCode)
-                 }
+                }
             } else {
                 response.message = "Os parametros não foram enviados"
                 response.data = req.body
@@ -57,7 +57,6 @@ class RatingRouter {
             response.message = "Erro ao realizar avaliação " + err
             res.status(500)
         } finally {
-            console.log("resposta: " + response)
             res.send(response)
         }
     }

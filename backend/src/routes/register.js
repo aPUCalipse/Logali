@@ -69,12 +69,12 @@ class RegisterRouter {
                 res.status(200)
             }
         } catch (err) {
-                console.log(err)
-                response.message = "Erro ao realizar cadastro " + err
-                res.status(500)
-            } finally {
-                res.send(response)
-            }
+            console.log(err)
+            response.message = "Erro ao realizar cadastro " + err
+            res.status(500)
+        } finally {
+            res.send(response)
+        }
     }
 
     async update(req, res) {

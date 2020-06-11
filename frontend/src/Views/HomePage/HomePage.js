@@ -1,7 +1,7 @@
 //react e bootstrap
 import React from 'react'
 
-import {Row, Col} from 'react-bootstrap'
+import { Row, Col } from 'react-bootstrap'
 
 //Imagens
 import location from '../../Images/location.svg'
@@ -16,19 +16,15 @@ import MainLayout from '../MainLayout/MainLayout'
 import cep from 'cep-promise'
 
 //verificação de sessão
-import {isLoggedIn} from "../../Functions/verifySession"
+import { isLoggedIn } from "../../Functions/verifySession"
 
-import {getLocation} from "../../Functions/geolocation"
+import { getLocation } from "../../Functions/geolocation"
 
 isLoggedIn()
-setInterval(function() { getLocation() }, 10000);
+setInterval(function () { getLocation() }, 10000);
 
-
-cep('05010000')
-  .then(console.log)
-
-function    HomePage(){
-    return(
+function HomePage() {
+    return (
         <div>
             <MainLayout>
                 <Row>
@@ -38,7 +34,7 @@ function    HomePage(){
 
                     <Col md={6}>
                         <h2 className={style.Main_text_spotlight}>Faça seus agendamentos de serviços de forma fácil e rápida! É só clicar Logo Ali!</h2>
-                    </Col>      
+                    </Col>
                 </Row>
             </MainLayout>
         </div>

@@ -51,9 +51,10 @@ import FormControl from '@material-ui/core/FormControl';
 import { InputLabel, MenuItem } from '@material-ui/core';
 import Select from '@material-ui/core/Select';
 
+
+
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
-
     return (
         <Typography
             component="div"
@@ -129,7 +130,9 @@ const useStyles = makeStyles(theme => ({
     rootCard: {
         backgroundColor: '#009999',
         color: "white",
-        minHeight: theme.spacing(80)
+        minHeight: theme.spacing(80),
+        maxHeight: '1000px',
+        overflowY: 'auto'
     },
     slide: {
         backgroundColor: '#009999',
@@ -375,7 +378,7 @@ function ListTable(props) {
                     <CardMedia className={classes.media}>
                         <Row>
                             <Col>
-                                <div className={style.map}>
+                                <div className={week == true ? style.mapWeek : style.map}>
                                     <GoogleMapReact
                                         bootstrapURLKeys={{ key: "AIzaSyCkIMj_uHe2IZkO0jtrx-tYGPbcJyvr2jo" }}
                                         defaultCenter={{
@@ -469,10 +472,12 @@ function ListTable(props) {
 export default function Technical() {
     const classes = useStyles();
     const [week, setWeek] = React.useState([]);
+    const [canGetScheduling, setCanGetScheduling] = React.useState(true);
     const [data, setData] = React.useState([]);
     const [dataOfDate, setDataOfDate] = React.useState([]);
     const [dataTec, setDataTec] = React.useState([]);
     const [value, setValue] = React.useState(0);
+    const [weekOfDays, setWeekOfDays] = React.useState([]);
 
     let [page, setPage] = React.useState(1);
     let [idTypeScheduling, setTypeScheduling] = React.useState(0);
@@ -512,6 +517,9 @@ export default function Technical() {
                 if (response.data && response.data.data && response.data.data.length > 0) {
                     setData(response.data.data)
                     setMaxPages(response.data.pagination.maxPages)
+                } else {
+                    setData([])
+                    setMaxPages(1)
                 }
             })
             .catch(function (error) {
@@ -590,6 +598,40 @@ export default function Technical() {
         return days;
     }
 
+    async function getSchedulingOfDaysWeek(event, eventPage) {
+        const tec = JSON.parse(localStorage.getItem('userData'))
+        page = (eventPage) ? eventPage : 1
+
+        if (initDistance === '') {
+            initDistance = -1
+        }
+
+        if (endDistance === '') {
+            endDistance = -1
+        }
+
+        const response = await axios.post('http://localhost:8000/logali/app/scheduling/viewByDates', {
+            "page": page,
+            "pageSize": 10,
+            "idWorker": tec.idUser,
+            "filterType": idTypeScheduling,
+            "filterStatus": idStatusScheduling,
+            "initDistance": initDistance,
+            "endDistance": endDistance,
+        })
+            .then(function (response) {
+                console.log(response);
+                if (response.data && response.data.data) {
+                    console.log('HELLLLOU')
+                    setWeekOfDays(response.data.data)
+                    setMaxPages(response.data.pagination.maxPages)
+                }
+            })
+            .catch(function (error) {
+                console.log(error.response);
+            });
+        console.log(weekOfDays);
+    }
 
     function dateSplit(item) {
         let arrayData = item.dateTime.split(' ')
@@ -601,14 +643,21 @@ export default function Technical() {
         if (week.length == 0)
             setWeek(getWeekDays());
 
-        if (data == null || data.length == 0)
+        if (canGetScheduling) {
             getScheduling();
+            setCanGetScheduling(false)
+        }
 
         if (dataOfDate == null || dataOfDate.length == 0)
             getSchedulingOfDay();
 
         if (dataTec == null || dataTec.length == 0)
             getGeoLocXY()
+
+        if (weekOfDays == null || weekOfDays.length == 0) {
+            console.log('ESTOU AQUI')
+            getSchedulingOfDaysWeek();
+        }
     })
 
     const settings = {
@@ -620,7 +669,7 @@ export default function Technical() {
         initialSlide: 0,
         responsive: [
             {
-                breakpoint: 1024,
+                breakpoint: 1300,
                 settings: {
                     slidesToShow: 3,
                     slidesToScroll: 3,
@@ -629,7 +678,7 @@ export default function Technical() {
                 }
             },
             {
-                breakpoint: 600,
+                breakpoint: 1200,
                 settings: {
                     slidesToShow: 2,
                     slidesToScroll: 2,
@@ -637,7 +686,7 @@ export default function Technical() {
                 }
             },
             {
-                breakpoint: 480,
+                breakpoint: 800,
                 settings: {
                     slidesToShow: 1,
                     slidesToScroll: 1
@@ -646,73 +695,82 @@ export default function Technical() {
         ]
     };
 
+    const searchByTab = () =>{
+        if(value == 0)
+            getScheduling()
+        else if(value == 2)
+            getSchedulingOfDaysWeek()
+    }
     return (
         <div className={classes.root}>
             <MainLayout>
                 <Card className={classes.root}>
                     <AppBar position="static" className={classes.tabs}>
-                        <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
+                        <Tabs value={value} onChange={handleChange} aria-label="simple tabs example"  indicatorColor="primary">
                             <Tab label="Tudo" {...a11yProps(0)} />
                             <Tab label="Hoje" {...a11yProps(1)} />
                             <Tab label="Semana" {...a11yProps(2)} />
                         </Tabs>
                     </AppBar>
-                    <TabPanel value={value} index={0}>
-                        <Container>
-                            <Formik as={Row}>
-                                <Form>
-                                    <Grid container
-                                        spacing={0.5}
-                                        justify="left"
-                                        alignItems="left">
-                                        <Grid item xs={3} >
-                                            <FormControl className={style.input}>
-                                                <InputLabel className={style.labell} id="demo-simple-select-label">Serviço</InputLabel>
-                                                <Select
-                                                    labelId="demo-simple-select-label"
-                                                    id="demo-simple-select"
-                                                    className={classes.body}
-                                                    onChange={e => setTypeScheduling(e.target.value)}
-                                                    value={idTypeScheduling}
-                                                >
-                                                    <MenuItem value={0}>Todos os serviços</MenuItem>
-                                                    <MenuItem value={2}>Instalação</MenuItem>
-                                                    <MenuItem value={1}>Manutenção em rede</MenuItem>
-                                                    <MenuItem value={3}>BUG</MenuItem>
-                                                </Select>
-                                            </FormControl>
-                                        </Grid>
-                                        <Grid item xs={3} >
-                                            <FormControl className={style.input}>
-                                                <InputLabel className={style.labell} id="statusAgendamento">Status do Agendamento</InputLabel>
-                                                <Select
-                                                    labelId="statusAgendamento"
-                                                    id="statusScheduling"
-                                                    className={classes.body}
-                                                    onChange={e => setStatusScheduling(e.target.value)}
-                                                    value={idStatusScheduling}
-                                                >
-                                                    <MenuItem value={1}>Aguardando Aceite</MenuItem>
-                                                    <MenuItem value={2}>Aceitado</MenuItem>
-                                                    <MenuItem value={3}>À Caminho</MenuItem>
-                                                    <MenuItem value={4}>Cancelado</MenuItem>
-                                                    <MenuItem value={5}>Terminado</MenuItem>
-                                                </Select>
-                                            </FormControl>
-                                        </Grid>
-                                        <Grid item xs={2} >
-                                            <FormControl>
-                                                <InputLabel className={style.labellInput} id="statusAgendamento">Distancia inicial</InputLabel>
-                                                <TextField
-                                                    id="initDistance"
-                                                    name="initDistance"
-                                                    type="number"
-                                                    onChange={e => setInitDistance(e.target.value)}
-                                                    className={style.inputText}
-                                                    value={initDistance}
-                                                />
-                                            </FormControl>
-                                        </Grid>
+                    <Container>
+                        <Formik>
+                            <Form>
+                                <Grid container
+                                    spacing={0.5}
+                                    justify="left"
+                                    alignItems="left">
+                                    <Grid item xs={12} sm={6} lg={3} >
+                                        <FormControl className={style.input}>
+                                            <InputLabel className={style.labell} id="demo-simple-select-label">Serviço</InputLabel>
+                                            <Select
+                                                labelId="demo-simple-select-label"
+                                                id="demo-simple-select"
+                                                className={classes.body}
+                                                onChange={e => setTypeScheduling(e.target.value)}
+                                                value={idTypeScheduling}
+                                            >
+                                                <MenuItem value={0}>Todos os serviços</MenuItem>
+                                                <MenuItem value={2}>Instalação</MenuItem>
+                                                <MenuItem value={1}>Manutenção em rede</MenuItem>
+                                                <MenuItem value={3}>BUG</MenuItem>
+                                                <MenuItem value={4}>Outros</MenuItem>
+                                            </Select>
+                                        </FormControl>
+                                    </Grid>
+                                    <Grid item xs={12} sm={6} lg={3} >
+                                        <FormControl className={style.input}>
+                                            <InputLabel className={style.labell} id="statusAgendamento">Status do Agendamento</InputLabel>
+                                            <Select
+                                                labelId="statusAgendamento"
+                                                id="statusScheduling"
+                                                className={classes.body}
+                                                onChange={e => setStatusScheduling(e.target.value)}
+                                                value={idStatusScheduling}
+                                            >
+                                                <MenuItem value={1}>Aguardando Aceite</MenuItem>
+                                                <MenuItem value={2}>Aceitado</MenuItem>
+                                                <MenuItem value={3}>À Caminho</MenuItem>
+                                                <MenuItem value={4}>Cancelado</MenuItem>
+                                                <MenuItem value={5}>Terminado</MenuItem>
+                                            </Select>
+                                        </FormControl>
+                                    </Grid>
+                                    <Grid item xs={12} sm={4} lg={2} >
+                                        <FormControl className={style.input}>
+                                            {/* <InputLabel className={style.labellInput} id="initDistance">Distancia inicial</InputLabel> */}
+                                            <TextField
+                                                id="initDistance"
+                                                labelId="initDistance"
+                                                name="initDistance"
+                                                type="number"
+                                                onChange={e => setInitDistance(e.target.value)}
+                                                 className={style.inputText}
+                                                value={initDistance}
+                                                label="Distancia inicial"
+                                                fullWidth
+                                            />
+                                        </FormControl>
+                                    </Grid>
 
                                         <Grid item xs={2} >
                                             <FormControl>
@@ -733,12 +791,21 @@ export default function Technical() {
                                             </Fab>
                                         </Grid>
                                     </Grid>
-                                </Form>
-                            </Formik>
+                                    <Grid item xs={6} sm={2} lg={1} className={style.but}>
+                                        <Fab variant="round" className={style.searchButton} size="small" onClick={searchByTab}>
+                                            <SearchIcon className={classes.icon} />
+                                        </Fab>
+                                    </Grid>
+                                </Grid>
+                            </Form>
+                        </Formik>
+                    </Container>
+                    <TabPanel value={value} index={0}>
+                        <Container>
                             <Row xs={1} sm={2} md={3} lg={3}>
                                 {data.map((item) => (
                                     <Col>
-                                        <ListTable item={item} week={week} />
+                                        <ListTable item={item} week={false} />
                                     </Col>
                                 ))}
                             </Row>
@@ -757,7 +824,8 @@ export default function Technical() {
                     </TabPanel>
                     <TabPanel value={value} index={2}>
                         <Slider {...settings} >
-                            {week.map((date) => (
+                            {weekOfDays && Object.keys(weekOfDays).map((weekDay, index) => (
+
                                 <Container>
                                     <Row xs={12} lg={12}>
                                         <Col>
@@ -765,13 +833,13 @@ export default function Technical() {
                                                 <CardActionArea>
                                                     <CardContent>
                                                         <Typography gutterBottom variant="h5" component="h2">
-                                                            {date.getDate()} / 0{date.getMonth() + 1}
+                                                            {weekDay}
                                                         </Typography>
-                                                        {data.map((item) => (
-                                                            dateSplit(item) == (date.getDate() + '/0' + (date.getMonth() + 1) + '/' + date.getFullYear()) ?
-                                                                <Col>
-                                                                    <ListTable item={item} week={week} />
-                                                                </Col> : ''
+                                                        {Object.values(weekOfDays)[index].map((item) => (
+
+                                                            <Col>
+                                                                <ListTable item={item} week={true} />
+                                                            </Col>
                                                         ))}
                                                     </CardContent>
                                                 </CardActionArea>
