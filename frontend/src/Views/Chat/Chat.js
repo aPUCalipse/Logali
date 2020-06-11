@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import socketIOClient from 'socket.io-client'
 import MainLayout from '../MainLayout/MainLayout';
+import ChatWindow from '../../Components/Chat/Chat'
 
 function Chat() {
 
@@ -32,8 +33,10 @@ function Chat() {
 		}
 		socket.emit('Message', dadosMensagem)
 	}
-
-	return
+	
+	return(
+		<ChatWindow></ChatWindow>
+	)
 }
 
 export default Chat
