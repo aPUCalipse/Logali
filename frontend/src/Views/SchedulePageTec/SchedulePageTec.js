@@ -695,10 +695,10 @@ export default function Technical() {
         ]
     };
 
-    const searchByTab = () =>{
-        if(value == 0)
+    const searchByTab = () => {
+        if (value == 0)
             getScheduling()
-        else if(value == 2)
+        else if (value == 2)
             getSchedulingOfDaysWeek()
     }
     return (
@@ -706,7 +706,7 @@ export default function Technical() {
             <MainLayout>
                 <Card className={classes.root}>
                     <AppBar position="static" className={classes.tabs}>
-                        <Tabs value={value} onChange={handleChange} aria-label="simple tabs example"  indicatorColor="primary">
+                        <Tabs value={value} onChange={handleChange} aria-label="simple tabs example" indicatorColor="primary">
                             <Tab label="Tudo" {...a11yProps(0)} />
                             <Tab label="Hoje" {...a11yProps(1)} />
                             <Tab label="Semana" {...a11yProps(2)} />
@@ -764,7 +764,7 @@ export default function Technical() {
                                                 name="initDistance"
                                                 type="number"
                                                 onChange={e => setInitDistance(e.target.value)}
-                                                 className={style.inputText}
+                                                className={style.inputText}
                                                 value={initDistance}
                                                 label="Distancia inicial"
                                                 fullWidth
@@ -772,30 +772,29 @@ export default function Technical() {
                                         </FormControl>
                                     </Grid>
 
-                                        <Grid item xs={2} >
-                                            <FormControl>
-                                                <InputLabel className={style.labellInput} id="statusAgendamento">Distancia Final</InputLabel>
-                                                <TextField
-                                                    id="endDIstance"
-                                                    name="endDIstance"
-                                                    type="number"
-                                                    onChange={e => setEndDistance(e.target.value)}
-                                                    className={style.inputText}
-                                                    value={endDistance}
-                                                />
-                                            </FormControl>
-                                        </Grid>
-                                        <Grid item xs={1} className={style.but}>
-                                            <Fab variant="round" className={style.searchButton} size="small" onClick={getScheduling}>
-                                                <SearchIcon className={classes.icon} />
-                                            </Fab>
-                                        </Grid>
+                                    <Grid item xs={2} >
+                                        <FormControl>
+                                            <InputLabel className={style.labellInput} id="statusAgendamento">Distancia Final</InputLabel>
+                                            <TextField
+                                                id="endDIstance"
+                                                name="endDIstance"
+                                                type="number"
+                                                onChange={e => setEndDistance(e.target.value)}
+                                                className={style.inputText}
+                                                value={endDistance}
+                                            />
+                                        </FormControl>
                                     </Grid>
-                                    <Grid item xs={6} sm={2} lg={1} className={style.but}>
-                                        <Fab variant="round" className={style.searchButton} size="small" onClick={searchByTab}>
+                                    <Grid item xs={1} className={style.but}>
+                                        <Fab variant="round" className={style.searchButton} size="small" onClick={getScheduling}>
                                             <SearchIcon className={classes.icon} />
                                         </Fab>
                                     </Grid>
+                                </Grid>
+                                <Grid item xs={6} sm={2} lg={1} className={style.but}>
+                                    <Fab variant="round" className={style.searchButton} size="small" onClick={searchByTab}>
+                                        <SearchIcon className={classes.icon} />
+                                    </Fab>
                                 </Grid>
                             </Form>
                         </Formik>
