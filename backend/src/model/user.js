@@ -88,17 +88,19 @@ class User {
                 `complement, ` +
                 `neighborhood, ` +
                 `city, ` +
-                `state, ` +
-                `FROM logali.user ` +
+                `state ` +
+                `FROM logali.user u ` +
                 //join tabela User com Address
-                `JOIN logali.address ` +
-                `on logali.user.addressId = logali.addressId.id ` +
-                `WHERE logali.user.Id = ${userId} `;
+                `JOIN logali.address a ` +
+                `on u.addressId = a.id ` +
+                `WHERE u.id = ${userId} `;
+
+            console.log(query)
 
             const resp = await this.dbPool.query(query);
             return resp;
 
-        }catch (err) {
+        } catch (err) {
             throw new Error(`Erro ao pesquisar dados do Usuário -> ${err}`);
         }
     }

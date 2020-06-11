@@ -30,3 +30,36 @@
     font-size: 20px;
     float: right
 }
+
+.userTextStyle{
+    font-size: 10px;
+    font-weight: 600;
+    font-family: sans-serif;
+    color: #FFF;
+    font-variant-caps: unicase;
+}
+
+.userButton{
+    height: 40px !important;
+    width: 114%;
+    border: #38817e 1px solid !important;
+    border-radius: 0px 20px 20px 0px !important;
+    background-color: #00b5ac !important;
+    box-shadow: -1px 1px 2px 0px #9aece8;
+}
+
+.userButton:focus{
+    outline: 0px !important;
+}
+
+.peopelIcon{
+    position: absolute !important;
+    top: -5px;
+    left: -38px;
+    background-color: #20837e !important;
+    color: #FFF !important;
+}
+
+.peopelIcon:focus{
+    outline: 0px !important;
+}

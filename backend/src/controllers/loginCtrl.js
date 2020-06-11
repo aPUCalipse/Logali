@@ -41,7 +41,7 @@ class LoginCtrl {
         const response = {
             message: null,
             statusCode: 500,
-            idUser: 0
+            data: {}
         }
 
         try {
@@ -53,7 +53,7 @@ class LoginCtrl {
             else if (userLogin.message === 'Usuário não encontrado') {
                 response.statusCode = 404
             }
-            response.idUser = userLogin.idUser
+            response.data = userLogin
         }
         catch (err) {
             response.message = `Erro desconhecido ao fazer login -> ${err.toString()}`

@@ -33,6 +33,7 @@ class userCtrl {
             return response
         }
     }
+
     async getUserById(id) {
         const response = {
             message: null,
@@ -66,7 +67,7 @@ class userCtrl {
         }
 
         try {
-            const resp = await takeDatas(userId);
+            const resp = await this.user.takeDatas(userId);
             response.data = resp;
             response.statusCode = 200;
         } catch (err) {
@@ -86,7 +87,7 @@ class userCtrl {
             },
         }
 
-        if(!userId) {
+        if (!userId) {
             validatedParams.isValid = false;
             validatedParams.message = "O parametro usuario está incorreto";
             validatedParams.statusCode = 400;
@@ -97,7 +98,7 @@ class userCtrl {
 
         return validatedParams;
     }
-    
+
 }
 
 module.exports = userCtrl

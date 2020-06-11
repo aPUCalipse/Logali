@@ -1,0 +1,26 @@
+.title{
+    font-family: 'Luckiest Guy', cursive !important;
+    color:#619390 !important;
+}
+
+.rateIcon{
+    position: absolute !important;
+    left: 90%;
+    width: 100px !important;
+    height: 100px !important;
+}
+
+.rateIcon:focus{
+    outline: 0px !important;
+}
+
+.starIcon{
+    font-size: 80px !important;
+    color: #efbd24;
+}
+
+.starIconText{
+    position: absolute !important;
+    left: 43%;
+    font-size: 25px;
+}

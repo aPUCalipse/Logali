@@ -18,7 +18,7 @@ class RouteService {
     this.registerRouter = new RegisterRouter(this.app, appBaseRoute, dbPool);
     this.loginRouter = new LoginRouter(this.app, appBaseRoute, dbPool);
     this.ratingRouter = new RatingRouter(this.app, appBaseRoute, dbPool);
-    this.userRouter = new UserRouter(this.app, this.appBaseRoute, dbPool);
+    this.userRouter = new UserRouter(this.app, appBaseRoute, dbPool);
     SchedulingQueueConsumer(dbPool);
     this.chatRouter = new ChatRouter(this.app, appBaseRoute, dbPool);
   }
